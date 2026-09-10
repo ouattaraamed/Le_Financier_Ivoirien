@@ -26,9 +26,11 @@ footer{background:#071d1b;color:#dce7e4;padding:40px 4% 18px}.footer-grid{max-wi
 @media(max-width:520px){.top{display:none}.brand p{font-size:11px}.logo{width:43px;height:43px;font-size:20px}.hero{padding:22px}.hero h2{font-size:29px}.market-grid,.footer-grid{grid-template-columns:1fr}.ticker{margin-left:0;margin-right:0}.side-card{grid-template-columns:90px 1fr}}
 </style>
 </head>
-  <script>
+<script>
 const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+
+document.addEventListener("DOMContentLoaded", chargerArticles);
 
 async function chargerArticles() {
   try {
@@ -42,62 +44,192 @@ async function chargerArticles() {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Impossible de récupérer les articles");
-    }
+    if (!response.ok) throw new Error("Erreur Supabase");
 
     const articles = await response.json();
 
-    console.log("Articles Supabase :", articles);
+    if (!articles.length) return;
 
-    if (articles.length === 0) return;
-
-    // Article principal
     const principal = articles[0];
 
+    // Article principal
     const heroTitle = document.querySelector(".hero h2");
     const heroText = document.querySelector(".hero p");
     const heroTag = document.querySelector(".hero .tag");
+    const hero = document.querySelector(".hero");
 
-    if (heroTitle && principal.titre) {
-      heroTitle.textContent = principal.titre;
+    if (heroTitle) heroTitle.textContent = principal.titre || "";
+    if (heroText) heroText.textContent = principal.contenu || "";
+    if (heroTag) heroTag.textContent = principal.categorie || "Actualités";
+
+    if (hero) {
+      hero.style.cursor = "pointer";
+      hero.onclick = () => afficherArticle(principal);
     }
 
-    if (heroText && principal.contenu) {
-      heroText.textContent = principal.contenu;
-    }
-
-    if (heroTag && principal.categorie) {
-      heroTag.textContent = principal.categorie;
-    }
-
-    // Articles "À LA UNE"
+    // Articles à la une
     const sideCards = document.querySelectorAll(".side-card");
 
     articles.slice(1, 5).forEach((article, index) => {
       const card = sideCards[index];
-
       if (!card) return;
 
       const title = card.querySelector("h4");
       const category = card.querySelector("small");
 
-      if (title && article.titre) {
-        title.textContent = article.titre;
-      }
+      if (title) title.textContent = article.titre || "";
+      if (category) category.textContent = article.categorie || "Actualités";
 
-      if (category && article.categorie) {
-        category.textContent = article.categorie;
+      card.style.cursor = "pointer";
+      card.onclick = () => afficherArticle(article);
+
+      // Image
+      const thumb = card.querySelector(".thumb");
+      if (thumb && article.image_url) {
+        thumb.style.backgroundImage = `url("${article.image_url}")`;
+        thumb.style.backgroundSize = "cover";
+        thumb.style.backgroundPosition = "center";
       }
     });
+
+    // Ouvre automatiquement un article si son ID est dans l'URL
+    const id = new URLSearchParams(window.location.search).get("article");
+
+    if (id) {
+      const article = articles.find(a => String(a.id) === String(id));
+
+      if (article) {
+        afficherArticle(article, false);
+      }
+    }
 
   } catch (error) {
     console.error("Erreur Supabase :", error);
   }
 }
 
-chargerArticles();
-  </script>
+function afficherArticle(article, changerURL = true) {
+
+  if (changerURL) {
+    history.pushState(
+      {},
+      "",
+      `${window.location.pathname}?article=${encodeURIComponent(article.id)}`
+    );
+  }
+
+  let detail = document.getElementById("article-detail");
+
+  if (!detail) {
+    detail = document.createElement("section");
+    detail.id = "article-detail";
+    detail.style.cssText = `
+      max-width:900px;
+      margin:30px auto;
+      padding:30px;
+      background:#fff;
+      border-top:5px solid #063f37;
+      box-shadow:0 2px 10px rgba(0,0,0,.08);
+    `;
+
+    document.querySelector("main").before(detail);
+  }
+
+  document.querySelector("main").style.display = "none";
+
+  detail.innerHTML = "";
+
+  const back = document.createElement("button");
+  back.textContent = "← Retour aux actualités";
+  back.style.cssText = `
+    background:#063f37;
+    color:#fff;
+    border:0;
+    padding:12px 18px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-bottom:25px;
+  `;
+
+  back.onclick = () => {
+    history.pushState({}, "", window.location.pathname);
+    detail.remove();
+    document.querySelector("main").style.display = "";
+    window.scrollTo(0, 0);
+  };
+
+  detail.appendChild(back);
+
+  const category = document.createElement("div");
+  category.textContent = article.categorie || "Actualités";
+  category.style.cssText = `
+    display:inline-block;
+    background:#0b6657;
+    color:white;
+    padding:7px 10px;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:uppercase;
+  `;
+
+  detail.appendChild(category);
+
+  const title = document.createElement("h1");
+  title.textContent = article.titre || "";
+  title.style.cssText = `
+    font-family:Georgia,serif;
+    font-size:42px;
+    line-height:1.1;
+    color:#063f37;
+    margin:15px 0;
+  `;
+
+  detail.appendChild(title);
+
+  const meta = document.createElement("div");
+  meta.textContent =
+    `Par ${article.auteur || "Le Financier Ivoirien"} • ` +
+    `${article.created_at ? new Date(article.created_at).toLocaleDateString("fr-FR") : ""}`;
+
+  meta.style.cssText = `
+    color:#667471;
+    font-size:13px;
+    margin-bottom:25px;
+  `;
+
+  detail.appendChild(meta);
+
+  if (article.image_url) {
+    const image = document.createElement("img");
+    image.src = article.image_url;
+    image.alt = article.titre || "";
+    image.style.cssText = `
+      width:100%;
+      max-height:500px;
+      object-fit:cover;
+      margin-bottom:25px;
+    `;
+
+    detail.appendChild(image);
+  }
+
+  const content = document.createElement("div");
+  content.textContent = article.contenu || "";
+  content.style.cssText = `
+    font-size:18px;
+    line-height:1.8;
+    color:#263936;
+    white-space:pre-wrap;
+  `;
+
+  detail.appendChild(content);
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+</script>
 <body>
 <div class="top"><span>Jeudi 10 septembre 2026 &nbsp;|&nbsp; Abidjan, Côte d’Ivoire</span><span>À propos &nbsp; | &nbsp; Contact &nbsp; | &nbsp; Newsletter &nbsp; | &nbsp; LinkedIn &nbsp; X</span></div>
 <header class="header">
