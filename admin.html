@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Administration — Le Financier Ivoirien</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f3;
+      color: #10211f;
+    }
+
+    header {
+      background: #063f37;
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-family: Georgia, serif;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.08);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 7px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccd5d1;
+      border-radius: 5px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 25px;
+      background: #063f37;
+      color: white;
+      border: 0;
+      padding: 14px 25px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0b6657;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      display: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Le Financier Ivoirien</h1>
+  <p>Administration</p>
+</header>
+
+<main>
+  <div class="box">
+
+    <h2>Publier un article</h2>
+
+    <form id="articleForm">
+
+      <label for="titre">Titre de l'article</label>
+      <input
+        id="titre"
+        type="text"
+        placeholder="Ex : La BRVM poursuit sa progression"
+        required
+      >
+
+      <label for="categorie">Catégorie</label>
+      <select id="categorie" required>
+        <option value="">Choisir une catégorie</option>
+        <option>Marchés & Bourse</option>
+        <option>Banques & Finance</option>
+        <option>Entreprises</option>
+        <option>Économie ivoirienne</option>
+        <option>Afrique & International</option>
+        <option>Investissement</option>
+        <option>Portraits & Interviews</option>
+        <option>Actualités</option>
+      </select>
+
+      <label for="auteur">Auteur</label>
+      <input
+        id="auteur"
+        type="text"
+        placeholder="Nom de l'auteur"
+        required
+      >
+
+      <label for="image_url">URL de l'image</label>
+      <input
+        id="image_url"
+        type="url"
+        placeholder="https://..."
+      >
+
+      <label for="contenu">Contenu de l'article</label>
+      <textarea
+        id="contenu"
+        placeholder="Écrivez votre article ici..."
+        required
+      ></textarea>
+
+      <button type="submit">
+        Publier l'article
+      </button>
+
+      <div id="message" class="message"></div>
+
+    </form>
+
+  </div>
+</main>
+
+</body>
+</html>
