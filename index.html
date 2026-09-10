@@ -26,6 +26,78 @@ footer{background:#071d1b;color:#dce7e4;padding:40px 4% 18px}.footer-grid{max-wi
 @media(max-width:520px){.top{display:none}.brand p{font-size:11px}.logo{width:43px;height:43px;font-size:20px}.hero{padding:22px}.hero h2{font-size:29px}.market-grid,.footer-grid{grid-template-columns:1fr}.ticker{margin-left:0;margin-right:0}.side-card{grid-template-columns:90px 1fr}}
 </style>
 </head>
+  <script>
+const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+const SUPABASE_KEY = "TA_PUBLISHABLE_KEY";
+
+async function chargerArticles() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/Articles?select=*&order=created_at.desc&limit=5`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Impossible de récupérer les articles");
+    }
+
+    const articles = await response.json();
+
+    console.log("Articles Supabase :", articles);
+
+    if (articles.length === 0) return;
+
+    // Article principal
+    const principal = articles[0];
+
+    const heroTitle = document.querySelector(".hero h2");
+    const heroText = document.querySelector(".hero p");
+    const heroTag = document.querySelector(".hero .tag");
+
+    if (heroTitle && principal.titre) {
+      heroTitle.textContent = principal.titre;
+    }
+
+    if (heroText && principal.contenu) {
+      heroText.textContent = principal.contenu;
+    }
+
+    if (heroTag && principal.categorie) {
+      heroTag.textContent = principal.categorie;
+    }
+
+    // Articles "À LA UNE"
+    const sideCards = document.querySelectorAll(".side-card");
+
+    articles.slice(1, 5).forEach((article, index) => {
+      const card = sideCards[index];
+
+      if (!card) return;
+
+      const title = card.querySelector("h4");
+      const category = card.querySelector("small");
+
+      if (title && article.titre) {
+        title.textContent = article.titre;
+      }
+
+      if (category && article.categorie) {
+        category.textContent = article.categorie;
+      }
+    });
+
+  } catch (error) {
+    console.error("Erreur Supabase :", error);
+  }
+}
+
+chargerArticles();
+  </script>
 <body>
 <div class="top"><span>Jeudi 10 septembre 2026 &nbsp;|&nbsp; Abidjan, Côte d’Ivoire</span><span>À propos &nbsp; | &nbsp; Contact &nbsp; | &nbsp; Newsletter &nbsp; | &nbsp; LinkedIn &nbsp; X</span></div>
 <header class="header">
