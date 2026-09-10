@@ -7,6 +7,10 @@
   <title>Administration — Le Financier Ivoirien</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -17,7 +21,7 @@
     header {
       background: #063f37;
       color: white;
-      padding: 25px;
+      padding: 25px 20px;
       text-align: center;
     }
 
@@ -27,8 +31,8 @@
     }
 
     main {
-      max-width: 800px;
-      margin: 40px auto;
+      max-width: 850px;
+      margin: 35px auto;
       padding: 0 20px;
     }
 
@@ -37,6 +41,11 @@
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 3px 15px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      font-family: Georgia, serif;
+      color: #063f37;
     }
 
     label {
@@ -54,11 +63,11 @@
       border: 1px solid #ccd5d1;
       border-radius: 5px;
       font-size: 15px;
-      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
 
     textarea {
-      min-height: 220px;
+      min-height: 240px;
       resize: vertical;
     }
 
@@ -71,107 +80,43 @@
       border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 15px;
     }
 
     button:hover {
       background: #0b6657;
     }
 
+    #loginBox {
+      max-width: 500px;
+      margin: 50px auto;
+    }
+
+    #adminBox {
+      display: none;
+    }
+
     .message {
       margin-top: 20px;
       padding: 15px;
-      display: none;
       border-radius: 5px;
+      display: none;
+    }
+
+    .logout {
+      background: #8b2020;
+      float: right;
+      margin-top: 0;
+      padding: 10px 15px;
+      font-size: 13px;
+    }
+
+    .clear {
+      clear: both;
     }
   </style>
 </head>
-<script>
-const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-const form = document.getElementById("articleForm");
-const message = document.getElementById("message");
-
-form.addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  message.style.display = "block";
-  message.textContent = "Publication en cours...";
-
-  try {
-    // 1. Connexion de l'administrateur
-    const email = prompt("Adresse e-mail administrateur :");
-    const password = prompt("Mot de passe administrateur :");
-
-    if (!email || !password) {
-      throw new Error("Connexion annulée.");
-    }
-
-    const loginResponse = await fetch(
-      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
-      {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      }
-    );
-
-    const loginData = await loginResponse.json();
-
-    if (!loginResponse.ok) {
-      throw new Error(loginData.error_description || "Connexion impossible.");
-    }
-
-    // 2. Récupération des données du formulaire
-    const article = {
-      titre: document.getElementById("titre").value,
-      categorie: document.getElementById("categorie").value,
-      auteur: document.getElementById("auteur").value,
-      image_url: document.getElementById("image_url").value,
-      contenu: document.getElementById("contenu").value
-    };
-
-    // 3. Enregistrement dans Supabase
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Articles`,
-      {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${loginData.access_token}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify(article)
-      }
-    );
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Impossible de publier l'article.");
-    }
-
-    message.textContent = "✅ Article publié avec succès !";
-    message.style.background = "#dff5e9";
-    message.style.color = "#12633d";
-
-    form.reset();
-
-  } catch (error) {
-    console.error(error);
-
-    message.textContent = "❌ " + error.message;
-    message.style.background = "#ffe3e3";
-    message.style.color = "#9b1c1c";
-  }
-});
-</script>
 <body>
 
 <header>
@@ -180,13 +125,55 @@ form.addEventListener("submit", async function(event) {
 </header>
 
 <main>
-  <div class="box">
+
+  <!-- CONNEXION -->
+  <div class="box" id="loginBox">
+
+    <h2>Connexion administrateur</h2>
+
+    <form id="loginForm">
+
+      <label for="email">Adresse e-mail</label>
+      <input
+        id="email"
+        type="email"
+        placeholder="Votre adresse e-mail"
+        required
+      >
+
+      <label for="password">Mot de passe</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Votre mot de passe"
+        required
+      >
+
+      <button type="submit">
+        Se connecter
+      </button>
+
+      <div id="loginMessage" class="message"></div>
+
+    </form>
+  </div>
+
+
+  <!-- ADMINISTRATION -->
+  <div class="box" id="adminBox">
+
+    <button class="logout" id="logoutButton">
+      Déconnexion
+    </button>
+
+    <div class="clear"></div>
 
     <h2>Publier un article</h2>
 
     <form id="articleForm">
 
       <label for="titre">Titre de l'article</label>
+
       <input
         id="titre"
         type="text"
@@ -194,20 +181,52 @@ form.addEventListener("submit", async function(event) {
         required
       >
 
+
       <label for="categorie">Catégorie</label>
+
       <select id="categorie" required>
-        <option value="">Choisir une catégorie</option>
-        <option>Marchés & Bourse</option>
-        <option>Banques & Finance</option>
-        <option>Entreprises</option>
-        <option>Économie ivoirienne</option>
-        <option>Afrique & International</option>
-        <option>Investissement</option>
-        <option>Portraits & Interviews</option>
-        <option>Actualités</option>
+
+        <option value="">
+          Choisir une catégorie
+        </option>
+
+        <option>
+          Marchés & Bourse
+        </option>
+
+        <option>
+          Banques & Finance
+        </option>
+
+        <option>
+          Entreprises
+        </option>
+
+        <option>
+          Économie ivoirienne
+        </option>
+
+        <option>
+          Afrique & International
+        </option>
+
+        <option>
+          Investissement
+        </option>
+
+        <option>
+          Portraits & Interviews
+        </option>
+
+        <option>
+          Actualités
+        </option>
+
       </select>
 
+
       <label for="auteur">Auteur</label>
+
       <input
         id="auteur"
         type="text"
@@ -215,30 +234,345 @@ form.addEventListener("submit", async function(event) {
         required
       >
 
+
       <label for="image_url">URL de l'image</label>
+
       <input
         id="image_url"
         type="url"
         placeholder="https://..."
       >
 
+
       <label for="contenu">Contenu de l'article</label>
+
       <textarea
         id="contenu"
         placeholder="Écrivez votre article ici..."
         required
       ></textarea>
 
+
       <button type="submit">
         Publier l'article
       </button>
 
-      <div id="message" class="message"></div>
+      <div id="articleMessage" class="message"></div>
 
     </form>
 
   </div>
+
 </main>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+
+
+/* =========================
+   ÉLÉMENTS
+========================= */
+
+const loginBox =
+  document.getElementById("loginBox");
+
+const adminBox =
+  document.getElementById("adminBox");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const articleForm =
+  document.getElementById("articleForm");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const articleMessage =
+  document.getElementById("articleMessage");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+
+/* =========================
+   AFFICHER UN MESSAGE
+========================= */
+
+function afficherMessage(element, texte, succes = false) {
+
+  element.style.display = "block";
+
+  element.textContent = texte;
+
+  if (succes) {
+
+    element.style.background = "#dff5e9";
+    element.style.color = "#12633d";
+
+  } else {
+
+    element.style.background = "#ffe3e3";
+    element.style.color = "#9b1c1c";
+
+  }
+}
+
+
+/* =========================
+   CONNEXION
+========================= */
+
+loginForm.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+  afficherMessage(
+    loginMessage,
+    "Connexion en cours...",
+    true
+  );
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+
+  try {
+
+    const response = await fetch(
+      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+      {
+        method: "POST",
+
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      }
+    );
+
+
+    const data = await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error_description ||
+        data.msg ||
+        "E-mail ou mot de passe incorrect."
+      );
+
+    }
+
+
+    sessionStorage.setItem(
+      "admin_access_token",
+      data.access_token
+    );
+
+
+    sessionStorage.setItem(
+      "admin_refresh_token",
+      data.refresh_token || ""
+    );
+
+
+    loginBox.style.display = "none";
+
+    adminBox.style.display = "block";
+
+    loginForm.reset();
+
+    loginMessage.style.display = "none";
+
+
+  } catch (error) {
+
+    afficherMessage(
+      loginMessage,
+      "❌ " + error.message
+    );
+
+  }
+
+});
+
+
+/* =========================
+   PUBLICATION
+========================= */
+
+articleForm.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+
+  const token =
+    sessionStorage.getItem("admin_access_token");
+
+
+  if (!token) {
+
+    afficherMessage(
+      articleMessage,
+      "❌ Vous devez être connecté."
+    );
+
+    return;
+
+  }
+
+
+  afficherMessage(
+    articleMessage,
+    "Publication en cours...",
+    true
+  );
+
+
+  const article = {
+
+    titre:
+      document.getElementById("titre").value.trim(),
+
+    categorie:
+      document.getElementById("categorie").value,
+
+    auteur:
+      document.getElementById("auteur").value.trim(),
+
+    image_url:
+      document.getElementById("image_url").value.trim(),
+
+    contenu:
+      document.getElementById("contenu").value.trim()
+
+  };
+
+
+  try {
+
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/Articles`,
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "apikey": SUPABASE_KEY,
+
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json",
+
+          "Prefer":
+            "return=representation"
+
+        },
+
+        body:
+          JSON.stringify(article)
+
+      }
+    );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.message ||
+        data.hint ||
+        "Impossible de publier l'article."
+      );
+
+    }
+
+
+    afficherMessage(
+      articleMessage,
+      "✅ Article publié avec succès !",
+      true
+    );
+
+
+    articleForm.reset();
+
+
+  } catch (error) {
+
+    afficherMessage(
+      articleMessage,
+      "❌ " + error.message
+    );
+
+  }
+
+});
+
+
+/* =========================
+   DÉCONNEXION
+========================= */
+
+logoutButton.addEventListener(
+  "click",
+  function() {
+
+    sessionStorage.removeItem(
+      "admin_access_token"
+    );
+
+    sessionStorage.removeItem(
+      "admin_refresh_token"
+    );
+
+    adminBox.style.display = "none";
+
+    loginBox.style.display = "block";
+
+  }
+);
+
+
+/* =========================
+   VÉRIFICATION AU CHARGEMENT
+========================= */
+
+const token =
+  sessionStorage.getItem("admin_access_token");
+
+
+if (token) {
+
+  loginBox.style.display = "none";
+
+  adminBox.style.display = "block";
+
+}
+
+</script>
 
 </body>
 </html>
