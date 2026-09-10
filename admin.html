@@ -266,74 +266,61 @@
 </main>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-const SUPABASE_URL =
-  "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-const SUPABASE_KEY =
-  "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+const loginBox = document.getElementById("loginBox");
+const adminBox = document.getElementById("adminBox");
 
+const loginForm = document.getElementById("loginForm");
+const articleForm = document.getElementById("articleForm");
 
-/* =========================
-   ÉLÉMENTS
-========================= */
+const loginMessage = document.getElementById("loginMessage");
+const articleMessage = document.getElementById("articleMessage");
 
-const loginBox =
-  document.getElementById("loginBox");
-
-const adminBox =
-  document.getElementById("adminBox");
-
-const loginForm =
-  document.getElementById("loginForm");
-
-const articleForm =
-  document.getElementById("articleForm");
-
-const loginMessage =
-  document.getElementById("loginMessage");
-
-const articleMessage =
-  document.getElementById("articleMessage");
-
-const logoutButton =
-  document.getElementById("logoutButton");
+const logoutButton = document.getElementById("logoutButton");
 
 
-/* =========================
-   AFFICHER UN MESSAGE
-========================= */
-
-function afficherMessage(element, texte, succes = false) {
-
+function message(element, texte, success = false) {
   element.style.display = "block";
-
   element.textContent = texte;
 
-  if (succes) {
+  element.style.background = success ? "#dff5e9" : "#ffe3e3";
+  element.style.color = success ? "#12633d" : "#9b1c1c";
+}
 
-    element.style.background = "#dff5e9";
-    element.style.color = "#12633d";
 
+/* Vérifier la connexion existante */
+
+async function verifierConnexion() {
+
+  const { data } = await supabaseClient.auth.getSession();
+
+  if (data.session) {
+    loginBox.style.display = "none";
+    adminBox.style.display = "block";
   } else {
-
-    element.style.background = "#ffe3e3";
-    element.style.color = "#9b1c1c";
-
+    loginBox.style.display = "block";
+    adminBox.style.display = "none";
   }
 }
 
 
-/* =========================
-   CONNEXION
-========================= */
+/* Connexion */
 
 loginForm.addEventListener("submit", async function(event) {
 
   event.preventDefault();
 
-  afficherMessage(
+  message(
     loginMessage,
     "Connexion en cours...",
     true
@@ -346,103 +333,64 @@ loginForm.addEventListener("submit", async function(event) {
     document.getElementById("password").value;
 
 
-  try {
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    const response = await fetch(
-      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
-      {
-        method: "POST",
 
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
+  if (error) {
 
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      }
+    message(
+      loginMessage,
+      "❌ " + error.message
     );
 
-
-    const data = await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error_description ||
-        data.msg ||
-        "E-mail ou mot de passe incorrect."
-      );
-
-    }
+    return;
+  }
 
 
-    sessionStorage.setItem(
-      "admin_access_token",
-      data.access_token
-    );
-
-
-    sessionStorage.setItem(
-      "admin_refresh_token",
-      data.refresh_token || ""
-    );
-
+  if (data.session) {
 
     loginBox.style.display = "none";
-
     adminBox.style.display = "block";
 
     loginForm.reset();
 
     loginMessage.style.display = "none";
-
-
-  } catch (error) {
-
-    afficherMessage(
-      loginMessage,
-      "❌ " + error.message
-    );
-
   }
 
 });
 
 
-/* =========================
-   PUBLICATION
-========================= */
+/* Publication */
 
 articleForm.addEventListener("submit", async function(event) {
 
   event.preventDefault();
 
+  message(
+    articleMessage,
+    "Publication en cours...",
+    true
+  );
 
-  const token =
-    sessionStorage.getItem("admin_access_token");
+
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
 
 
-  if (!token) {
+  if (!session) {
 
-    afficherMessage(
+    message(
       articleMessage,
       "❌ Vous devez être connecté."
     );
 
     return;
-
   }
-
-
-  afficherMessage(
-    articleMessage,
-    "Publication en cours...",
-    true
-  );
 
 
   const article = {
@@ -465,112 +413,53 @@ articleForm.addEventListener("submit", async function(event) {
   };
 
 
-  try {
-
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Articles`,
-      {
-
-        method: "POST",
-
-        headers: {
-
-          "apikey": SUPABASE_KEY,
-
-          "Authorization":
-            `Bearer ${token}`,
-
-          "Content-Type":
-            "application/json",
-
-          "Prefer":
-            "return=representation"
-
-        },
-
-        body:
-          JSON.stringify(article)
-
-      }
-    );
+  const { data, error } =
+    await supabaseClient
+      .from("Articles")
+      .insert([article])
+      .select();
 
 
-    const data =
-      await response.json();
+  if (error) {
 
+    console.error(error);
 
-    if (!response.ok) {
-
-      throw new Error(
-        data.message ||
-        data.hint ||
-        "Impossible de publier l'article."
-      );
-
-    }
-
-
-    afficherMessage(
-      articleMessage,
-      "✅ Article publié avec succès !",
-      true
-    );
-
-
-    articleForm.reset();
-
-
-  } catch (error) {
-
-    afficherMessage(
+    message(
       articleMessage,
       "❌ " + error.message
     );
 
+    return;
   }
+
+
+  message(
+    articleMessage,
+    "✅ Article publié avec succès !",
+    true
+  );
+
+
+  articleForm.reset();
 
 });
 
 
-/* =========================
-   DÉCONNEXION
-========================= */
+/* Déconnexion */
 
-logoutButton.addEventListener(
-  "click",
-  function() {
+logoutButton.addEventListener("click", async function() {
 
-    sessionStorage.removeItem(
-      "admin_access_token"
-    );
+  await supabaseClient.auth.signOut();
 
-    sessionStorage.removeItem(
-      "admin_refresh_token"
-    );
+  adminBox.style.display = "none";
+  loginBox.style.display = "block";
 
-    adminBox.style.display = "none";
-
-    loginBox.style.display = "block";
-
-  }
-);
+});
 
 
-/* =========================
-   VÉRIFICATION AU CHARGEMENT
-========================= */
+/* Lancement */
 
-const token =
-  sessionStorage.getItem("admin_access_token");
-
-
-if (token) {
-
-  loginBox.style.display = "none";
-
-  adminBox.style.display = "block";
-
-}
+verifierConnexion();
 
 </script>
 
