@@ -85,7 +85,93 @@
     }
   </style>
 </head>
+<script>
+const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
+const form = document.getElementById("articleForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  message.style.display = "block";
+  message.textContent = "Publication en cours...";
+
+  try {
+    // 1. Connexion de l'administrateur
+    const email = prompt("Adresse e-mail administrateur :");
+    const password = prompt("Mot de passe administrateur :");
+
+    if (!email || !password) {
+      throw new Error("Connexion annulée.");
+    }
+
+    const loginResponse = await fetch(
+      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      }
+    );
+
+    const loginData = await loginResponse.json();
+
+    if (!loginResponse.ok) {
+      throw new Error(loginData.error_description || "Connexion impossible.");
+    }
+
+    // 2. Récupération des données du formulaire
+    const article = {
+      titre: document.getElementById("titre").value,
+      categorie: document.getElementById("categorie").value,
+      auteur: document.getElementById("auteur").value,
+      image_url: document.getElementById("image_url").value,
+      contenu: document.getElementById("contenu").value
+    };
+
+    // 3. Enregistrement dans Supabase
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/Articles`,
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${loginData.access_token}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(article)
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Impossible de publier l'article.");
+    }
+
+    message.textContent = "✅ Article publié avec succès !";
+    message.style.background = "#dff5e9";
+    message.style.color = "#12633d";
+
+    form.reset();
+
+  } catch (error) {
+    console.error(error);
+
+    message.textContent = "❌ " + error.message;
+    message.style.background = "#ffe3e3";
+    message.style.color = "#9b1c1c";
+  }
+});
+</script>
 <body>
 
 <header>
