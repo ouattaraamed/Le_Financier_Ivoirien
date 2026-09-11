@@ -29,19 +29,24 @@ export default async function handler(req, res) {
       return res.status(404).send("Article introuvable");
     }
 
-    const titre =
-      article.titre || "Le Financier Ivoirien";
+    const titre = article.titre || "Le Financier Ivoirien";
 
-    const description =
-      (article.contenu || "L’information financière qui compte.")
-        .replace(/"/g, "&quot;")
-        .substring(0, 200);
+    const description = (
+      article.contenu ||
+      "L’information financière qui compte."
+    )
+      .replace(/<[^>]*>/g, "")
+      .replace(/"/g, "&quot;")
+      .substring(0, 200);
 
     const image =
       article.image_url ||
       "https://le-financier-ivoirien.vercel.app/og-image.png";
 
-    const url =
+    const articleUrl =
+      `https://le-financier-ivoirien.vercel.app/article?id=${encodeURIComponent(id)}`;
+
+    const siteUrl =
       `https://le-financier-ivoirien.vercel.app/?article=${encodeURIComponent(id)}`;
 
     const html = `
@@ -57,7 +62,7 @@ export default async function handler(req, res) {
   <meta property="og:title" content="${titre}">
   <meta property="og:description" content="${description}">
   <meta property="og:image" content="${image}">
-  <meta property="og:url" content="${url}">
+  <meta property="og:url" content="${articleUrl}">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Le Financier Ivoirien">
 
@@ -66,7 +71,7 @@ export default async function handler(req, res) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${image}">
 
-  <meta http-equiv="refresh" content="0;url=${url}">
+  <meta http-equiv="refresh" content="0;url=${siteUrl}">
 </head>
 
 <body>
@@ -76,6 +81,8 @@ export default async function handler(req, res) {
 `;
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=60");
+
     return res.status(200).send(html);
 
   } catch (error) {
