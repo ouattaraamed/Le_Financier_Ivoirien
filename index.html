@@ -751,10 +751,7 @@
   </style>
 </head>
 
-
 <body>
-
-  <!-- TOP BAR -->
 
   <div class="top">
 
@@ -770,9 +767,6 @@
     </span>
 
   </div>
-
-
-  <!-- HEADER -->
 
   <header class="header">
 
@@ -792,7 +786,6 @@
 
     </a>
 
-
     <div class="header-claim">
 
       Comprendre les marchés.<br>
@@ -802,7 +795,6 @@
 
   </header>
 
-
   <!-- NAVIGATION -->
 
   <nav class="nav">
@@ -811,8 +803,10 @@
       Accueil
     </a>
 
+    <!-- LIEN BRVM : VRAI LIEN VERS LA PAGE BRVM -->
+
     <a href="brvm.html" class="nav-link">
-  Marchés & Bourse
+      Marchés & Bourse
     </a>
 
     <a href="#" class="nav-link" data-category="Banques & Finance">
@@ -849,7 +843,6 @@
 
   </nav>
 
-
   <!-- RECHERCHE -->
 
   <div class="search-box" id="searchBox">
@@ -861,7 +854,6 @@
     >
 
   </div>
-
 
   <!-- FLASH -->
 
@@ -876,7 +868,6 @@
     </div>
 
   </div>
-
 
   <main id="mainContent">
 
@@ -908,7 +899,6 @@
 
       </article>
 
-
       <!-- À LA UNE -->
 
       <aside class="side">
@@ -925,7 +915,6 @@
 
         </div>
 
-
         <div id="sideArticles">
 
           <div class="empty">
@@ -937,7 +926,6 @@
       </aside>
 
     </section>
-
 
     <!-- MARCHÉS -->
 
@@ -983,7 +971,6 @@
 
     </section>
 
-
     <!-- DERNIERS ARTICLES -->
 
     <section class="articles-section">
@@ -1003,7 +990,6 @@
 
       </div>
 
-
       <div
         class="articles-grid"
         id="articlesGrid"
@@ -1016,7 +1002,6 @@
       </div>
 
     </section>
-
 
     <!-- NEWSLETTER -->
 
@@ -1031,9 +1016,7 @@
         directement dans votre boîte mail.
       </p>
 
-      <form
-        id="newsletterForm"
-      >
+      <form id="newsletterForm">
 
         <input
           type="email"
@@ -1048,7 +1031,6 @@
       </form>
 
     </section>
-
 
     <!-- BANNER -->
 
@@ -1076,7 +1058,6 @@
 
   </main>
 
-
   <!-- FOOTER -->
 
   <footer>
@@ -1094,7 +1075,6 @@
         </p>
 
       </div>
-
 
       <div>
 
@@ -1120,15 +1100,16 @@
 
       </div>
 
-
       <div>
 
         <h4>
           Catégories
         </h4>
 
-        <a href="brvm.html" class="nav-link">
-  Marchés & Bourse
+        <!-- LIEN BRVM DU FOOTER -->
+
+        <a href="brvm.html">
+          Marchés & Bourse
         </a>
 
         <a href="#" data-category-footer="Banques & Finance">
@@ -1148,7 +1129,6 @@
         </a>
 
       </div>
-
 
       <div>
 
@@ -1180,7 +1160,6 @@
 
     </div>
 
-
     <div class="copy">
 
       © 2026 Le Financier Ivoirien.
@@ -1189,7 +1168,6 @@
     </div>
 
   </footer>
-
 
   <!-- SUPABASE -->
 
@@ -1201,11 +1179,9 @@
     const SUPABASE_KEY =
       "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-
     let articles = [];
 
     let categorieActuelle = "all";
-
 
     /* DATE */
 
@@ -1226,7 +1202,6 @@
 
     }
 
-
     /* FORMAT DATE */
 
     function formatDate(date) {
@@ -1246,7 +1221,6 @@
 
     }
 
-
     /* EXTRAIT */
 
     function extrait(texte, longueur = 170) {
@@ -1263,7 +1237,6 @@
 
     }
 
-
     /* IMAGE */
 
     function appliquerImage(element, url) {
@@ -1276,7 +1249,6 @@
         `url("${url}")`;
 
     }
-
 
     /* CHARGEMENT SUPABASE */
 
@@ -1296,7 +1268,6 @@
             }
           );
 
-
         if (!response.ok) {
 
           throw new Error(
@@ -1305,12 +1276,12 @@
 
         }
 
-
         articles =
           await response.json();
 
-
         afficherAccueil();
+
+        ouvrirArticleDepuisURL();
 
       } catch (error) {
 
@@ -1327,7 +1298,6 @@
 
     }
 
-
     /* AFFICHAGE ACCUEIL */
 
     function afficherAccueil() {
@@ -1342,7 +1312,6 @@
 
     }
 
-
     /* ARTICLE PRINCIPAL */
 
     function afficherHero() {
@@ -1354,7 +1323,6 @@
 
       const article =
         articles[0];
-
 
       if (!article) {
 
@@ -1377,30 +1345,25 @@
 
       }
 
-
       document.getElementById(
         "heroTitle"
       ).textContent =
         article.titre || "Sans titre";
-
 
       document.getElementById(
         "heroText"
       ).textContent =
         extrait(article.contenu, 230);
 
-
       document.getElementById(
         "heroCategory"
       ).textContent =
         article.categorie || "Actualités";
 
-
       document.getElementById(
         "heroMeta"
       ).textContent =
         `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
-
 
       if (article.image_url) {
 
@@ -1413,12 +1376,10 @@
 
       }
 
-
       hero.onclick =
         () => afficherArticle(article);
 
     }
-
 
     /* À LA UNE */
 
@@ -1429,19 +1390,15 @@
           "sideArticles"
         );
 
-
       const selection =
         articles.slice(1, 5);
-
 
       document.getElementById(
         "sideCount"
       ).textContent =
         `${selection.length} article${selection.length > 1 ? "s" : ""}`;
 
-
       container.innerHTML = "";
-
 
       if (!selection.length) {
 
@@ -1454,7 +1411,6 @@
 
       }
 
-
       selection.forEach(article => {
 
         const card =
@@ -1463,13 +1419,11 @@
         card.className =
           "side-card";
 
-
         const thumb =
           document.createElement("div");
 
         thumb.className =
           "thumb";
-
 
         if (article.image_url) {
 
@@ -1480,10 +1434,8 @@
 
         }
 
-
         const content =
           document.createElement("div");
-
 
         const category =
           document.createElement("small");
@@ -1491,13 +1443,11 @@
         category.textContent =
           article.categorie || "Actualités";
 
-
         const title =
           document.createElement("h4");
 
         title.textContent =
           article.titre || "Sans titre";
-
 
         const date =
           document.createElement("small");
@@ -1505,29 +1455,24 @@
         date.textContent =
           formatDate(article.created_at);
 
-
         content.appendChild(category);
 
         content.appendChild(title);
 
         content.appendChild(date);
 
-
         card.appendChild(thumb);
 
         card.appendChild(content);
 
-
         card.onclick =
           () => afficherArticle(article);
-
 
         container.appendChild(card);
 
       });
 
     }
-
 
     /* ARTICLES */
 
@@ -1540,18 +1485,15 @@
           "articlesGrid"
         );
 
-
       const titre =
         document.getElementById(
           "articlesTitle"
         );
 
-
       const count =
         document.getElementById(
           "articlesCount"
         );
-
 
       if (categorieActuelle === "all") {
 
@@ -1565,13 +1507,10 @@
 
       }
 
-
       count.textContent =
         `${liste.length} article${liste.length > 1 ? "s" : ""}`;
 
-
       grid.innerHTML = "";
-
 
       if (!liste.length) {
 
@@ -1584,7 +1523,6 @@
 
       }
 
-
       liste.forEach(article => {
 
         const card =
@@ -1593,13 +1531,11 @@
         card.className =
           "article-card";
 
-
         const image =
           document.createElement("div");
 
         image.className =
           "article-image";
-
 
         if (article.image_url) {
 
@@ -1610,13 +1546,11 @@
 
         }
 
-
         const body =
           document.createElement("div");
 
         body.className =
           "article-body";
-
 
         const category =
           document.createElement("div");
@@ -1627,20 +1561,17 @@
         category.textContent =
           article.categorie || "Actualités";
 
-
         const title =
           document.createElement("h3");
 
         title.textContent =
           article.titre || "Sans titre";
 
-
         const text =
           document.createElement("p");
 
         text.textContent =
           extrait(article.contenu);
-
 
         const date =
           document.createElement("div");
@@ -1651,7 +1582,6 @@
         date.textContent =
           `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
 
-
         body.appendChild(category);
 
         body.appendChild(title);
@@ -1660,22 +1590,18 @@
 
         body.appendChild(date);
 
-
         card.appendChild(image);
 
         card.appendChild(body);
 
-
         card.onclick =
           () => afficherArticle(article);
-
 
         grid.appendChild(card);
 
       });
 
     }
-
 
     /* FLASH */
 
@@ -1686,7 +1612,6 @@
           "flashText"
         );
 
-
       if (!articles.length) {
 
         flash.textContent =
@@ -1696,9 +1621,7 @@
 
       }
 
-
       flash.innerHTML = "";
-
 
       const bold =
         document.createElement("b");
@@ -1708,9 +1631,7 @@
         ? articles[0].categorie + " : "
         : "";
 
-
       flash.appendChild(bold);
-
 
       flash.appendChild(
         document.createTextNode(
@@ -1719,7 +1640,6 @@
       );
 
     }
-
 
     /* AFFICHER ARTICLE */
 
@@ -1732,7 +1652,6 @@
         return;
       }
 
-
       if (changerURL) {
 
         history.pushState(
@@ -1743,22 +1662,18 @@
 
       }
 
-
       const main =
         document.getElementById(
           "mainContent"
         );
 
-
       main.style.display =
         "none";
-
 
       let detail =
         document.getElementById(
           "article-detail"
         );
-
 
       if (!detail) {
 
@@ -1775,10 +1690,8 @@
 
       }
 
-
       detail.innerHTML =
         "";
-
 
       const back =
         document.createElement("button");
@@ -1788,7 +1701,6 @@
 
       back.textContent =
         "← Retour aux actualités";
-
 
       back.onclick =
         function() {
@@ -1811,9 +1723,7 @@
 
         };
 
-
       detail.appendChild(back);
-
 
       const category =
         document.createElement("div");
@@ -1824,9 +1734,7 @@
       category.textContent =
         article.categorie || "Actualités";
 
-
       detail.appendChild(category);
-
 
       const title =
         document.createElement("h1");
@@ -1837,9 +1745,7 @@
       title.textContent =
         article.titre || "Sans titre";
 
-
       detail.appendChild(title);
-
 
       const meta =
         document.createElement("div");
@@ -1850,9 +1756,7 @@
       meta.textContent =
         `Par ${article.auteur || "Le Financier Ivoirien"} • ${formatDate(article.created_at)}`;
 
-
       detail.appendChild(meta);
-
 
       if (article.image_url) {
 
@@ -1868,11 +1772,9 @@
         image.alt =
           article.titre || "";
 
-
         detail.appendChild(image);
 
       }
-
 
       const content =
         document.createElement("div");
@@ -1883,9 +1785,7 @@
       content.textContent =
         article.contenu || "";
 
-
       detail.appendChild(content);
-
 
       window.scrollTo(
         {
@@ -1896,7 +1796,6 @@
 
     }
 
-
     /* CATÉGORIE */
 
     function filtrerCategorie(
@@ -1906,9 +1805,8 @@
       categorieActuelle =
         categorie;
 
-
       document
-        .querySelectorAll(".nav-link")
+        .querySelectorAll(".nav-link[data-category]")
         .forEach(link => {
 
           link.classList.toggle(
@@ -1917,7 +1815,6 @@
           );
 
         });
-
 
       if (categorie === "all") {
 
@@ -1934,7 +1831,6 @@
 
       }
 
-
       const resultat =
         articles.filter(
           article =>
@@ -1943,11 +1839,9 @@
               === categorie.toLowerCase()
         );
 
-
       afficherArticles(
         resultat
       );
-
 
       document
         .querySelector(".articles-section")
@@ -1957,11 +1851,10 @@
 
     }
 
-
     /* NAVIGATION */
 
     document
-      .querySelectorAll(".nav-link")
+      .querySelectorAll(".nav-link[data-category]")
       .forEach(link => {
 
         link.addEventListener(
@@ -1979,6 +1872,12 @@
 
       });
 
+    /*
+      IMPORTANT :
+      Les liens sans data-category, notamment brvm.html,
+      ne sont PAS interceptés par le JavaScript.
+      Le navigateur peut donc ouvrir normalement brvm.html.
+    */
 
     /* FOOTER CATÉGORIES */
 
@@ -2002,7 +1901,6 @@
         );
 
       });
-
 
     /* ACCUEIL */
 
@@ -2031,7 +1929,6 @@
         }
       );
 
-
     /* RECHERCHE */
 
     document
@@ -2057,7 +1954,6 @@
         }
       );
 
-
     document
       .getElementById(
         "searchInput"
@@ -2070,7 +1966,6 @@
             this.value
               .trim()
               .toLowerCase();
-
 
           if (!terme) {
 
@@ -2089,7 +1984,6 @@
 
           }
 
-
           const resultat =
             articles.filter(
               article => {
@@ -2106,7 +2000,6 @@
                   (article.categorie || "")
                     .toLowerCase();
 
-
                 return (
                   titre.includes(terme) ||
                   contenu.includes(terme) ||
@@ -2116,10 +2009,8 @@
               }
             );
 
-
           categorieActuelle =
             "all";
-
 
           afficherArticles(
             resultat
@@ -2127,7 +2018,6 @@
 
         }
       );
-
 
     /* NEWSLETTER */
 
@@ -2150,7 +2040,6 @@
         }
       );
 
-
     /* URL ARTICLE */
 
     function ouvrirArticleDepuisURL() {
@@ -2160,11 +2049,9 @@
           window.location.search
         ).get("article");
 
-
       if (!id) {
         return;
       }
-
 
       const article =
         articles.find(
@@ -2172,7 +2059,6 @@
             String(item.id)
             === String(id)
         );
-
 
       if (article) {
 
@@ -2185,7 +2071,6 @@
 
     }
 
-
     /* RETOUR NAVIGATEUR */
 
     window.addEventListener(
@@ -2197,7 +2082,6 @@
             window.location.search
           ).get("article");
 
-
         const detail =
           document.getElementById(
             "article-detail"
@@ -2207,7 +2091,6 @@
           document.getElementById(
             "mainContent"
           );
-
 
         if (!id) {
 
@@ -2228,7 +2111,6 @@
       }
     );
 
-
     /* LANCEMENT */
 
     document.addEventListener(
@@ -2245,4 +2127,4 @@
   </script>
 
 </body>
-</html>
+  </html>
