@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Économie — Le Financier Ivoirien</title>
+
+  <meta
+    name="description"
+    content="Actualités, analyses et décryptages de l'économie ivoirienne et ouest-africaine."
+  >
+
+  <style>
+    :root {
+      --green: #063f37;
+      --green2: #0b6657;
+      --gold: #e9b83f;
+      --paper: #f7f7f3;
+      --white: #ffffff;
+      --black: #111111;
+      --muted: #6d746f;
+      --line: #dfe3df;
+      --red: #d92f35;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--paper);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      background: var(--green);
+      color: white;
+      padding: 8px 5%;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 22px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .brand {
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    nav {
+      background: var(--green);
+      color: white;
+    }
+
+    .nav-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 0 5%;
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 14px 13px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--green2);
+      color: var(--gold);
+    }
+
+    .ticker {
+      background: #111;
+      color: white;
+      padding: 9px 5%;
+      font-size: 13px;
+    }
+
+    .ticker strong {
+      color: var(--gold);
+    }
+
+    main {
+      max-width: 1250px;
+      margin: auto;
+      padding: 45px 5%;
+    }
+
+    .page-heading {
+      margin-bottom: 35px;
+    }
+
+    .eyebrow {
+      color: var(--green2);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 46px;
+      line-height: 1.1;
+      margin: 0 0 12px;
+      color: var(--green);
+    }
+
+    .intro {
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .featured {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 25px;
+      margin-bottom: 45px;
+    }
+
+    .featured-main {
+      background: var(--green);
+      color: white;
+      min-height: 350px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 4px;
+    }
+
+    .featured-main .category {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .featured-main h2 {
+      font-family: Georgia, serif;
+      font-size: 34px;
+      line-height: 1.15;
+      margin: 0 0 12px;
+    }
+
+    .featured-main p {
+      color: #dce7e4;
+      margin: 0;
+    }
+
+    .side-news {
+      display: grid;
+      gap: 15px;
+    }
+
+    .news-item {
+      background: white;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--gold);
+    }
+
+    .news-item .category {
+      color: var(--green2);
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .news-item h3 {
+      font-family: Georgia, serif;
+      font-size: 20px;
+      line-height: 1.25;
+      margin: 7px 0;
+    }
+
+    .news-item p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 28px;
+      color: var(--green);
+    }
+
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .article-card {
+      background: white;
+      border: 1px solid var(--line);
+      padding: 22px;
+      transition: transform .2s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .article-card .category {
+      color: var(--green2);
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .article-card h3 {
+      font-family: Georgia, serif;
+      font-size: 21px;
+      line-height: 1.25;
+      margin: 8px 0;
+    }
+
+    .article-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .domains {
+      margin-top: 50px;
+    }
+
+    .domain-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .domain {
+      background: var(--green);
+      color: white;
+      padding: 25px 20px;
+      min-height: 130px;
+      border-radius: 3px;
+    }
+
+    .domain strong {
+      color: var(--gold);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .domain h3 {
+      margin: 8px 0 0;
+      font-family: Georgia, serif;
+      font-size: 21px;
+    }
+
+    .education {
+      margin-top: 50px;
+      background: white;
+      padding: 30px;
+      border: 1px solid var(--line);
+    }
+
+    .education-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .education-card {
+      border-top: 3px solid var(--gold);
+      padding-top: 15px;
+    }
+
+    .education-card h3 {
+      font-family: Georgia, serif;
+      color: var(--green);
+      margin: 0 0 8px;
+    }
+
+    .education-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .info {
+      margin-top: 45px;
+      background: #edf1ed;
+      border-left: 5px solid var(--green2);
+      padding: 25px;
+    }
+
+    .info strong {
+      color: var(--green);
+    }
+
+    footer {
+      background: var(--green);
+      color: white;
+      margin-top: 50px;
+    }
+
+    .footer-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 40px 5%;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 35px;
+    }
+
+    footer h3 {
+      font-family: Georgia, serif;
+      color: var(--gold);
+      margin-top: 0;
+    }
+
+    footer p,
+    footer a {
+      color: #dce7e4;
+      font-size: 14px;
+    }
+
+    footer a {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .copyright {
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding: 15px 5%;
+      text-align: center;
+      color: #bfcac6;
+      font-size: 12px;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed var(--line);
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 900px) {
+      .featured {
+        grid-template-columns: 1fr;
+      }
+
+      .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .domain-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .education-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 36px;
+      }
+
+      .articles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .domain-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .featured-main {
+        padding: 25px;
+      }
+
+      .featured-main h2 {
+        font-size: 27px;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div>Le Financier Ivoirien</div>
+    <div>L'information financière qui compte.</div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="brand">Le Financier <span>Ivoirien</span></div>
+        <div class="tagline">Économie • Finance • Entreprises • Marchés</div>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+
+      <a href="index.html" class="nav-link">
+        Accueil
+      </a>
+
+      <a href="brvm.html" class="nav-link">
+        Marchés & Bourse
+      </a>
+
+      <a href="banques.html" class="nav-link">
+        Banques & Finance
+      </a>
+
+      <a href="entreprises.html" class="nav-link">
+        Entreprises
+      </a>
+
+      <a href="economie.html" class="nav-link active">
+        Économie
+      </a>
+
+      <a href="index.html" class="nav-link" data-category="Afrique & International">
+        Afrique & International
+      </a>
+
+      <a href="index.html" class="nav-link" data-category="Éducation financière">
+        Éducation financière
+      </a>
+
+    </div>
+  </nav>
+
+  <div class="ticker">
+    <strong>ÉCONOMIE</strong>
+    &nbsp; Analyses économiques, indicateurs, politiques publiques et développement.
+  </div>
+
+  <main>
+
+    <section class="page-heading">
+      <div class="eyebrow">Le Financier Ivoirien</div>
+
+      <h1>Économie</h1>
+
+      <p class="intro">
+        Retrouvez l'essentiel de l'actualité économique ivoirienne,
+        les grandes tendances de l'UEMOA et les analyses qui permettent
+        de mieux comprendre l'économie.
+      </p>
+    </section>
+
+    <section class="featured">
+
+      <div id="featuredArticle" class="featured-main">
+        <div class="category">Économie</div>
+
+        <h2>
+          L'actualité économique ivoirienne
+        </h2>
+
+        <p>
+          Les principales informations et analyses économiques
+          publiées par Le Financier Ivoirien.
+        </p>
+      </div>
+
+      <div id="sideNews" class="side-news">
+        <div class="news-item">
+          <div class="category">Économie</div>
+          <h3>Les dernières actualités économiques</h3>
+          <p>Chargement des articles...</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section>
+
+      <div class="section-title">
+        <h2>Dernières actualités</h2>
+      </div>
+
+      <div id="articlesGrid" class="articles-grid">
+        <div class="empty">
+          Chargement des actualités économiques...
+        </div>
+      </div>
+
+    </section>
+
+    <section class="domains">
+
+      <div class="section-title">
+        <h2>Les grands dossiers économiques</h2>
+      </div>
+
+      <div class="domain-grid">
+
+        <div class="domain">
+          <strong>01</strong>
+          <h3>Croissance & PIB</h3>
+        </div>
+
+        <div class="domain">
+          <strong>02</strong>
+          <h3>Inflation & Prix</h3>
+        </div>
+
+        <div class="domain">
+          <strong>03</strong>
+          <h3>Emploi & Développement</h3>
+        </div>
+
+        <div class="domain">
+          <strong>04</strong>
+          <h3>Finances publiques</h3>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="education">
+
+      <div class="section-title">
+        <h2>Comprendre l'économie</h2>
+      </div>
+
+      <div class="education-grid">
+
+        <div class="education-card">
+          <h3>Le PIB</h3>
+          <p>
+            Comprendre ce que mesure le produit intérieur brut
+            et pourquoi il est important pour l'économie.
+          </p>
+        </div>
+
+        <div class="education-card">
+          <h3>L'inflation</h3>
+          <p>
+            Comprendre l'évolution générale des prix et
+            ses conséquences pour les ménages et les entreprises.
+          </p>
+        </div>
+
+        <div class="education-card">
+          <h3>La dette publique</h3>
+          <p>
+            Comprendre pourquoi les États empruntent et
+            comment leur dette est financée.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="info">
+
+      <strong>Notre approche</strong>
+
+      <p>
+        Le Financier Ivoirien souhaite proposer une information économique
+        accessible, rigoureuse et utile aux étudiants, professionnels,
+        investisseurs, entrepreneurs et décideurs.
+      </p>
+
+    </section>
+
+  </main>
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <div>
+        <h3>Le Financier Ivoirien</h3>
+
+        <p>
+          L'information financière qui compte.
+        </p>
+
+        <p>
+          Actualité économique, finance, entreprises,
+          marchés et éducation financière.
+        </p>
+      </div>
+
+      <div>
+        <h3>Rubriques</h3>
+
+        <a href="index.html">Accueil</a>
+        <a href="brvm.html">Marchés & Bourse</a>
+        <a href="banques.html">Banques & Finance</a>
+        <a href="entreprises.html">Entreprises</a>
+        <a href="economie.html">Économie</a>
+      </div>
+
+      <div>
+        <h3>Le média</h3>
+
+        <a href="index.html">À propos</a>
+        <a href="index.html">Contact</a>
+        <a href="index.html">Newsletter</a>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2026 Le Financier Ivoirien — Tous droits réservés.
+    </div>
+
+  </footer>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://xjwimhgdqcaqqadhhtnz.supabase.co";
+
+    const SUPABASE_KEY =
+      "TON_MEME_PUBLISHABLE_KEY";
+
+    const API_URL =
+      `${SUPABASE_URL}/rest/v1/Articles?select=*&categorie=eq.Économie&order=created_at.desc&limit=20`;
+
+    const headers = {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    };
+
+
+    function escapeHtml(text) {
+
+      if (!text) return "";
+
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    function resume(text, length = 150) {
+
+      if (!text) return "";
+
+      const clean = text.replace(/\s+/g, " ").trim();
+
+      if (clean.length <= length) {
+        return clean;
+      }
+
+      return clean.substring(0, length) + "...";
+
+    }
+
+
+    function ouvrirArticle(id) {
+
+      window.location.href =
+        `index.html?article=${encodeURIComponent(id)}`;
+
+    }
+
+
+    async function chargerArticles() {
+
+      const featured =
+        document.getElementById("featuredArticle");
+
+      const sideNews =
+        document.getElementById("sideNews");
+
+      const grid =
+        document.getElementById("articlesGrid");
+
+
+      try {
+
+        const response =
+          await fetch(API_URL, {
+            headers
+          });
+
+
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement.");
+        }
+
+
+        const articles =
+          await response.json();
+
+
+        if (!articles.length) {
+
+          featured.innerHTML = `
+            <div class="category">Économie</div>
+
+            <h2>
+              Aucun article économique pour le moment
+            </h2>
+
+            <p>
+              Les prochaines actualités économiques apparaîtront ici.
+            </p>
+          `;
+
+          sideNews.innerHTML = "";
+
+          grid.innerHTML = `
+            <div class="empty">
+              Aucun article dans la catégorie « Économie » pour le moment.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        const premier =
+          articles[0];
+
+
+        featured.innerHTML = `
+
+          <div class="category">
+            ${escapeHtml(premier.categorie || "Économie")}
+          </div>
+
+          <h2>
+            ${escapeHtml(premier.titre)}
+          </h2>
+
+          <p>
+            ${escapeHtml(resume(premier.contenu, 220))}
+          </p>
+
+          <div style="margin-top:20px;">
+            <button
+              onclick="ouvrirArticle('${escapeHtml(premier.id)}')"
+              style="
+                border:0;
+                background:#e9b83f;
+                color:#111;
+                padding:11px 18px;
+                font-weight:bold;
+                cursor:pointer;
+              "
+            >
+              Lire l'article
+            </button>
+          </div>
+
+        `;
+
+
+        const secondaires =
+          articles.slice(1, 4);
+
+
+        sideNews.innerHTML =
+          secondaires.length
+            ? secondaires.map(article => `
+
+              <a
+                href="index.html?article=${encodeURIComponent(article.id)}"
+                class="news-item"
+              >
+
+                <div class="category">
+                  ${escapeHtml(article.categorie || "Économie")}
+                </div>
+
+                <h3>
+                  ${escapeHtml(article.titre)}
+                </h3>
+
+                <p>
+                  ${escapeHtml(resume(article.contenu, 100))}
+                </p>
+
+              </a>
+
+            `).join("")
+            : "";
+
+
+        grid.innerHTML =
+          articles.map(article => `
+
+            <a
+              href="index.html?article=${encodeURIComponent(article.id)}"
+              class="article-card"
+            >
+
+              <div class="category">
+                ${escapeHtml(article.categorie || "Économie")}
+              </div>
+
+              <h3>
+                ${escapeHtml(article.titre)}
+              </h3>
+
+              <p>
+                ${escapeHtml(resume(article.contenu, 180))}
+              </p>
+
+              <small style="color:#6d746f;">
+                ${escapeHtml(article.auteur || "Le Financier Ivoirien")}
+              </small>
+
+            </a>
+
+          `).join("");
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        grid.innerHTML = `
+          <div class="empty">
+            Impossible de charger les articles pour le moment.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    chargerArticles();
+
+  </script>
+
+</body>
+
+</html>
