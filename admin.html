@@ -31,7 +31,7 @@
     }
 
     main {
-      max-width: 850px;
+      max-width: 1000px;
       margin: 35px auto;
       padding: 0 20px;
     }
@@ -41,11 +41,13 @@
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 3px 15px rgba(0,0,0,.08);
+      margin-bottom: 25px;
     }
 
     h2 {
       font-family: Georgia, serif;
       color: #063f37;
+      margin-top: 0;
     }
 
     label {
@@ -72,11 +74,11 @@
     }
 
     button {
-      margin-top: 25px;
+      margin-top: 20px;
       background: #063f37;
       color: white;
       border: 0;
-      padding: 14px 25px;
+      padding: 13px 20px;
       border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
@@ -85,6 +87,30 @@
 
     button:hover {
       background: #0b6657;
+    }
+
+    .secondary {
+      background: #777;
+    }
+
+    .secondary:hover {
+      background: #555;
+    }
+
+    .danger {
+      background: #8b2020;
+    }
+
+    .danger:hover {
+      background: #a82a2a;
+    }
+
+    .edit {
+      background: #a06a00;
+    }
+
+    .edit:hover {
+      background: #c08300;
     }
 
     #loginBox {
@@ -114,6 +140,86 @@
     .clear {
       clear: both;
     }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .section-title button {
+      margin-top: 0;
+    }
+
+    .article-card {
+      border: 1px solid #dce3df;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 18px;
+      background: #fafcfb;
+    }
+
+    .article-card h3 {
+      margin-top: 0;
+      color: #063f37;
+      font-family: Georgia, serif;
+    }
+
+    .article-meta {
+      color: #66736f;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .article-preview {
+      color: #394744;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .article-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .article-actions button {
+      margin-top: 0;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #66736f;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #66736f;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        margin: 20px auto;
+        padding: 0 12px;
+      }
+
+      .box {
+        padding: 20px;
+      }
+
+      header {
+        padding: 20px 15px;
+      }
+
+      .article-actions button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
@@ -134,6 +240,7 @@
     <form id="loginForm">
 
       <label for="email">Adresse e-mail</label>
+
       <input
         id="email"
         type="email"
@@ -142,6 +249,7 @@
       >
 
       <label for="password">Mot de passe</label>
+
       <input
         id="password"
         type="password"
@@ -160,106 +268,112 @@
 
 
   <!-- ADMINISTRATION -->
-  <div class="box" id="adminBox">
+  <div id="adminBox">
 
-    <button class="logout" id="logoutButton">
-      Déconnexion
-    </button>
+    <!-- PUBLICATION / MODIFICATION -->
+    <div class="box">
 
-    <div class="clear"></div>
-
-    <h2>Publier un article</h2>
-
-    <form id="articleForm">
-
-      <label for="titre">Titre de l'article</label>
-
-      <input
-        id="titre"
-        type="text"
-        placeholder="Ex : La BRVM poursuit sa progression"
-        required
-      >
-
-
-      <label for="categorie">Catégorie</label>
-
-      <select id="categorie" required>
-
-        <option value="">
-          Choisir une catégorie
-        </option>
-
-        <option>
-          Marchés & Bourse
-        </option>
-
-        <option>
-          Banques & Finance
-        </option>
-
-        <option>
-          Entreprises
-        </option>
-
-        <option>
-          Économie ivoirienne
-        </option>
-
-        <option>
-          Afrique & International
-        </option>
-
-        <option>
-          Investissement
-        </option>
-
-        <option>
-          Portraits & Interviews
-        </option>
-
-        <option>
-          Actualités
-        </option>
-
-      </select>
-
-
-      <label for="auteur">Auteur</label>
-
-      <input
-        id="auteur"
-        type="text"
-        placeholder="Nom de l'auteur"
-        required
-      >
-
-
-      <label for="image_url">URL de l'image</label>
-
-      <input
-        id="image_url"
-        type="url"
-        placeholder="https://..."
-      >
-
-
-      <label for="contenu">Contenu de l'article</label>
-
-      <textarea
-        id="contenu"
-        placeholder="Écrivez votre article ici..."
-        required
-      ></textarea>
-
-
-      <button type="submit">
-        Publier l'article
+      <button class="logout" id="logoutButton">
+        Déconnexion
       </button>
 
-      <div id="articleMessage" class="message"></div>
+      <div class="clear"></div>
 
-    </form>
+      <h2 id="formTitle">Publier un article</h2>
+
+      <form id="articleForm">
+
+        <label for="titre">Titre de l'article</label>
+
+        <input
+          id="titre"
+          type="text"
+          placeholder="Ex : La BRVM poursuit sa progression"
+          required
+        >
+
+        <label for="categorie">Catégorie</label>
+
+        <select id="categorie" required>
+
+          <option value="">
+            Choisir une catégorie
+          </option>
+
+          <option>Marchés & Bourse</option>
+          <option>Banques & Finance</option>
+          <option>Entreprises</option>
+          <option>Économie ivoirienne</option>
+          <option>Afrique & International</option>
+          <option>Investissement</option>
+          <option>Portraits & Interviews</option>
+          <option>Actualités</option>
+
+        </select>
+
+        <label for="auteur">Auteur</label>
+
+        <input
+          id="auteur"
+          type="text"
+          placeholder="Nom de l'auteur"
+          required
+        >
+
+        <label for="image_url">URL de l'image</label>
+
+        <input
+          id="image_url"
+          type="url"
+          placeholder="https://..."
+        >
+
+        <label for="contenu">Contenu de l'article</label>
+
+        <textarea
+          id="contenu"
+          placeholder="Écrivez votre article ici..."
+          required
+        ></textarea>
+
+        <button type="submit" id="submitButton">
+          Publier l'article
+        </button>
+
+        <button
+          type="button"
+          class="secondary"
+          id="cancelEditButton"
+          style="display:none;"
+        >
+          Annuler la modification
+        </button>
+
+        <div id="articleMessage" class="message"></div>
+
+      </form>
+
+    </div>
+
+
+    <!-- LISTE DES ARTICLES -->
+    <div class="box">
+
+      <div class="section-title">
+
+        <h2>Articles publiés</h2>
+
+        <button type="button" id="refreshButton">
+          🔄 Actualiser
+        </button>
+
+      </div>
+
+      <div id="articlesList" class="loading">
+        Chargement des articles...
+      </div>
+
+    </div>
 
   </div>
 
@@ -269,192 +383,608 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const SUPABASE_URL =
+  "https://xjwimhgdqcaqqadhhtnz.supabase.co";
 
-const loginBox = document.getElementById("loginBox");
-const adminBox = document.getElementById("adminBox");
+const SUPABASE_KEY =
+  "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-const loginForm = document.getElementById("loginForm");
-const articleForm = document.getElementById("articleForm");
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-const loginMessage = document.getElementById("loginMessage");
-const articleMessage = document.getElementById("articleMessage");
 
-const logoutButton = document.getElementById("logoutButton");
+/* Éléments */
 
+const loginBox =
+  document.getElementById("loginBox");
+
+const adminBox =
+  document.getElementById("adminBox");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const articleForm =
+  document.getElementById("articleForm");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const articleMessage =
+  document.getElementById("articleMessage");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const articlesList =
+  document.getElementById("articlesList");
+
+const refreshButton =
+  document.getElementById("refreshButton");
+
+const formTitle =
+  document.getElementById("formTitle");
+
+const submitButton =
+  document.getElementById("submitButton");
+
+const cancelEditButton =
+  document.getElementById("cancelEditButton");
+
+
+let articleEnModification = null;
+
+
+/* Messages */
 
 function message(element, texte, success = false) {
+
   element.style.display = "block";
+
   element.textContent = texte;
 
-  element.style.background = success ? "#dff5e9" : "#ffe3e3";
-  element.style.color = success ? "#12633d" : "#9b1c1c";
+  element.style.background =
+    success ? "#dff5e9" : "#ffe3e3";
+
+  element.style.color =
+    success ? "#12633d" : "#9b1c1c";
 }
 
 
-/* Vérifier la connexion existante */
+/* Vérification connexion */
 
 async function verifierConnexion() {
 
-  const { data } = await supabaseClient.auth.getSession();
+  const { data } =
+    await supabaseClient.auth.getSession();
 
   if (data.session) {
+
     loginBox.style.display = "none";
     adminBox.style.display = "block";
+
+    chargerArticles();
+
   } else {
+
     loginBox.style.display = "block";
     adminBox.style.display = "none";
+
   }
 }
 
 
 /* Connexion */
 
-loginForm.addEventListener("submit", async function(event) {
+loginForm.addEventListener(
+  "submit",
+  async function(event) {
 
-  event.preventDefault();
-
-  message(
-    loginMessage,
-    "Connexion en cours...",
-    true
-  );
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  const password =
-    document.getElementById("password").value;
-
-
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-
-  if (error) {
+    event.preventDefault();
 
     message(
       loginMessage,
-      "❌ " + error.message
+      "Connexion en cours...",
+      true
     );
 
-    return;
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+
+    const { data, error } =
+      await supabaseClient.auth
+        .signInWithPassword({
+          email,
+          password
+        });
+
+
+    if (error) {
+
+      message(
+        loginMessage,
+        "❌ " + error.message
+      );
+
+      return;
+    }
+
+
+    if (data.session) {
+
+      loginBox.style.display = "none";
+      adminBox.style.display = "block";
+
+      loginForm.reset();
+
+      loginMessage.style.display = "none";
+
+      chargerArticles();
+    }
+
   }
+);
 
 
-  if (data.session) {
+/* Publier ou modifier */
 
-    loginBox.style.display = "none";
-    adminBox.style.display = "block";
+articleForm.addEventListener(
+  "submit",
+  async function(event) {
 
-    loginForm.reset();
-
-    loginMessage.style.display = "none";
-  }
-
-});
-
-
-/* Publication */
-
-articleForm.addEventListener("submit", async function(event) {
-
-  event.preventDefault();
-
-  message(
-    articleMessage,
-    "Publication en cours...",
-    true
-  );
-
-
-  const {
-    data: { session }
-  } = await supabaseClient.auth.getSession();
-
-
-  if (!session) {
+    event.preventDefault();
 
     message(
       articleMessage,
-      "❌ Vous devez être connecté."
+      articleEnModification
+        ? "Modification en cours..."
+        : "Publication en cours...",
+      true
     );
 
-    return;
+
+    const {
+      data: { session }
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+      message(
+        articleMessage,
+        "❌ Vous devez être connecté."
+      );
+
+      return;
+    }
+
+
+    const article = {
+
+      titre:
+        document
+          .getElementById("titre")
+          .value
+          .trim(),
+
+      categorie:
+        document
+          .getElementById("categorie")
+          .value,
+
+      auteur:
+        document
+          .getElementById("auteur")
+          .value
+          .trim(),
+
+      image_url:
+        document
+          .getElementById("image_url")
+          .value
+          .trim(),
+
+      contenu:
+        document
+          .getElementById("contenu")
+          .value
+          .trim()
+
+    };
+
+
+    /* MODIFICATION */
+
+    if (articleEnModification) {
+
+      const { error } =
+        await supabaseClient
+          .from("Articles")
+          .update(article)
+          .eq("id", articleEnModification);
+
+
+      if (error) {
+
+        console.error(error);
+
+        message(
+          articleMessage,
+          "❌ " + error.message
+        );
+
+        return;
+      }
+
+
+      message(
+        articleMessage,
+        "✅ Article modifié avec succès !",
+        true
+      );
+
+
+      annulerModification();
+
+      chargerArticles();
+
+      return;
+    }
+
+
+    /* NOUVEL ARTICLE */
+
+    const { error } =
+      await supabaseClient
+        .from("Articles")
+        .insert([article])
+        .select();
+
+
+    if (error) {
+
+      console.error(error);
+
+      message(
+        articleMessage,
+        "❌ " + error.message
+      );
+
+      return;
+    }
+
+
+    message(
+      articleMessage,
+      "✅ Article publié avec succès !",
+      true
+    );
+
+
+    articleForm.reset();
+
+    chargerArticles();
+
   }
+);
 
 
-  const article = {
+/* Charger les articles */
 
-    titre:
-      document.getElementById("titre").value.trim(),
+async function chargerArticles() {
 
-    categorie:
-      document.getElementById("categorie").value,
-
-    auteur:
-      document.getElementById("auteur").value.trim(),
-
-    image_url:
-      document.getElementById("image_url").value.trim(),
-
-    contenu:
-      document.getElementById("contenu").value.trim()
-
-  };
+  articlesList.innerHTML =
+    '<div class="loading">Chargement des articles...</div>';
 
 
   const { data, error } =
     await supabaseClient
       .from("Articles")
-      .insert([article])
-      .select();
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
 
 
   if (error) {
 
     console.error(error);
 
-    message(
-      articleMessage,
-      "❌ " + error.message
+    articlesList.innerHTML =
+      '<div class="empty">❌ Impossible de charger les articles.</div>';
+
+    return;
+  }
+
+
+  if (!data || data.length === 0) {
+
+    articlesList.innerHTML =
+      '<div class="empty">Aucun article publié.</div>';
+
+    return;
+  }
+
+
+  articlesList.innerHTML = "";
+
+
+  data.forEach(function(article) {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "article-card";
+
+
+    const title =
+      document.createElement("h3");
+
+    title.textContent =
+      article.titre || "Sans titre";
+
+
+    const meta =
+      document.createElement("div");
+
+    meta.className =
+      "article-meta";
+
+    const date =
+      article.created_at
+        ? new Date(article.created_at)
+            .toLocaleString("fr-FR")
+        : "";
+
+    meta.textContent =
+      (article.categorie || "Sans catégorie")
+      + " • "
+      + (article.auteur || "Auteur inconnu")
+      + (date ? " • " + date : "");
+
+
+    const preview =
+      document.createElement("div");
+
+    preview.className =
+      "article-preview";
+
+    const contenu =
+      article.contenu || "";
+
+    preview.textContent =
+      contenu.length > 300
+        ? contenu.substring(0, 300) + "..."
+        : contenu;
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "article-actions";
+
+
+    const editButton =
+      document.createElement("button");
+
+    editButton.className =
+      "edit";
+
+    editButton.textContent =
+      "✏️ Modifier";
+
+    editButton.addEventListener(
+      "click",
+      function() {
+        modifierArticle(article);
+      }
+    );
+
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.className =
+      "danger";
+
+    deleteButton.textContent =
+      "🗑️ Supprimer";
+
+    deleteButton.addEventListener(
+      "click",
+      function() {
+        supprimerArticle(article.id);
+      }
+    );
+
+
+    actions.appendChild(editButton);
+    actions.appendChild(deleteButton);
+
+
+    card.appendChild(title);
+    card.appendChild(meta);
+    card.appendChild(preview);
+    card.appendChild(actions);
+
+
+    articlesList.appendChild(card);
+
+  });
+
+}
+
+
+/* Préparer modification */
+
+function modifierArticle(article) {
+
+  articleEnModification =
+    article.id;
+
+
+  document
+    .getElementById("titre")
+    .value =
+      article.titre || "";
+
+
+  document
+    .getElementById("categorie")
+    .value =
+      article.categorie || "";
+
+
+  document
+    .getElementById("auteur")
+    .value =
+      article.auteur || "";
+
+
+  document
+    .getElementById("image_url")
+    .value =
+      article.image_url || "";
+
+
+  document
+    .getElementById("contenu")
+    .value =
+      article.contenu || "";
+
+
+  formTitle.textContent =
+    "Modifier l'article";
+
+
+  submitButton.textContent =
+    "Enregistrer les modifications";
+
+
+  cancelEditButton.style.display =
+    "inline-block";
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* Annuler modification */
+
+function annulerModification() {
+
+  articleEnModification = null;
+
+  articleForm.reset();
+
+  formTitle.textContent =
+    "Publier un article";
+
+  submitButton.textContent =
+    "Publier l'article";
+
+  cancelEditButton.style.display =
+    "none";
+
+  articleMessage.style.display =
+    "none";
+
+}
+
+
+cancelEditButton.addEventListener(
+  "click",
+  annulerModification
+);
+
+
+/* Supprimer */
+
+async function supprimerArticle(id) {
+
+  const confirmation =
+    confirm(
+      "Voulez-vous vraiment supprimer cet article ?"
+    );
+
+
+  if (!confirmation) {
+    return;
+  }
+
+
+  const { error } =
+    await supabaseClient
+      .from("Articles")
+      .delete()
+      .eq("id", id);
+
+
+  if (error) {
+
+    console.error(error);
+
+    alert(
+      "❌ Impossible de supprimer l'article : "
+      + error.message
     );
 
     return;
   }
 
 
-  message(
-    articleMessage,
-    "✅ Article publié avec succès !",
-    true
+  alert(
+    "✅ Article supprimé avec succès."
   );
 
 
-  articleForm.reset();
+  chargerArticles();
 
-});
+}
+
+
+/* Actualiser */
+
+refreshButton.addEventListener(
+  "click",
+  chargerArticles
+);
 
 
 /* Déconnexion */
 
-logoutButton.addEventListener("click", async function() {
+logoutButton.addEventListener(
+  "click",
+  async function() {
 
-  await supabaseClient.auth.signOut();
+    await supabaseClient.auth.signOut();
 
-  adminBox.style.display = "none";
-  loginBox.style.display = "block";
+    adminBox.style.display = "none";
 
-});
+    loginBox.style.display = "block";
+
+  }
+);
 
 
 /* Lancement */
