@@ -71,11 +71,17 @@ export default async function handler(req, res) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${image}">
 
-  <meta http-equiv="refresh" content="0;url=${siteUrl}">
+  <link rel="canonical" href="${articleUrl}">
 </head>
 
 <body>
-  <p>Chargement de l’article...</p>
+
+  <p>Ouverture de l’article...</p>
+
+  <script>
+    window.location.replace(${JSON.stringify(siteUrl)});
+  </script>
+
 </body>
 </html>
 `;
