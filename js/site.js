@@ -50,8 +50,6 @@
           '<a href="' + root + 'a-propos.html">À propos</a>' +
           " &nbsp;|&nbsp; " +
           '<a href="' + root + 'contact.html">Contact</a>' +
-          " &nbsp;|&nbsp; " +
-          '<a href="' + root + 'index.html#newsletterForm">Newsletter</a>' +
         "</span>" +
       "</div>" +
       '<header class="header">' +

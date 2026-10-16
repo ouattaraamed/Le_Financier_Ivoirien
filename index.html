@@ -140,59 +140,6 @@
 
     </section>
 
-    <!-- NEWSLETTER -->
-
-    <section class="newsletter">
-
-      <h3>
-        La lettre du Financier
-      </h3>
-
-      <p>
-        L’essentiel des marchés, de la BRVM et de l’économie ivoirienne,
-        chaque matin dans votre boîte mail.
-      </p>
-
-      <form id="newsletterForm">
-
-        <input
-          type="email"
-          placeholder="Votre adresse e-mail"
-          required
-        >
-
-        <button type="submit">
-          S’inscrire
-        </button>
-
-      </form>
-
-    </section>
-
-    <!-- BANNER -->
-
-    <div class="banner">
-
-      <div>
-
-        <h2>
-          Le Financier Ivoirien
-        </h2>
-
-        <span>
-          Suivez l’actualité économique,
-          financière et boursière de la Côte d’Ivoire
-          et de l’Afrique de l’Ouest.
-        </span>
-
-      </div>
-
-      <strong>
-        ↗
-      </strong>
-
-    </div>
-
   </main>
 
   <!-- FOOTER -->
@@ -1082,26 +1029,6 @@
           afficherArticles(
             resultat
           );
-
-        }
-      );
-    }
-
-    /* NEWSLETTER */
-
-    const newsletterForm = document.getElementById("newsletterForm");
-    if (newsletterForm) {
-      newsletterForm.addEventListener(
-        "submit",
-        function(event) {
-
-          event.preventDefault();
-
-          alert(
-            "Merci ! L’inscription à la newsletter sera bientôt disponible."
-          );
-
-          this.reset();
 
         }
       );
