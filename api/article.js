@@ -152,6 +152,7 @@ export default async function handler(req, res) {
         <a href="/entreprises.html">Entreprises</a>
         <a href="/economie.html">Économie</a>
         <a href="/afrique.html">Afrique & International</a>
+        <a href="/investissement.html">Investissement</a>
       </div>
       <div>
         <h4>Le média</h4>
