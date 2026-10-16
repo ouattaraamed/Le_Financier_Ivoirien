@@ -1998,3 +1998,44 @@ main.parquet {
 .bceao-links a {
   color: var(--green2);
 }
+
+@media (max-width: 700px) {
+  .bceao-feed {
+    margin: 0 0 18px;
+    padding: 14px 14px 4px;
+  }
+
+  .bceao-feed h2 {
+    font-size: 20px;
+  }
+
+  .bceao-feed header p:last-child {
+    font-size: 12px;
+  }
+
+  .bceao-feed article {
+    padding: 10px 0;
+  }
+
+  .bceao-feed time {
+    font-size: 11px;
+  }
+
+  .bceao-feed h3 {
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .bceao-feed article p {
+    font-size: 13px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bceao-links {
+    font-size: 12px;
+  }
+}
