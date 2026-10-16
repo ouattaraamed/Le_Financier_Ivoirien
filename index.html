@@ -957,20 +957,22 @@
 
     /* RECHERCHE */
 
-    const searchButton = document.getElementById("searchButton");
+    const searchButtons = document.querySelectorAll(".search-button");
     const searchBox = document.getElementById("searchBox");
     const searchInput = document.getElementById("searchInput");
 
-    if (searchButton && searchBox && searchInput) {
-      searchButton.addEventListener(
-        "click",
-        function() {
+    if (searchButtons.length && searchBox && searchInput) {
+      searchButtons.forEach(function (searchButton) {
+        searchButton.addEventListener(
+          "click",
+          function() {
 
-          searchBox.classList.toggle("show");
-          searchInput.focus();
+            searchBox.classList.toggle("show");
+            searchInput.focus();
 
-        }
-      );
+          }
+        );
+      });
 
       searchInput.addEventListener(
         "input",
@@ -1032,6 +1034,7 @@
 
         }
       );
+      });
     }
 
     /* URL ARTICLE */

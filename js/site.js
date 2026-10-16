@@ -53,17 +53,22 @@
         "</span>" +
       "</div>" +
       '<header class="header">' +
+        '<button class="menu-button" id="menuButton" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">' +
+          '<span></span><span></span><span></span>' +
+        "</button>" +
         '<a class="brand" href="' + root + 'index.html" id="homeLink">' +
           '<img class="logo" src="' + root + 'logo.png" alt="Le Financier Ivoirien">' +
           '<h1 class="visually-hidden">Le Financier Ivoirien</h1>' +
         "</a>" +
+        '<button class="search-button search-button-mobile" type="button" aria-label="Rechercher">⌕</button>' +
       "</header>" +
       '<nav class="nav" id="siteNav">' +
-        '<button class="menu-button" id="menuButton" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">' +
-          '<span></span><span></span><span></span>' +
-        "</button>" +
         '<div class="nav-links" id="navLinks">' +
           navHtml() +
+          '<div class="nav-extra">' +
+            '<a href="' + root + 'a-propos.html">À propos</a>' +
+            '<a href="' + root + 'contact.html">Contact</a>' +
+          "</div>" +
         "</div>" +
         '<button class="search-button" id="searchButton" type="button" aria-label="Rechercher">⌕</button>' +
       "</nav>"
@@ -74,10 +79,12 @@
     mount.outerHTML = chromeHtml();
   }
 
-  var searchBtn = document.getElementById("searchButton");
-  if (searchBtn && page !== "index.html" && page !== "") {
-    searchBtn.addEventListener("click", function () {
-      location.href = root + "index.html";
+  var searchButtons = document.querySelectorAll(".search-button");
+  if (page !== "index.html" && page !== "") {
+    searchButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        location.href = root + "index.html";
+      });
     });
   }
 
@@ -91,12 +98,14 @@
       menuBtn.setAttribute("aria-label", "Ouvrir le menu");
     }
 
-    menuBtn.addEventListener("click", function () {
+    function toggleMenu() {
       var open = nav.classList.toggle("is-open");
       document.body.classList.toggle("nav-open", open);
       menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
       menuBtn.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
-    });
+    }
+
+    menuBtn.addEventListener("click", toggleMenu);
 
     nav.querySelectorAll(".nav-links a").forEach(function (link) {
       link.addEventListener("click", closeMenu);
