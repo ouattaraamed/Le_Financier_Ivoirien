@@ -565,13 +565,26 @@
     @media(max-width: 600px) {
 
       .news-grid,
-      .featured,
-      .sector-grid {
-        grid-template-columns: 1fr;
+      .featured {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
       }
 
-      .featured-image {
-        height: 220px;
+      .news-body {
+        padding: 8px 0 0;
+      }
+
+      .news-body h4 {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .news-date {
+        font-size: 11px;
+      }
+
+      .section-header h3 {
+        font-size: 18px;
       }
 
     }
