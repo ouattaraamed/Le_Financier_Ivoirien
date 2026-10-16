@@ -45,6 +45,7 @@
     return (
       '<div class="top">' +
         '<span id="currentDate">Le Financier Ivoirien</span>' +
+        '<span id="date" class="visually-hidden"></span>' +
         "<span>" +
           '<a href="' + root + 'a-propos.html">À propos</a>' +
           " &nbsp;|&nbsp; " +

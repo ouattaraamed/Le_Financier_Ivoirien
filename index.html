@@ -363,17 +363,19 @@
     function afficherDate() {
 
       const maintenant = new Date();
+      const label = maintenant.toLocaleDateString(
+        "fr-FR",
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
 
-      document.getElementById("currentDate").textContent =
-        maintenant.toLocaleDateString(
-          "fr-FR",
-          {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }
-        );
+      document.querySelectorAll("#currentDate, #date").forEach(function (el) {
+        el.textContent = label;
+      });
 
     }
 
@@ -458,16 +460,17 @@
 
         ouvrirArticleDepuisURL();
 
-      } catch (error) {
+        } catch (error) {
 
         console.error(error);
 
-        document.getElementById(
-          "articlesGrid"
-        ).innerHTML =
-          `<div class="empty">
-            Impossible de charger les articles.
-          </div>`;
+        const grid = document.getElementById("articlesGrid");
+        if (grid) {
+          grid.innerHTML =
+            `<div class="empty">
+              Impossible de charger les articles.
+            </div>`;
+        }
 
       }
 
@@ -1079,11 +1082,9 @@
 
     /* ACCUEIL */
 
-    document
-      .getElementById(
-        "homeLink"
-      )
-      .addEventListener(
+    const homeLink = document.getElementById("homeLink");
+    if (homeLink) {
+      homeLink.addEventListener(
         "click",
         function(event) {
 
@@ -1103,37 +1104,26 @@
 
         }
       );
+    }
 
     /* RECHERCHE */
 
-    document
-      .getElementById(
-        "searchButton"
-      )
-      .addEventListener(
+    const searchButton = document.getElementById("searchButton");
+    const searchBox = document.getElementById("searchBox");
+    const searchInput = document.getElementById("searchInput");
+
+    if (searchButton && searchBox && searchInput) {
+      searchButton.addEventListener(
         "click",
         function() {
 
-          document
-            .getElementById(
-              "searchBox"
-            )
-            .classList.toggle("show");
-
-          document
-            .getElementById(
-              "searchInput"
-            )
-            .focus();
+          searchBox.classList.toggle("show");
+          searchInput.focus();
 
         }
       );
 
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .addEventListener(
+      searchInput.addEventListener(
         "input",
         function() {
 
@@ -1193,14 +1183,13 @@
 
         }
       );
+    }
 
     /* NEWSLETTER */
 
-    document
-      .getElementById(
-        "newsletterForm"
-      )
-      .addEventListener(
+    const newsletterForm = document.getElementById("newsletterForm");
+    if (newsletterForm) {
+      newsletterForm.addEventListener(
         "submit",
         function(event) {
 
@@ -1214,6 +1203,7 @@
 
         }
       );
+    }
 
     /* URL ARTICLE */
 
@@ -1288,16 +1278,16 @@
 
     /* LANCEMENT */
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      function() {
+    function lancerSite() {
+      afficherDate();
+      chargerArticles();
+    }
 
-        afficherDate();
-
-        chargerArticles();
-
-      }
-    );
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", lancerSite);
+    } else {
+      lancerSite();
+    }
 
   </script>
 
