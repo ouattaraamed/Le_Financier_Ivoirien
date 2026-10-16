@@ -35,78 +35,8 @@
 
 <body>
 
-  <div class="top">
-
-    <span id="currentDate">
-      Le Financier Ivoirien
-    </span>
-
-    <span>
-      <a href="a-propos.html">À propos</a>
-      &nbsp;|&nbsp;
-      <a href="contact.html">Contact</a>
-      &nbsp;|&nbsp;
-      <a href="#newsletterForm">Newsletter</a>
-    </span>
-
-  </div>
-
-  <header class="header">
-
-    <a class="brand" href="index.html" id="homeLink">
-      <img class="logo" src="logo.png" alt="Le Financier Ivoirien">
-      <h1 class="visually-hidden">Le Financier Ivoirien</h1>
-    </a>
-
-  </header>
-
-  <!-- NAVIGATION -->
-
-  <nav class="nav">
-
-    <a href="#" class="nav-link active" data-category="all">
-      Accueil
-    </a>
-
-    <!-- LIEN BRVM : VRAI LIEN VERS LA PAGE BRVM -->
-
-    <a href="brvm.html" class="nav-link">
-      Marchés & Bourse
-    </a>
-
-    <a href="banques.html" class="nav-link">
-      Banques & Finance
-    </a>
-
-    <a href="entreprises.html" class="nav-link">
-      Entreprises
-    </a>
-
-    <a href="economie.html" class="nav-link">
-      Économie
-    </a>
-
-    <a href="#" class="nav-link" data-category="Afrique & International">
-      Afrique & International
-    </a>
-
-    <a href="#" class="nav-link" data-category="Investissement">
-      Investissement
-    </a>
-
-    <a href="#" class="nav-link" data-category="Portraits & Interviews">
-      Portraits & Interviews
-    </a>
-
-    <button
-      class="search-button"
-      id="searchButton"
-      aria-label="Rechercher"
-    >
-      ⌕
-    </button>
-
-  </nav>
+  <div id="site-chrome"></div>
+  <script src="js/site.js"></script>
 
   <!-- RECHERCHE -->
 
@@ -419,7 +349,6 @@
   </footer>
 
   <script src="js/config.js"></script>
-  <script src="js/site.js"></script>
   <script>
 
     const SUPABASE_URL = window.LFI.supabaseUrl;

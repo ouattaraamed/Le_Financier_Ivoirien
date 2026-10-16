@@ -99,27 +99,8 @@ export default async function handler(req, res) {
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
-  <div class="top">
-    <span>Le Financier Ivoirien</span>
-    <span>
-      <a href="/a-propos.html">À propos</a>
-      &nbsp;|&nbsp;
-      <a href="/contact.html">Contact</a>
-    </span>
-  </div>
-  <header class="header">
-    <a class="brand" href="/">
-      <img class="logo" src="/logo.png" alt="Le Financier Ivoirien">
-      <h1 class="visually-hidden">Le Financier Ivoirien</h1>
-    </a>
-  </header>
-  <nav class="nav">
-    <a href="/">Accueil</a>
-    <a href="/brvm.html">Marchés & Bourse</a>
-    <a href="/banques.html">Banques & Finance</a>
-    <a href="/entreprises.html">Entreprises</a>
-    <a href="/economie.html">Économie</a>
-  </nav>
+  <div id="site-chrome" data-root="/"></div>
+  <script src="/js/site.js"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
