@@ -117,8 +117,8 @@ img.logo,
 header.header img.logo {
   display: block;
   width: auto;
-  height: 96px;
-  max-width: min(560px, 94vw);
+  height: 68px;
+  max-width: min(420px, 80vw);
   object-fit: contain;
   background: #000;
   border: none;
@@ -343,17 +343,17 @@ main {
   display: inline-block;
   background: var(--gold);
   color: #1a1608;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 6px 10px;
+  padding: 4px 8px;
   text-transform: uppercase;
 }
 
 .hero h2 {
-  font: 700 32px/1.15 var(--font-sans);
+  font: 700 24px/1.2 var(--font-sans);
   letter-spacing: -0.02em;
-  margin: 13px 0;
+  margin: 10px 0 8px;
 }
 
 .hero p {
@@ -725,8 +725,8 @@ footer a:hover,
   header.header img.logo,
   .logo,
   img.logo {
-    height: 40px;
-    max-width: 170px;
+    height: 32px;
+    max-width: 140px;
     margin: 0 auto;
   }
 
@@ -836,7 +836,7 @@ footer a:hover,
   }
 
   .hero h2 {
-    font-size: 26px;
+    font-size: 20px;
   }
 
   .side {
@@ -879,7 +879,7 @@ footer a:hover,
 
   .logo,
   img.logo {
-    height: 40px;
+    height: 30px;
   }
 
   .hero {
@@ -888,7 +888,7 @@ footer a:hover,
   }
 
   .hero h2 {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .articles-grid,
