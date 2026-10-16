@@ -65,12 +65,20 @@
     })
     .then(function (liste) {
       if (!liste || !liste.length) {
+        if (section && section.classList.contains("portraits--home")) {
+          section.hidden = true;
+          return;
+        }
         if (feature) {
+          feature.removeAttribute("onclick");
+          feature.style.cursor = "default";
           feature.innerHTML =
+            '<div class="portrait-feature-photo" aria-hidden="true"></div>' +
             '<div class="portrait-feature-copy">' +
               '<p class="portraits-kicker">Entretien</p>' +
               "<h2>Les visages de l’économie</h2>" +
-              '<p class="portrait-quote">Les prochains portraits et interviews seront publiés ici.</p>' +
+              '<p class="portrait-quote">Banquiers, entrepreneurs, régulateurs, ministres : les conversations qui expliquent la Côte d’Ivoire.</p>' +
+              '<div class="portrait-meta">Prochaine publication à venir</div>' +
             "</div>";
         }
         if (grid) {
@@ -130,8 +138,14 @@
       });
     })
     .catch(function () {
+      if (section && section.classList.contains("portraits--home")) {
+        section.hidden = true;
+        return;
+      }
       if (feature) {
+        feature.style.cursor = "default";
         feature.innerHTML =
+          '<div class="portrait-feature-photo" aria-hidden="true"></div>' +
           '<div class="portrait-feature-copy">' +
             '<p class="portraits-kicker">Entretien</p>' +
             "<h2>Portraits & Interviews</h2>" +
