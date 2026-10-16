@@ -1334,6 +1334,78 @@ main.parquet {
   font-size: 14px;
 }
 
+.quote-chart-wrap {
+  margin: 8px 4% 18px;
+  background: #131722;
+  color: #d1d4dc;
+}
+
+.quote-chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px 0;
+}
+
+.quote-chart-head strong {
+  display: block;
+  font-size: 16px;
+}
+
+.quote-chart-head span {
+  display: block;
+  margin-top: 4px;
+  color: #9aa4b2;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-chart-head .up {
+  color: #26a69a;
+  font-weight: 700;
+}
+
+.quote-chart-head .down {
+  color: #ef5350;
+  font-weight: 700;
+}
+
+.quote-ranges {
+  display: flex;
+  gap: 6px;
+}
+
+.quote-ranges button {
+  border: 1px solid #2a2e39;
+  background: transparent;
+  color: #d1d4dc;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quote-ranges button.is-active {
+  background: #2a2e39;
+  color: #fff;
+}
+
+#quoteChart {
+  height: 420px;
+}
+
+.quote-chart-note {
+  margin: 0;
+  padding: 0 16px 12px;
+  color: #7d8794;
+  font-size: 12px;
+}
+
+.quote-board tr.is-clickable {
+  cursor: pointer;
+}
+
 .quote-meta,
 .quote-source {
   margin: 0;

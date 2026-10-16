@@ -43,6 +43,20 @@
         <input id="quoteSearch" type="search" placeholder="Rechercher un titre…" aria-label="Rechercher un titre">
       </div>
       <p class="quote-meta" id="quoteMeta">Chargement des cours BRVM…</p>
+      <div class="quote-chart-wrap">
+        <div class="quote-chart-head">
+          <div>
+            <strong id="chartSymbol">BRVM Composite</strong>
+            <span id="chartLast">Chandeliers journaliers</span>
+          </div>
+          <div class="quote-ranges">
+            <button type="button" data-range="22">1M</button>
+            <button type="button" data-range="90" class="is-active">3M</button>
+          </div>
+        </div>
+        <div id="quoteChart"></div>
+        <p class="quote-chart-note" id="chartNote">Chandeliers journaliers des séances BRVM. Clique un titre du tableau pour ouvrir son graphique.</p>
+      </div>
       <div class="quote-scroll">
         <table id="quoteTable">
           <tbody>
@@ -66,6 +80,7 @@
 
   <footer></footer>
   <script src="js/config.js"></script>
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script>
     (function () {
       var timeEl = document.getElementById("parquetTime");
@@ -244,6 +259,14 @@
             tr.appendChild(cell(item.issued, "num"));
             tr.appendChild(cell(item.coupon, "num"));
           }
+          if (board !== "obligations") {
+            tr.className = "is-clickable";
+            tr.addEventListener("click", function () {
+              var key = board === "actions" ? item.symbol : item.name;
+              var label = board === "actions" ? item.symbol + " · " + item.name : item.name;
+              loadChart(key, label);
+            });
+          }
           tbody.appendChild(tr);
         });
 
@@ -266,6 +289,104 @@
       });
 
       search.addEventListener("input", render);
+
+      var chart;
+      var candleSeries;
+      var volumeSeries;
+      var allCandles = [];
+      var chartRange = 90;
+      var chartBox = document.getElementById("quoteChart");
+      var chartSymbol = document.getElementById("chartSymbol");
+      var chartLast = document.getElementById("chartLast");
+      var chartNote = document.getElementById("chartNote");
+
+      function drawChart() {
+        if (!window.LightweightCharts || !allCandles.length) return;
+        var view = chartRange >= 90 ? allCandles : allCandles.slice(-chartRange);
+        if (chart) {
+          chart.remove();
+          chart = null;
+        }
+        chart = LightweightCharts.createChart(chartBox, {
+          width: chartBox.clientWidth,
+          height: 420,
+          layout: { background: { color: "#131722" }, textColor: "#d1d4dc" },
+          grid: { vertLines: { color: "#1e222d" }, horzLines: { color: "#1e222d" } },
+          crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+          rightPriceScale: { borderColor: "#2a2e39" },
+          timeScale: { borderColor: "#2a2e39" }
+        });
+        candleSeries = chart.addCandlestickSeries({
+          upColor: "#26a69a",
+          downColor: "#ef5350",
+          borderUpColor: "#26a69a",
+          borderDownColor: "#ef5350",
+          wickUpColor: "#26a69a",
+          wickDownColor: "#ef5350"
+        });
+        volumeSeries = chart.addHistogramSeries({
+          priceFormat: { type: "volume" },
+          priceScaleId: "volume"
+        });
+        chart.priceScale("volume").applyOptions({
+          scaleMargins: { top: 0.82, bottom: 0 }
+        });
+        candleSeries.setData(view.map(function (bar) {
+          return { time: bar.time, open: bar.open, high: bar.high, low: bar.low, close: bar.close };
+        }));
+        volumeSeries.setData(view.map(function (bar) {
+          return {
+            time: bar.time,
+            value: bar.volume,
+            color: bar.close >= bar.open ? "rgba(38,166,154,0.45)" : "rgba(239,83,80,0.45)"
+          };
+        }));
+        chart.timeScale().fitContent();
+        var last = view[view.length - 1];
+        var prev = view.length > 1 ? view[view.length - 2].close : last.open;
+        var delta = prev ? ((last.close - prev) / prev) * 100 : 0;
+        var sign = delta > 0 ? "+" : "";
+        chartLast.textContent = last.close.toLocaleString("fr-FR") + "   " + sign + delta.toFixed(2).replace(".", ",") + "%";
+        chartLast.className = delta > 0 ? "up" : delta < 0 ? "down" : "";
+      }
+
+      function loadChart(symbol, label) {
+        chartSymbol.textContent = label || symbol;
+        chartLast.textContent = "Chargement…";
+        chartLast.className = "";
+        chartNote.textContent = "Séances réelles, une bougie par jour.";
+        fetch("/api/brvm-history?symbol=" + encodeURIComponent(symbol))
+          .then(function (response) {
+            if (!response.ok) throw new Error("historique");
+            return response.json();
+          })
+          .then(function (data) {
+            allCandles = data.candles || [];
+            if (!allCandles.length) throw new Error("vide");
+            chartSymbol.textContent = label || data.symbol;
+            drawChart();
+          })
+          .catch(function () {
+            chartLast.textContent = "Historique indisponible";
+            chartNote.textContent = "Pas de séances publiées pour ce titre sur la période.";
+          });
+      }
+
+      document.querySelectorAll(".quote-ranges button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          chartRange = Number(button.getAttribute("data-range"));
+          document.querySelectorAll(".quote-ranges button").forEach(function (item) {
+            item.classList.toggle("is-active", item === button);
+          });
+          drawChart();
+        });
+      });
+
+      window.addEventListener("resize", function () {
+        if (chart) chart.applyOptions({ width: chartBox.clientWidth });
+      });
+
+      loadChart("BRVMC", "BRVM Composite");
 
       fetch("/api/brvm")
         .then(function (response) {
