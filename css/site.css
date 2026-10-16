@@ -1926,6 +1926,12 @@ main.parquet {
   border-bottom: 4px solid var(--gold);
 }
 
+.bceao-feed header {
+  display: block;
+  padding: 0 0 8px;
+  background: transparent;
+}
+
 .bceao-feed header p:first-child {
   margin: 0 0 6px;
   color: var(--gold);
