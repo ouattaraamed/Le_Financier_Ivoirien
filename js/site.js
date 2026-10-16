@@ -79,6 +79,48 @@
     mount.outerHTML = chromeHtml();
   }
 
+  function footerHtml() {
+    var items = [
+      { href: root + "index.html", label: "Accueil" },
+      { href: root + "a-propos.html", label: "À propos" },
+      { href: root + "contact.html", label: "Contact" },
+      { href: root + "mentions-legales.html", label: "Mentions légales" },
+      { href: root + "brvm.html", label: "Marchés & Bourse" },
+      { href: root + "banques.html", label: "Banques & Finance" },
+      { href: root + "entreprises.html", label: "Entreprises" },
+      { href: root + "economie.html", label: "Économie" }
+    ];
+
+    return (
+      '<nav class="footer-links">' +
+        items
+          .map(function (item) {
+            return '<a href="' + item.href + '">' + item.label + "</a>";
+          })
+          .join('<span class="footer-sep" aria-hidden="true">|</span>') +
+      "</nav>"
+    );
+  }
+
+  var footer = document.querySelector("footer");
+  if (!footer) {
+    footer = document.createElement("footer");
+    document.body.appendChild(footer);
+  }
+  footer.innerHTML = footerHtml();
+
+  if (!document.getElementById("footer-bar-style")) {
+    var footerStyle = document.createElement("style");
+    footerStyle.id = "footer-bar-style";
+    footerStyle.textContent =
+      "footer{background:#111!important;color:#fff!important;padding:22px 4%!important;text-align:center!important}" +
+      "footer .footer-links{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;row-gap:8px;max-width:1080px;margin:0 auto}" +
+      "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;line-height:1.5;margin:0!important;padding:0 10px!important;white-space:nowrap}" +
+      "footer .footer-sep{color:#fff;font-size:13px;line-height:1.5}" +
+      "footer .footer-links a:hover{color:#c4a34d!important}";
+    document.head.appendChild(footerStyle);
+  }
+
   if (!document.querySelector('meta[name="color-scheme"]')) {
     var colorScheme = document.createElement("meta");
     colorScheme.setAttribute("name", "color-scheme");
