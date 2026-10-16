@@ -545,6 +545,56 @@ a.side-card {
   color: var(--muted);
 }
 
+.hero.is-loading .hero-content {
+  visibility: hidden;
+}
+
+.hero.is-loading::after,
+.side-skel::after,
+.card-skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-100%);
+  animation: lfi-shine 1.15s ease-in-out infinite;
+}
+
+.side-skel,
+.card-skel {
+  position: relative;
+  overflow: hidden;
+  background: #f4f4f2;
+}
+
+.side-skel {
+  height: 88px;
+  margin: 8px 0;
+}
+
+.card-skel {
+  height: 214px;
+}
+
+.portrait-feature.is-loading h2 {
+  color: transparent;
+  background: #efeae2;
+}
+
+@keyframes lfi-shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.is-loading::after,
+  .side-skel::after,
+  .card-skel::after {
+    animation: none;
+  }
+}
+
 .side,
 .article-card,
 .empty,

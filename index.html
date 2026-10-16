@@ -31,14 +31,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=4561dc7">
+  <link rel="stylesheet" href="css/site.css?v=20261016c">
 
 </head>
 
 <body>
 
   <div id="site-chrome"></div>
-  <script src="js/site.js"></script>
+  <script src="js/site.js?v=20261016c"></script>
 
   <!-- RECHERCHE -->
 
@@ -58,21 +58,15 @@
 
     <section class="hero-grid">
 
-      <article class="hero" id="heroArticle">
+      <article class="hero is-loading" id="heroArticle">
 
         <div class="hero-content">
 
-          <span class="tag" id="heroCategory">
-            Actualités
-          </span>
+          <span class="tag" id="heroCategory"></span>
 
-          <h2 id="heroTitle">
-            Le Financier Ivoirien
-          </h2>
+          <h2 id="heroTitle"></h2>
 
-          <div class="meta" id="heroMeta">
-            Chargement...
-          </div>
+          <div class="meta" id="heroMeta"></div>
 
         </div>
 
@@ -94,12 +88,11 @@
 
         </div>
 
-        <div id="sideArticles">
-
-          <div class="empty">
-            Chargement...
-          </div>
-
+        <div id="sideArticles" aria-busy="true">
+          <div class="side-skel"></div>
+          <div class="side-skel"></div>
+          <div class="side-skel"></div>
+          <div class="side-skel"></div>
         </div>
 
       </aside>
@@ -128,11 +121,15 @@
       <div
         class="articles-grid"
         id="articlesGrid"
+        aria-busy="true"
       >
 
-        <div class="empty">
-          Chargement des articles...
-        </div>
+        <div class="card-skel"></div>
+        <div class="card-skel"></div>
+        <div class="card-skel"></div>
+        <div class="card-skel"></div>
+        <div class="card-skel"></div>
+        <div class="card-skel"></div>
 
       </div>
 
@@ -147,10 +144,10 @@
         </p>
       </header>
 
-      <article class="portrait-feature" id="portraitFeature">
+      <article class="portrait-feature is-loading" id="portraitFeature">
         <div class="portrait-feature-copy">
           <p class="portraits-kicker">Entretien</p>
-          <h2>Chargement…</h2>
+          <h2>Portraits</h2>
         </div>
       </article>
 
@@ -257,7 +254,7 @@
 
   </footer>
 
-  <script src="js/config.js"></script>
+  <script src="js/config.js?v=20261016c"></script>
   <script>
 
     const SUPABASE_URL = window.LFI.supabaseUrl;
@@ -336,6 +333,62 @@
 
     }
 
+    const CACHE_ARTICLES = "lfi-home-articles-v1";
+    let signatureAffichee = "";
+
+    function signatureArticles(liste) {
+      return (liste || [])
+        .map(function (article) {
+          return [
+            article.id,
+            article.titre,
+            article.image_url,
+            article.created_at
+          ].join("~");
+        })
+        .join("|");
+    }
+
+    function lireCacheArticles() {
+      try {
+        const brut = localStorage.getItem(CACHE_ARTICLES);
+        const liste = brut ? JSON.parse(brut) : [];
+        return Array.isArray(liste) ? liste : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function ecrireCacheArticles(liste) {
+      try {
+        const pack = (liste || []).slice(0, 20).map(function (article) {
+          return {
+            id: article.id,
+            titre: article.titre,
+            contenu: String(article.contenu || "").slice(0, 400),
+            categorie: article.categorie,
+            auteur: article.auteur,
+            image_url: article.image_url,
+            created_at: article.created_at
+          };
+        });
+        localStorage.setItem(CACHE_ARTICLES, JSON.stringify(pack));
+      } catch (error) {
+        /* navigation privée */
+      }
+    }
+
+    function peindreAccueil(liste) {
+      const next = signatureArticles(liste);
+      if (!next || next === signatureAffichee) {
+        return false;
+      }
+      signatureAffichee = next;
+      articles = liste;
+      afficherAccueil();
+      return true;
+    }
+
     /* CHARGEMENT SUPABASE */
 
     async function chargerArticles() {
@@ -365,7 +418,8 @@
         articles =
           await response.json();
 
-        afficherAccueil();
+        ecrireCacheArticles(articles);
+        peindreAccueil(articles);
 
         ouvrirArticleDepuisURL();
 
@@ -374,7 +428,8 @@
         console.error(error);
 
         const grid = document.getElementById("articlesGrid");
-        if (grid) {
+        if (grid && !articles.length) {
+          grid.setAttribute("aria-busy", "false");
           grid.innerHTML =
             `<div class="empty">
               Impossible de charger les articles.
@@ -411,6 +466,8 @@
         document.getElementById(
           "heroArticle"
         );
+
+      hero.classList.remove("is-loading");
 
       const article =
         articles[0];
@@ -499,6 +556,7 @@
       ).textContent =
         `${selection.length} article${selection.length > 1 ? "s" : ""}`;
 
+      container.setAttribute("aria-busy", "false");
       container.innerHTML = "";
 
       if (!selection.length) {
@@ -624,6 +682,7 @@
       count.textContent =
         `${liste.length} article${liste.length > 1 ? "s" : ""}`;
 
+      grid.setAttribute("aria-busy", "false");
       grid.innerHTML = "";
 
       if (!liste.length) {
@@ -931,6 +990,10 @@
 
     function lancerSite() {
       afficherDate();
+      const enCache = lireCacheArticles();
+      if (enCache.length) {
+        peindreAccueil(enCache);
+      }
       chargerArticles();
     }
 
@@ -1158,7 +1221,7 @@
     );
 
   </script>
-  <script src="js/portraits.js"></script>
+  <script src="js/portraits.js?v=20261016c"></script>
 
 </body>
   </html>
