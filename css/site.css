@@ -1263,6 +1263,164 @@ main.parquet {
   to { transform: translateX(-50%); }
 }
 
+.quote-board {
+  margin: 0;
+  background: #fff;
+  color: #1c1c1c;
+}
+
+.quote-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 4%;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.quote-tabs button,
+.quote-pills button {
+  border: 0;
+  background: transparent;
+  color: #596068;
+  cursor: pointer;
+}
+
+.quote-tabs button {
+  padding: 16px 14px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.quote-tabs button.is-active {
+  color: #1257c5;
+  border-bottom-color: #1257c5;
+}
+
+.quote-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 4% 6px;
+}
+
+.quote-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quote-pills button {
+  padding: 7px 14px;
+  border: 1px solid #d7dde3;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.quote-pills button.is-active {
+  background: #e8f1ff;
+  border-color: #8eb4ef;
+  color: #1257c5;
+  font-weight: 600;
+}
+
+.quote-tools input {
+  width: min(280px, 100%);
+  padding: 8px 12px;
+  border: 1px solid #d7dde3;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.quote-meta,
+.quote-source {
+  margin: 0;
+  padding: 4px 4% 10px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.quote-scroll {
+  overflow-x: auto;
+  padding: 0 4% 8px;
+}
+
+.quote-board table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.quote-board th,
+.quote-board td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #efefef;
+  font-size: 14px;
+  text-align: left;
+}
+
+.quote-board th {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.quote-board .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.quote-board .name strong {
+  display: block;
+  color: #163a72;
+  font-weight: 700;
+}
+
+.quote-board .name span {
+  display: block;
+  margin-top: 2px;
+  color: #667085;
+  font-size: 12px;
+}
+
+.quote-board .up {
+  color: #0b8a3e;
+  font-weight: 700;
+}
+
+.quote-board .down {
+  color: #d12626;
+  font-weight: 700;
+}
+
+.quote-board .flat {
+  color: #667085;
+  font-weight: 600;
+}
+
+.quote-board tr:hover td {
+  background: #fafafa;
+}
+
+.quote-empty {
+  padding: 28px 10px;
+  color: #6b7280;
+}
+
+.quote-source a {
+  color: #1257c5;
+}
+
+@media (max-width: 800px) {
+  .quote-tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 .parquet-books {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

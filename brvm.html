@@ -32,37 +32,25 @@
       <div class="parquet-tape-track" id="parquetTape"></div>
     </div>
 
-    <section class="parquet-books">
-      <article>
-        <p>01</p>
-        <h2>Composite</h2>
-        <span>L’ensemble de la cote. Le thermomètre du marché régional.</span>
-      </article>
-      <article>
-        <p>02</p>
-        <h2>BRVM 30</h2>
-        <span>Les trente valeurs les plus suivies. Là où se concentre l’activité.</span>
-      </article>
-      <article>
-        <p>03</p>
-        <h2>Prestige</h2>
-        <span>Les sociétés tenues à un socle de gouvernance plus exigeant.</span>
-      </article>
-    </section>
-
-    <section class="parquet-floor">
-      <header>
-        <h2>Les compartiments</h2>
-        <span>Six lectures de la même séance</span>
-      </header>
-      <div class="parquet-sectors">
-        <article><b>01</b><h3>Banques</h3><p>Le cœur de la cote, et souvent son volume.</p></article>
-        <article><b>02</b><h3>Télécoms</h3><p>Les titres que tout le marché regarde en premier.</p></article>
-        <article><b>03</b><h3>Agro-industrie</h3><p>Le lien entre la campagne, l’usine et la bourse.</p></article>
-        <article><b>04</b><h3>Énergie</h3><p>Production, distribution, et le prix de l’activité.</p></article>
-        <article><b>05</b><h3>Distribution</h3><p>La consommation, lue dans les résultats.</p></article>
-        <article><b>06</b><h3>Industrie</h3><p>Les valeurs qui fabriquent l’économie réelle.</p></article>
+    <section class="quote-board" id="quoteBoard">
+      <div class="quote-tabs" role="tablist">
+        <button type="button" data-board="indices" class="is-active">Indices</button>
+        <button type="button" data-board="actions">Actions</button>
+        <button type="button" data-board="obligations">Obligations</button>
       </div>
+      <div class="quote-tools">
+        <div class="quote-pills" id="quotePills"></div>
+        <input id="quoteSearch" type="search" placeholder="Rechercher un titre…" aria-label="Rechercher un titre">
+      </div>
+      <p class="quote-meta" id="quoteMeta">Chargement des cours BRVM…</p>
+      <div class="quote-scroll">
+        <table id="quoteTable">
+          <tbody>
+            <tr><td class="quote-empty">Chargement des cours…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="quote-source">Source : <a href="https://www.brvm.org/fr/cours-actions/0" target="_blank" rel="noopener">BRVM</a> · séance publiée sur brvm.org</p>
     </section>
 
     <section class="parquet-news">
@@ -119,6 +107,188 @@
         "Place d’Abidjan"
       ]);
 
+      var market = null;
+      var board = "indices";
+      var pill = "Tous";
+      var table = document.getElementById("quoteTable");
+      var meta = document.getElementById("quoteMeta");
+      var pills = document.getElementById("quotePills");
+      var search = document.getElementById("quoteSearch");
+
+      function changeValue(raw) {
+        var text = String(raw || "").replace(/\s/g, "").replace("%", "").replace(",", ".");
+        var value = Number(text);
+        return Number.isFinite(value) ? value : null;
+      }
+
+      function changeLabel(raw) {
+        var value = changeValue(raw);
+        var shown = String(raw || "—").replace("%", "").trim();
+        if (value === null) return shown || "—";
+        if (value > 0 && shown.charAt(0) !== "+") shown = "+" + shown;
+        return shown + "%";
+      }
+
+      function changeClass(raw) {
+        var value = changeValue(raw);
+        if (value === null || value === 0) return "flat";
+        return value > 0 ? "up" : "down";
+      }
+
+      function cell(text, className) {
+        var td = document.createElement("td");
+        td.className = className;
+        td.textContent = text || "—";
+        return td;
+      }
+
+      function head(labels) {
+        var thead = document.createElement("thead");
+        var tr = document.createElement("tr");
+        labels.forEach(function (label, index) {
+          var th = document.createElement("th");
+          th.textContent = label;
+          if (index > 0) th.className = "num";
+          tr.appendChild(th);
+        });
+        thead.appendChild(tr);
+        return thead;
+      }
+
+      function matches(text) {
+        var query = search.value.trim().toLowerCase();
+        return !query || String(text || "").toLowerCase().indexOf(query) !== -1;
+      }
+
+      function nameCell(code, label) {
+        var td = document.createElement("td");
+        td.className = "name";
+        var strong = document.createElement("strong");
+        strong.textContent = code;
+        var span = document.createElement("span");
+        span.textContent = label;
+        td.appendChild(strong);
+        td.appendChild(span);
+        return td;
+      }
+
+      function renderPills() {
+        pills.innerHTML = "";
+        if (board !== "indices") return;
+        ["Tous", "Majeurs", "Sectoriels", "Rendement"].forEach(function (item) {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.textContent = item;
+          if (item === pill) button.className = "is-active";
+          button.onclick = function () {
+            pill = item;
+            render();
+          };
+          pills.appendChild(button);
+        });
+      }
+
+      function render() {
+        renderPills();
+        table.innerHTML = "";
+        if (!market) return;
+
+        var rows = [];
+        if (board === "indices") {
+          table.appendChild(head(["Nom", "Dernier", "Veille", "Chg. %", "Année %"]));
+          rows = (market.indices || []).filter(function (item) {
+            return (pill === "Tous" || item.group === pill) && matches(item.name);
+          });
+        } else if (board === "actions") {
+          table.appendChild(head(["Nom", "Dernier", "Ouverture", "Veille", "Volume", "Chg. %"]));
+          rows = (market.actions || []).filter(function (item) {
+            return matches(item.symbol + " " + item.name);
+          });
+        } else {
+          table.appendChild(head(["Nom", "Cours", "Coupon couru", "Émission", "Dernier coupon"]));
+          rows = (market.obligations || []).filter(function (item) {
+            return matches(item.code + " " + item.name);
+          });
+        }
+
+        var tbody = document.createElement("tbody");
+        if (!rows.length) {
+          var emptyRow = document.createElement("tr");
+          var emptyCell = document.createElement("td");
+          emptyCell.colSpan = 6;
+          emptyCell.className = "quote-empty";
+          emptyCell.textContent = "Aucun titre pour cette recherche.";
+          emptyRow.appendChild(emptyCell);
+          tbody.appendChild(emptyRow);
+        }
+
+        rows.forEach(function (item) {
+          var tr = document.createElement("tr");
+          if (board === "indices") {
+            tr.appendChild(cell(item.name, "name"));
+            tr.appendChild(cell(item.last, "num"));
+            tr.appendChild(cell(item.previous, "num"));
+            tr.appendChild(cell(changeLabel(item.change), "num " + changeClass(item.change)));
+            tr.appendChild(cell(changeLabel(item.year), "num " + changeClass(item.year)));
+          } else if (board === "actions") {
+            tr.appendChild(nameCell(item.symbol, item.name));
+            tr.appendChild(cell(item.last, "num"));
+            tr.appendChild(cell(item.open, "num"));
+            tr.appendChild(cell(item.previous, "num"));
+            tr.appendChild(cell(item.volume, "num"));
+            tr.appendChild(cell(changeLabel(item.change), "num " + changeClass(item.change)));
+          } else {
+            tr.appendChild(nameCell(item.code, item.name));
+            tr.appendChild(cell(item.last, "num"));
+            tr.appendChild(cell(item.accrued, "num"));
+            tr.appendChild(cell(item.issued, "num"));
+            tr.appendChild(cell(item.coupon, "num"));
+          }
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        meta.textContent = market.updatedAt
+          ? "Dernière mise à jour BRVM : " + market.updatedAt
+          : "Cours BRVM";
+      }
+
+      document.querySelectorAll(".quote-tabs button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          board = button.getAttribute("data-board");
+          pill = "Tous";
+          search.value = "";
+          document.querySelectorAll(".quote-tabs button").forEach(function (item) {
+            item.classList.toggle("is-active", item === button);
+          });
+          render();
+        });
+      });
+
+      search.addEventListener("input", render);
+
+      fetch("/api/brvm")
+        .then(function (response) {
+          if (!response.ok) throw new Error("brvm");
+          return response.json();
+        })
+        .then(function (data) {
+          market = data;
+          var majors = (data.indices || []).filter(function (item) {
+            return item.group === "Majeurs";
+          });
+          if (majors.length) {
+            setTape(majors.map(function (item) {
+              return item.name + "  " + item.last + "  " + changeLabel(item.change);
+            }));
+          }
+          render();
+        })
+        .catch(function () {
+          meta.textContent = "Les cours BRVM sont momentanément indisponibles.";
+          table.innerHTML = "<tbody><tr><td class=\"quote-empty\">Impossible de récupérer les cours sur brvm.org.</td></tr></tbody>";
+        });
+
       var cfg = window.LFI || {};
       var grid = document.getElementById("newsGrid");
       var count = document.getElementById("newsCount");
@@ -139,11 +309,6 @@
         })
         .then(function (articles) {
           count.textContent = articles.length + " article" + (articles.length > 1 ? "s" : "");
-          if (articles.length) {
-            setTape(articles.map(function (article) {
-              return article.titre || "Marchés";
-            }));
-          }
           grid.innerHTML = "";
           if (!articles.length) {
             grid.innerHTML = '<p class="parquet-empty">Le fil s’ouvrira avec le prochain article Marchés & Bourse.</p>';
