@@ -1209,7 +1209,7 @@ main.parquet {
 .parquet-stage {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 32px;
   margin: 0;
   padding: 54px 6% 42px;
@@ -1245,34 +1245,33 @@ main.parquet {
   line-height: 1.5;
 }
 
-.parquet-clock {
-  min-width: 220px;
-  padding-left: 22px;
-  border-left: 1px solid rgba(201, 162, 39, 0.7);
-  text-align: right;
+.world-clocks {
+  display: grid;
+  grid-template-columns: repeat(3, 86px);
+  gap: 12px 16px;
+  margin: 0;
+  padding: 14px 16px 12px;
+  background: #ececec;
 }
 
-.parquet-clock-time {
-  display: block;
-  font-variant-numeric: tabular-nums;
-  font-size: 40px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.world-clock {
+  margin: 0;
+  text-align: center;
+}
+
+.world-clock figcaption {
+  margin: 0 0 4px;
+  color: #1c1c1c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
   line-height: 1;
 }
 
-.parquet-clock-day,
-.parquet-clock-meta {
+.world-clock svg {
   display: block;
-  margin-top: 8px;
-  color: #b7c7c2;
-  font-size: 12px;
-}
-
-.parquet-clock-meta {
-  color: var(--gold);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  width: 74px;
+  height: 74px;
+  margin: 0 auto;
 }
 
 .parquet-tape {
@@ -1692,10 +1691,14 @@ main.parquet {
     font-size: 52px;
   }
 
-  .parquet-clock {
-    padding-left: 0;
-    border-left: 0;
-    text-align: left;
+  .world-clocks {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  .world-clock svg {
+    width: 64px;
+    height: 64px;
   }
 
   .parquet-books,

@@ -21,11 +21,7 @@
         <h1>Le parquet</h1>
         <p>La BRVM lue comme une séance : les indices qui donnent le ton, les compartiments de la cote, le fil de l’actualité.</p>
       </div>
-      <div class="parquet-clock" aria-live="polite">
-        <span class="parquet-clock-time" id="parquetTime">--:--:--</span>
-        <span class="parquet-clock-day" id="parquetDay">Abidjan</span>
-        <span class="parquet-clock-meta">Heure d’Abidjan</span>
-      </div>
+      <div class="world-clocks" id="worldClocks" aria-live="polite"></div>
     </section>
 
     <div class="parquet-tape" aria-hidden="true">
@@ -83,25 +79,60 @@
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script>
     (function () {
-      var timeEl = document.getElementById("parquetTime");
-      var dayEl = document.getElementById("parquetDay");
+      var places = [
+        { zone: "America/New_York", label: "New York" },
+        { zone: "Europe/London", label: "London" },
+        { zone: "Europe/Paris", label: "Paris" },
+        { zone: "Africa/Abidjan", label: "Abidjan" },
+        { zone: "Asia/Tokyo", label: "Tokyo" },
+        { zone: "Australia/Sydney", label: "Sydney" }
+      ];
+      var clocks = document.getElementById("worldClocks");
+
+      function clockFace() {
+        var ticks = "";
+        for (var i = 0; i < 12; i++) {
+          var major = i % 3 === 0;
+          ticks += '<line x1="50" y1="' + (major ? 8 : 10) + '" x2="50" y2="' + (major ? 16 : 14) + '" transform="rotate(' + (i * 30) + ' 50 50)" stroke="#6d6d6d" stroke-width="' + (major ? 1.6 : 1) + '"></line>';
+        }
+        return '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+          '<circle cx="50" cy="50" r="48" fill="#f3f3f3" stroke="#c8c8c8"></circle>' +
+          ticks +
+          '<line class="hour" x1="50" y1="54" x2="50" y2="28" stroke="#1a1a1a" stroke-width="3.2" stroke-linecap="round"></line>' +
+          '<line class="minute" x1="50" y1="56" x2="50" y2="16" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"></line>' +
+          '<line class="second" x1="50" y1="62" x2="50" y2="12" stroke="#d12626" stroke-width="1.1" stroke-linecap="round"></line>' +
+          '<circle cx="50" cy="50" r="2.4" fill="#d12626"></circle>' +
+        "</svg>";
+      }
+
+      places.forEach(function (place) {
+        var figure = document.createElement("figure");
+        figure.className = "world-clock";
+        figure.dataset.zone = place.zone;
+        figure.innerHTML = "<figcaption>" + place.label + "</figcaption>" + clockFace();
+        clocks.appendChild(figure);
+      });
 
       function tick() {
         var now = new Date();
-        timeEl.textContent = new Intl.DateTimeFormat("fr-FR", {
-          timeZone: "Africa/Abidjan",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hourCycle: "h23"
-        }).format(now);
-        var day = new Intl.DateTimeFormat("fr-FR", {
-          timeZone: "Africa/Abidjan",
-          weekday: "long",
-          day: "numeric",
-          month: "long"
-        }).format(now);
-        dayEl.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+        clocks.querySelectorAll(".world-clock").forEach(function (figure) {
+          var parts = {};
+          new Intl.DateTimeFormat("en-GB", {
+            timeZone: figure.dataset.zone,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hourCycle: "h23"
+          }).formatToParts(now).forEach(function (part) {
+            parts[part.type] = part.value;
+          });
+          var hours = Number(parts.hour) % 12;
+          var minutes = Number(parts.minute);
+          var seconds = Number(parts.second);
+          figure.querySelector(".hour").setAttribute("transform", "rotate(" + ((hours + minutes / 60) * 30) + " 50 50)");
+          figure.querySelector(".minute").setAttribute("transform", "rotate(" + ((minutes + seconds / 60) * 6) + " 50 50)");
+          figure.querySelector(".second").setAttribute("transform", "rotate(" + (seconds * 6) + " 50 50)");
+        });
       }
 
       tick();
