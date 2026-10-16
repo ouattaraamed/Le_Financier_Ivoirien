@@ -11,6 +11,8 @@
     name="description"
     content="Actualités, analyses et décryptages de l'économie ivoirienne et ouest-africaine."
   >
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
 
   <style>
     :root {
@@ -668,9 +670,9 @@
       <div>
         <h3>Le média</h3>
 
-        <a href="index.html">À propos</a>
-        <a href="index.html">Contact</a>
-        <a href="index.html">Newsletter</a>
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+        <a href="mentions-legales.html">Mentions légales</a>
       </div>
 
     </div>
@@ -682,16 +684,15 @@
   </footer>
 
 
+  <script src="js/config.js"></script>
+  <script src="js/site.js"></script>
   <script>
 
-    const SUPABASE_URL =
-      "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-
-    const SUPABASE_KEY =
-      "TON_MEME_PUBLISHABLE_KEY";
+    const SUPABASE_URL = window.LFI.supabaseUrl;
+    const SUPABASE_KEY = window.LFI.supabaseKey;
 
     const API_URL =
-      `${SUPABASE_URL}/rest/v1/Articles?select=*&categorie=eq.Économie&order=created_at.desc&limit=20`;
+      `${SUPABASE_URL}/rest/v1/Articles?select=*&or=(categorie.eq.Économie,categorie.eq.Économie%20ivoirienne)&order=created_at.desc&limit=20`;
 
     const headers = {
       apikey: SUPABASE_KEY,

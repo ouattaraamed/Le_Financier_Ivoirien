@@ -22,745 +22,15 @@
 <meta name="twitter:title" content="Le Financier Ivoirien">
 <meta name="twitter:description" content="L’information financière qui compte.">
 <meta name="twitter:image" content="https://le-financier-ivoirien.vercel.app/og-image.png">
-  <style>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/">
+  <meta name="theme-color" content="#052e29">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
 
-    :root {
-      --green: #063f37;
-      --green2: #0b6657;
-      --gold: #e9b83f;
-      --ink: #10211f;
-      --muted: #667471;
-      --paper: #f5f7f5;
-      --white: #ffffff;
-      --red: #d92f35;
-      --border: #dce4e0;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--paper);
-      color: var(--ink);
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    /* TOP BAR */
-
-    .top {
-      background: #082d2a;
-      color: #fff;
-      font-size: 12px;
-      padding: 9px 4%;
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .top span {
-      opacity: .9;
-    }
-
-    /* HEADER */
-
-    .header {
-      background: #fff;
-      padding: 22px 4%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-.logo {
-  width: 260px;
-  height: 90px;
-  background-image: url("/LOGO1");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: none;
-  border-radius: 0;
-  transform: none;
-  font-size: 0;
-}
-    .brand h1 {
-      margin: 0;
-      font-family: Georgia, serif;
-      font-size: 34px;
-      color: var(--green);
-    }
-    .brand h1,
-.brand p {
-  display: none;
-}
-
-    .brand p {
-      margin: 3px 0 0;
-      font-style: italic;
-      color: #48615d;
-    }
-
-    .header-claim {
-      background: linear-gradient(120deg, #eaf2ef, #dce9e5);
-      border-right: 5px solid var(--gold);
-      padding: 15px 22px;
-      font-family: Georgia, serif;
-      font-weight: bold;
-      color: var(--green);
-      max-width: 260px;
-    }
-
-    /* NAVIGATION */
-
-    .nav {
-      background: var(--green);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      padding: 0 4%;
-      overflow-x: auto;
-    }
-
-    .nav a {
-      padding: 16px 14px;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .nav a:hover,
-    .nav a.active {
-      background: var(--gold);
-      color: #14211f;
-    }
-
-    .search-button {
-      margin-left: auto;
-      border: 0;
-      background: transparent;
-      color: white;
-      font-size: 22px;
-      cursor: pointer;
-      padding: 10px 14px;
-    }
-
-    /* SEARCH */
-
-    .search-box {
-      display: none;
-      background: white;
-      padding: 15px 4%;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .search-box.show {
-      display: block;
-    }
-
-    .search-box input {
-      width: 100%;
-      max-width: 700px;
-      padding: 13px 15px;
-      border: 1px solid #ccd5d1;
-      border-radius: 5px;
-      font-size: 15px;
-    }
-
-    /* FLASH */
-
-    .ticker {
-      display: flex;
-      margin: 18px 4% 0;
-      background: #fff;
-      border: 1px solid #ddd;
-      min-height: 40px;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .flash {
-      background: var(--red);
-      color: #fff;
-      font-weight: 800;
-      padding: 11px 15px;
-      white-space: nowrap;
-    }
-
-    .ticker-text {
-      padding: 0 16px;
-      font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* MAIN */
-
-    main {
-      max-width: 1250px;
-      margin: auto;
-      padding: 18px 4% 50px;
-    }
-
-    /* HERO */
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
-
-    .hero {
-      min-height: 470px;
-      border-radius: 4px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #0b6657, #061f1c);
-      position: relative;
-      color: #fff;
-      padding: 36px;
-      display: flex;
-      align-items: flex-end;
-      cursor: pointer;
-    }
-
-    .hero.has-image {
-      background-size: cover;
-      background-position: center;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(
-          circle at 70% 25%,
-          rgba(233,184,63,.35),
-          transparent 28%
-        ),
-        linear-gradient(
-          120deg,
-          rgba(0,0,0,.15),
-          rgba(0,0,0,.78)
-        );
-    }
-
-    .hero-content {
-      position: relative;
-      max-width: 760px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: var(--green2);
-      color: #fff;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 7px 10px;
-      border-radius: 2px;
-      text-transform: uppercase;
-    }
-
-    .hero h2 {
-      font: 700 43px/1.05 Georgia, serif;
-      margin: 13px 0;
-    }
-
-    .hero p {
-      font-size: 16px;
-      line-height: 1.55;
-      color: #e8f0ee;
-      max-width: 700px;
-    }
-
-    .meta {
-      font-size: 12px;
-      color: #c8d5d2;
-    }
-
-    /* SIDE */
-
-    .side {
-      background: #fff;
-      border-top: 4px solid var(--green);
-      padding: 15px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-    }
-
-    .section-title h3 {
-      font: 700 18px Georgia, serif;
-      margin: 0;
-      color: var(--green);
-    }
-
-    .side-card {
-      display: grid;
-      grid-template-columns: 105px 1fr;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e3e7e5;
-      cursor: pointer;
-    }
-
-    .side-card:last-child {
-      border-bottom: 0;
-    }
-
-    .thumb {
-      background: linear-gradient(135deg, #9dbab2, #d9b75c);
-      min-height: 82px;
-      border-radius: 3px;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .side-card h4 {
-      font-size: 14px;
-      margin: 5px 0;
-      line-height: 1.25;
-    }
-
-    .side-card small {
-      color: var(--muted);
-    }
-
-    /* MARKET */
-
-    .market {
-      background: #fff;
-      margin-top: 20px;
-      border: 1px solid var(--border);
-    }
-
-    .market-head {
-      padding: 13px 17px;
-      border-bottom: 1px solid var(--border);
-      font-weight: 800;
-      color: var(--green);
-    }
-
-    .market-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-    }
-
-    .market-item {
-      padding: 16px;
-      border-right: 1px solid #e1e6e4;
-    }
-
-    .market-item:last-child {
-      border: 0;
-    }
-
-    .market-item small {
-      color: var(--muted);
-    }
-
-    .market-item strong {
-      display: block;
-      font-size: 20px;
-      margin: 8px 0;
-    }
-
-    .up {
-      color: #16865b;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    /* ARTICLES */
-
-    .articles-section {
-      margin-top: 28px;
-    }
-
-    .articles-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 3px solid var(--green);
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-    }
-
-    .articles-header h2 {
-      margin: 0;
-      font: 700 27px Georgia, serif;
-      color: var(--green);
-    }
-
-    .articles-count {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .article-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
-
-    .article-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 7px 20px rgba(0,0,0,.08);
-    }
-
-    .article-image {
-      height: 190px;
-      background: linear-gradient(135deg, #56857b, #c4a34d);
-      background-size: cover;
-      background-position: center;
-    }
-
-    .article-body {
-      padding: 17px;
-    }
-
-    .article-category {
-      display: inline-block;
-      color: var(--green2);
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin-bottom: 7px;
-    }
-
-    .article-card h3 {
-      font: 700 20px/1.2 Georgia, serif;
-      color: var(--green);
-      margin: 0 0 10px;
-    }
-
-    .article-card p {
-      color: #53635f;
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 0 0 12px;
-    }
-
-    .article-date {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    /* NO RESULTS */
-
-    .empty {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 45px 20px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    /* ARTICLE DETAIL */
-
-    #article-detail {
-      max-width: 900px;
-      margin: 30px auto;
-      background: #fff;
-      border-top: 5px solid var(--green);
-      padding: 35px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.08);
-    }
-
-    .detail-back {
-      background: var(--green);
-      color: white;
-      border: 0;
-      padding: 11px 17px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-bottom: 25px;
-    }
-
-    .detail-category {
-      display: inline-block;
-      background: var(--green2);
-      color: white;
-      padding: 7px 10px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .detail-title {
-      font: 700 44px/1.1 Georgia, serif;
-      color: var(--green);
-      margin: 15px 0;
-    }
-
-    .detail-meta {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 25px;
-    }
-
-    .detail-image {
-      width: 100%;
-      max-height: 520px;
-      object-fit: cover;
-      margin-bottom: 25px;
-    }
-
-    .detail-content {
-      font-size: 18px;
-      line-height: 1.85;
-      color: #263936;
-      white-space: pre-wrap;
-    }
-
-    /* NEWSLETTER */
-
-    .newsletter {
-      background: linear-gradient(135deg, #06483d, #0a6d5c);
-      color: #fff;
-      padding: 25px;
-      border-radius: 4px;
-      margin-top: 28px;
-    }
-
-    .newsletter h3 {
-      font: 700 25px Georgia, serif;
-      margin: 0 0 8px;
-    }
-
-    .newsletter p {
-      color: #d9e9e5;
-    }
-
-    .newsletter form {
-      display: flex;
-    }
-
-    .newsletter input {
-      flex: 1;
-      padding: 13px;
-      border: 0;
-    }
-
-    .newsletter button {
-      background: var(--gold);
-      border: 0;
-      padding: 0 20px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* BANNER */
-
-    .banner {
-      margin-top: 22px;
-      background: #062f2b;
-      color: #fff;
-      padding: 26px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .banner h2 {
-      font: 700 25px Georgia, serif;
-      margin: 0;
-    }
-
-    .banner span {
-      color: #d9e8e4;
-    }
-
-    /* FOOTER */
-
-    footer {
-      background: #071d1b;
-      color: #dce7e4;
-      padding: 40px 4% 18px;
-    }
-
-    .footer-grid {
-      max-width: 1250px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 35px;
-    }
-
-    .footer-brand {
-      font: 700 27px Georgia, serif;
-      color: #fff;
-    }
-
-    .footer h4 {
-      color: var(--gold);
-      margin-top: 0;
-    }
-
-    .footer a {
-      display: block;
-      font-size: 13px;
-      margin: 9px 0;
-      color: #c3d0cd;
-    }
-
-    .copy {
-      max-width: 1250px;
-      margin: 30px auto 0;
-      border-top: 1px solid #29413d;
-      padding-top: 15px;
-      font-size: 12px;
-      color: #8da09c;
-    }
-
-    /* RESPONSIVE */
-
-    @media(max-width: 850px) {
-
-      .header {
-        padding: 18px 4%;
-      }
-
-      .header-claim {
-        display: none;
-      }
-
-      .brand h1 {
-        font-size: 25px;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        min-height: 410px;
-      }
-
-      .hero h2 {
-        font-size: 34px;
-      }
-
-      .articles-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .market-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .market-item:nth-child(2n) {
-        border-right: 0;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .nav a {
-        padding: 14px 10px;
-      }
-    }
-
-    @media(max-width: 520px) {
-
-      .top {
-        display: none;
-      }
-
-      .brand p {
-        font-size: 11px;
-      }
-
-      .logo {
-        width: 43px;
-        height: 43px;
-        font-size: 20px;
-      }
-
-      .hero {
-        padding: 22px;
-      }
-
-      .hero h2 {
-        font-size: 29px;
-      }
-
-      .articles-grid,
-      .market-grid,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .market-item {
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .ticker {
-        margin-left: 0;
-        margin-right: 0;
-      }
-
-      .side-card {
-        grid-template-columns: 90px 1fr;
-      }
-
-      .detail-title {
-        font-size: 31px;
-      }
-
-      #article-detail {
-        margin: 15px 0;
-        padding: 22px;
-      }
-
-      .newsletter form {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .newsletter button {
-        padding: 13px;
-      }
-    }
-
-  </style>
 </head>
 
 <body>
@@ -772,38 +42,30 @@
     </span>
 
     <span>
-      À propos &nbsp; | &nbsp;
-      Contact &nbsp; | &nbsp;
-      Newsletter &nbsp; | &nbsp;
-      LinkedIn &nbsp; X
+      <a href="a-propos.html">À propos</a>
+      &nbsp;|&nbsp;
+      <a href="contact.html">Contact</a>
+      &nbsp;|&nbsp;
+      <a href="#newsletterForm">Newsletter</a>
     </span>
 
   </div>
 
   <header class="header">
 
-    <a class="brand" href="#" id="homeLink">
+    <a class="brand" href="index.html" id="homeLink">
 
-      <div class="logo">↗</div>
+      <div class="logo" aria-hidden="true"></div>
 
       <div>
-
+        <p class="kicker">Média financier · Côte d’Ivoire</p>
         <h1>Le Financier Ivoirien</h1>
-
-        <p>
+        <p class="tagline">
           L’information financière qui compte.
         </p>
-
       </div>
 
     </a>
-
-    <div class="header-claim">
-
-      Comprendre les marchés.<br>
-      Éclairer vos décisions.
-
-    </div>
 
   </header>
 
@@ -822,15 +84,15 @@
     </a>
 
     <a href="banques.html" class="nav-link">
-  Entreprises
+      Banques & Finance
     </a>
 
     <a href="entreprises.html" class="nav-link">
-  Entreprises
+      Entreprises
     </a>
 
     <a href="economie.html" class="nav-link">
-  Entreprises
+      Économie
     </a>
 
     <a href="#" class="nav-link" data-category="Afrique & International">
@@ -872,7 +134,7 @@
   <div class="ticker">
 
     <div class="flash">
-      ⚡ FLASH INFO
+      FLASH
     </div>
 
     <div class="ticker-text" id="flashText">
@@ -944,7 +206,7 @@
     <section class="market">
 
       <div class="market-head">
-        📊 INDICES & MARCHÉS
+        INDICES & MARCHÉS
       </div>
 
       <div class="market-grid">
@@ -1020,12 +282,12 @@
     <section class="newsletter">
 
       <h3>
-        Restez informé !
+        La lettre du Financier
       </h3>
 
       <p>
-        Recevez l’essentiel de l’actualité financière
-        directement dans votre boîte mail.
+        L’essentiel des marchés, de la BRVM et de l’économie ivoirienne,
+        chaque matin dans votre boîte mail.
       </p>
 
       <form id="newsletterForm">
@@ -1094,19 +356,19 @@
           Liens utiles
         </h4>
 
-        <a href="#">
+        <a href="index.html">
           Accueil
         </a>
 
-        <a href="#">
+        <a href="a-propos.html">
           À propos
         </a>
 
-        <a href="#">
+        <a href="contact.html">
           Contact
         </a>
 
-        <a href="#">
+        <a href="mentions-legales.html">
           Mentions légales
         </a>
 
@@ -1124,19 +386,19 @@
           Marchés & Bourse
         </a>
 
-        <a href="#" data-category-footer="Banques & Finance">
+        <a href="banques.html">
           Banques & Finance
         </a>
 
-        <a href="#" data-category-footer="Entreprises">
+        <a href="entreprises.html">
           Entreprises
         </a>
 
-        <a href="#" data-category-footer="Économie ivoirienne">
-          Économie ivoirienne
+        <a href="economie.html">
+          Économie
         </a>
 
-        <a href="#" data-category-footer="Investissement">
+        <a href="index.html">
           Investissement
         </a>
 
@@ -1148,24 +410,8 @@
           Suivez-nous
         </h4>
 
-        <a href="#">
-          LinkedIn
-        </a>
-
-        <a href="#">
-          X
-        </a>
-
-        <a href="#">
-          Facebook
-        </a>
-
-        <a href="#">
-          YouTube
-        </a>
-
-        <a href="#">
-          WhatsApp
+        <a href="contact.html">
+          Contact rédaction
         </a>
 
       </div>
@@ -1181,15 +427,12 @@
 
   </footer>
 
-  <!-- SUPABASE -->
-
+  <script src="js/config.js"></script>
+  <script src="js/site.js"></script>
   <script>
 
-    const SUPABASE_URL =
-      "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+    const SUPABASE_URL = window.LFI.supabaseUrl;
+    const SUPABASE_KEY = window.LFI.supabaseKey;
 
     let articles = [];
 

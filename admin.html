@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Administration — Le Financier Ivoirien</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
   <style>
     * {
@@ -303,6 +305,7 @@
           <option>Marchés & Bourse</option>
           <option>Banques & Finance</option>
           <option>Entreprises</option>
+          <option>Économie</option>
           <option>Économie ivoirienne</option>
           <option>Afrique & International</option>
           <option>Investissement</option>
@@ -380,15 +383,13 @@
 </main>
 
 
+<script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-const SUPABASE_URL =
-  "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+const SUPABASE_URL = window.LFI.supabaseUrl;
+const SUPABASE_KEY = window.LFI.supabaseKey;
 
 const supabaseClient =
   supabase.createClient(

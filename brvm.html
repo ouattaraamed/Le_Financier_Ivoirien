@@ -11,6 +11,8 @@
     name="description"
     content="BRVM, marchés financiers, actions, indices et actualités boursières par Le Financier Ivoirien."
   >
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
 
   <style>
 
@@ -76,7 +78,7 @@
   .logo {
   width: 260px;
   height: 90px;
-  background-image: url("/LOGO1");
+  background-image: url("logo.svg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -1017,13 +1019,16 @@
           BRVM & Marchés
         </a>
 
-        <a href="index.html">
+        <a href="entreprises.html">
           Entreprises
         </a>
 
-        <a href="index.html">
+        <a href="economie.html">
           Économie
         </a>
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+        <a href="mentions-legales.html">Mentions légales</a>
 
       </div>
 
@@ -1091,15 +1096,12 @@
   </footer>
 
 
-  <!-- SUPABASE -->
-
+  <script src="js/config.js"></script>
+  <script src="js/site.js"></script>
   <script>
 
-    const SUPABASE_URL =
-      "https://xjwimhgdqcaqqadhhtnz.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
+    const SUPABASE_URL = window.LFI.supabaseUrl;
+    const SUPABASE_KEY = window.LFI.supabaseKey;
 
 
     function formatDate(date) {
