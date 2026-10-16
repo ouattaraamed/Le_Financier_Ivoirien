@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 :root {
   --green: #052e29;
   --green2: #0a5c4f;
@@ -8,8 +10,16 @@
   --white: #ffffff;
   --red: #c42b31;
   --border: #ddd6c8;
-  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --text-micro: 10px;
+  --text-caption: 12px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 28px;
+  --text-4xl: 32px;
 }
 
 * {
@@ -23,8 +33,12 @@ html {
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.47;
   background: var(--paper);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -115,7 +129,7 @@ nav.nav {
 body > nav.nav a,
 nav.nav a {
   padding: 14px 13px;
-  font-size: 13px;
+  font-size: var(--text-caption);
   font-weight: 600;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -150,7 +164,7 @@ nav.nav a.active {
 .brand h1 {
   display: block;
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(28px, 4.2vw, 46px);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -173,7 +187,7 @@ nav.nav a.active {
 .brand .tagline {
   display: block;
   margin: 2px 0 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-style: italic;
   font-size: 15px;
   color: #4a5f5b;
@@ -260,7 +274,7 @@ nav.nav a.active {
 .ticker-text {
   padding: 0 16px;
   font-size: 14px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -322,13 +336,14 @@ main {
 }
 
 .hero h2 {
-  font: 700 43px/1.08 var(--font-serif);
+  font: 700 32px/1.15 var(--font-sans);
+  letter-spacing: -0.02em;
   margin: 13px 0;
 }
 
 .hero p {
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: var(--text-lg);
+  line-height: 1.47;
   color: #e8f0ee;
   max-width: 700px;
 }
@@ -354,9 +369,10 @@ main {
 }
 
 .section-title h3 {
-  font: 700 16px var(--font-serif);
+  font: 700 14px/1.2 var(--font-sans);
   margin: 0;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--green);
 }
 
@@ -451,7 +467,7 @@ main {
 
 .articles-header h2 {
   margin: 0;
-  font: 700 28px var(--font-serif);
+  font: 700 20px/1.2 var(--font-sans);
   color: var(--green);
 }
 
@@ -500,15 +516,15 @@ main {
 }
 
 .article-card h3 {
-  font: 700 20px/1.25 var(--font-serif);
+  font: 700 20px/1.25 var(--font-sans);
   color: var(--green);
   margin: 0 0 10px;
 }
 
 .article-card p {
   color: #53635f;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: 1.47;
   margin: 0 0 12px;
 }
 
@@ -555,7 +571,8 @@ main {
 }
 
 .detail-title {
-  font: 700 44px/1.12 var(--font-serif);
+  font: 700 32px/1.15 var(--font-sans);
+  letter-spacing: -0.02em;
   color: var(--green);
   margin: 15px 0;
 }
@@ -574,8 +591,8 @@ main {
 }
 
 .detail-content {
-  font-size: 18px;
-  line-height: 1.85;
+  font-size: var(--text-lg);
+  line-height: 1.5;
   color: #263936;
   white-space: pre-wrap;
 }
@@ -588,7 +605,7 @@ main {
 }
 
 .newsletter h3 {
-  font: 700 26px var(--font-serif);
+  font: 700 24px/1.2 var(--font-sans);
   margin: 0 0 8px;
 }
 
@@ -625,7 +642,7 @@ main {
 }
 
 .banner h2 {
-  font: 700 25px var(--font-serif);
+  font: 700 25px var(--font-sans);
   margin: 0;
 }
 
@@ -648,7 +665,7 @@ footer {
 }
 
 .footer-brand {
-  font: 700 27px var(--font-serif);
+  font: 700 20px/1.2 var(--font-sans);
   color: #fff;
 }
 
@@ -690,7 +707,8 @@ footer a:hover,
 }
 
 .legal h1 {
-  font: 700 36px/1.15 var(--font-serif);
+  font: 700 28px/1.2 var(--font-sans);
+  letter-spacing: -0.02em;
   color: var(--green);
   margin: 0 0 12px;
 }
@@ -702,7 +720,7 @@ footer a:hover,
 }
 
 .legal h2 {
-  font: 700 22px var(--font-serif);
+  font: 700 20px/1.2 var(--font-sans);
   color: var(--green);
   margin: 28px 0 10px;
 }
@@ -769,7 +787,7 @@ footer a:hover,
   }
 
   .hero h2 {
-    font-size: 34px;
+    font-size: 28px;
   }
 
   .articles-grid {
@@ -812,7 +830,7 @@ footer a:hover,
   }
 
   .hero h2 {
-    font-size: 29px;
+    font-size: 24px;
   }
 
   .articles-grid,
@@ -831,7 +849,7 @@ footer a:hover,
   }
 
   .detail-title {
-    font-size: 31px;
+    font-size: 24px;
   }
 
   #article-detail {
@@ -851,4 +869,30 @@ footer a:hover,
   .legal {
     padding: 24px 18px 36px;
   }
+}
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+li,
+button,
+input,
+textarea,
+select,
+label,
+span,
+small,
+strong,
+em,
+blockquote,
+td,
+th {
+  font-family: var(--font-sans) !important;
 }
