@@ -249,27 +249,25 @@
 
     /* NEWS GRID */
 
-    .news-grid {
+    .news-grid,
+    .featured {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: start;
     }
 
     .news-card {
-      background: white;
-      border: 1px solid var(--border);
-      overflow: hidden;
+      display: block;
+      background: transparent;
+      border: 0;
+      color: #161616;
+      text-decoration: none;
       cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-    }
-
-    .news-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,.08);
     }
 
     .news-image {
-      height: 175px;
+      aspect-ratio: 16 / 10;
       background:
         linear-gradient(
           135deg,
@@ -281,41 +279,22 @@
     }
 
     .news-body {
-      padding: 17px;
-    }
-
-    .news-category {
-      color: var(--green2);
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
+      padding: 12px 0 0;
     }
 
     .news-body h4 {
-      font: 700 20px/1.25 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      color: var(--green);
-      margin: 8px 0;
-    }
-
-    .news-body p {
-      font-size: 13px;
-      line-height: 1.55;
-      color: #53635f;
+      font: 700 16px/1.35 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: #161616;
+      margin: 0 0 8px;
     }
 
     .news-date {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 12px;
+      color: #8a8a8a;
+      font-size: 13px;
+      margin: 0;
     }
 
     /* FEATURED */
-
-    .featured {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 20px;
-    }
 
     .featured-main {
       background: white;
@@ -539,7 +518,8 @@
 
     @media(max-width: 900px) {
 
-      .news-grid {
+      .news-grid,
+      .featured {
         grid-template-columns: repeat(2, 1fr);
       }
 
@@ -548,7 +528,7 @@
       }
 
       .featured {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
       }
 
     }
@@ -582,6 +562,7 @@
     @media(max-width: 600px) {
 
       .news-grid,
+      .featured,
       .sector-grid {
         grid-template-columns: 1fr;
       }
@@ -1184,14 +1165,10 @@
 
       if (!date) return "";
 
-      return new Date(date).toLocaleDateString(
-        "fr-FR",
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }
-      );
+      const parsed = new Date(date);
+      const month = parsed.toLocaleDateString("fr-FR", { month: "long" });
+
+      return parsed.getDate() + " " + month + ", " + parsed.getFullYear();
 
     }
 
@@ -1210,10 +1187,13 @@
     function creerCarte(article) {
 
       const card =
-        document.createElement("article");
+        document.createElement("a");
 
       card.className =
         "news-card";
+
+      card.href =
+        "/article?id=" + encodeURIComponent(article.id);
 
 
       const image =
@@ -1238,28 +1218,11 @@
         "news-body";
 
 
-      const category =
-        document.createElement("div");
-
-      category.className =
-        "news-category";
-
-      category.textContent =
-        article.categorie || "Banques & Finance";
-
-
       const title =
         document.createElement("h4");
 
       title.textContent =
         article.titre || "Sans titre";
-
-
-      const text =
-        document.createElement("p");
-
-      text.textContent =
-        extrait(article.contenu);
 
 
       const date =
@@ -1269,27 +1232,14 @@
         "news-date";
 
       date.textContent =
-        `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
+        formatDate(article.created_at);
 
 
-      body.appendChild(category);
       body.appendChild(title);
-      body.appendChild(text);
       body.appendChild(date);
 
       card.appendChild(image);
       card.appendChild(body);
-
-
-      card.addEventListener(
-        "click",
-        function() {
-
-          window.location.href =
-            `/article?id=${encodeURIComponent(article.id)}`;
-
-        }
-      );
 
 
       return card;
@@ -1468,7 +1418,7 @@
           "featuredStatus"
         ).textContent =
           articles.length
-            ? "Dernière publication"
+            ? ""
             : "Aucun article";
 
 
@@ -1516,53 +1466,42 @@
         }
 
 
-        /* ARTICLE VEDETTE */
-
-        featuredArea.appendChild(
-          creerArticleVedette(
-            articles[0]
-          )
-        );
-
-
-        /* ARTICLES SECONDAIRES */
-
-        const side =
-          document.createElement("div");
-
-        side.className =
-          "side-news";
-
-
         articles
-          .slice(1, 4)
+          .slice(0, 4)
           .forEach(article => {
 
-            side.appendChild(
-              creerSideArticle(
-                article
-              )
-            );
-
-          });
-
-
-        featuredArea.appendChild(
-          side
-        );
-
-
-        /* GRILLE */
-
-        articles
-          .slice(0, 12)
-          .forEach(article => {
-
-            grid.appendChild(
+            featuredArea.appendChild(
               creerCarte(article)
             );
 
           });
+
+
+        const suite =
+          articles.slice(4);
+
+        document.getElementById(
+          "newsCount"
+        ).textContent =
+          suite.length
+            ? `${suite.length} article${suite.length > 1 ? "s" : ""}`
+            : "";
+
+
+        suite.forEach(article => {
+
+          grid.appendChild(
+            creerCarte(article)
+          );
+
+        });
+
+
+        if (!suite.length) {
+
+          grid.closest("section").hidden = true;
+
+        }
 
 
       } catch (error) {
