@@ -251,35 +251,6 @@ nav.nav a.active {
   font-size: 15px;
 }
 
-.ticker {
-  display: flex;
-  margin: 0;
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  min-height: 40px;
-  align-items: center;
-  overflow: hidden;
-}
-
-.flash {
-  background: var(--red);
-  color: #fff;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  padding: 12px 16px;
-  white-space: nowrap;
-}
-
-.ticker-text {
-  padding: 0 16px;
-  font-size: 14px;
-  font-family: var(--font-sans);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 main {
   max-width: 1250px;
   margin: auto;

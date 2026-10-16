@@ -50,20 +50,6 @@
 
   </div>
 
-  <!-- FLASH -->
-
-  <div class="ticker">
-
-    <div class="flash">
-      FLASH
-    </div>
-
-    <div class="ticker-text" id="flashText">
-      Bienvenue sur Le Financier Ivoirien.
-    </div>
-
-  </div>
-
   <main id="mainContent">
 
     <!-- UNE -->
@@ -486,8 +472,6 @@
 
       afficherArticles();
 
-      afficherFlash();
-
     }
 
     /* ARTICLE PRINCIPAL */
@@ -778,44 +762,6 @@
         grid.appendChild(card);
 
       });
-
-    }
-
-    /* FLASH */
-
-    function afficherFlash() {
-
-      const flash =
-        document.getElementById(
-          "flashText"
-        );
-
-      if (!articles.length) {
-
-        flash.textContent =
-          "Bienvenue sur Le Financier Ivoirien.";
-
-        return;
-
-      }
-
-      flash.innerHTML = "";
-
-      const bold =
-        document.createElement("b");
-
-      bold.textContent =
-        articles[0].categorie
-        ? articles[0].categorie + " : "
-        : "";
-
-      flash.appendChild(bold);
-
-      flash.appendChild(
-        document.createTextNode(
-          articles[0].titre || "Nouvel article publié"
-        )
-      );
 
     }
 
