@@ -166,7 +166,7 @@ async function publishNew(items) {
         titre: item.title,
         categorie: "Banques & Finance",
         auteur: "BCEAO",
-        image_url: "",
+        image_url: "https://le-financier-ivoirien.vercel.app/bceao-logo.png",
         contenu: articleBody(item)
       })
     });
