@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261016c">
+  <link rel="stylesheet" href="css/site.css?v=20261016d">
 </head>
 <body>
   <div id="site-chrome"></div>
@@ -22,16 +22,18 @@
 
       <form id="contactForm">
         <label for="name">Nom</label>
-        <input id="name" name="name" type="text" required>
+        <input id="name" name="name" type="text" required maxlength="120" autocomplete="name">
 
         <label for="email">E-mail</label>
-        <input id="email" name="email" type="email" required>
+        <input id="email" name="email" type="email" required maxlength="160" autocomplete="email">
 
         <label for="subject">Sujet</label>
-        <input id="subject" name="subject" type="text" required>
+        <input id="subject" name="subject" type="text" required maxlength="160">
 
         <label for="message">Message</label>
-        <textarea id="message" name="message" required></textarea>
+        <textarea id="message" name="message" required minlength="10" maxlength="4000"></textarea>
+
+        <input id="company" name="company" class="contact-honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <button type="submit">Envoyer</button>
       </form>
@@ -67,17 +69,41 @@
     <div class="copy">© 2026 Le Financier Ivoirien. Tous droits réservés.</div>
   </footer>
   <script>
-    document.getElementById("contactForm").addEventListener("submit", function (event) {
+    document.getElementById("contactForm").addEventListener("submit", async function (event) {
       event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button");
       const status = document.getElementById("contactStatus");
+      button.disabled = true;
       status.hidden = false;
-      status.textContent = "Merci. Votre message est prêt à être envoyé depuis votre messagerie.";
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const subject = document.getElementById("subject").value.trim();
-      const message = document.getElementById("message").value.trim();
-      const body = encodeURIComponent("Nom : " + name + "\nE-mail : " + email + "\n\n" + message);
-      window.location.href = "mailto:redaction@lefinancierivoirien.ci?subject=" + encodeURIComponent(subject) + "&body=" + body;
+      status.className = "lead";
+      status.textContent = "Envoi en cours…";
+
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value,
+            company: document.getElementById("company").value
+          })
+        });
+        const data = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(data.error || "L’envoi n’a pas abouti.");
+        }
+        form.reset();
+        status.classList.add("is-ok");
+        status.textContent = "Message envoyé. La rédaction vous répondra à l’adresse indiquée.";
+      } catch (error) {
+        status.classList.add("is-error");
+        status.textContent = error.message || "L’envoi n’a pas abouti. Réessayez.";
+      } finally {
+        button.disabled = false;
+      }
     });
   </script>
 </body>
