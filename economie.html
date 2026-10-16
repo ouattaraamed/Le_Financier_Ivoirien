@@ -121,34 +121,108 @@
       padding: 45px 5%;
     }
 
-    .page-heading {
-      margin-bottom: 35px;
+    .page-title {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.94) 0%,
+          rgba(255,255,255,.90) 34%,
+          rgba(255,255,255,.42) 62%,
+          rgba(255,255,255,.08) 100%
+        ),
+        url("economie-acteurs.jpg") center / cover no-repeat;
+      color: #10211f;
+      padding: 45px;
+      margin-bottom: 28px;
+      border-bottom: 5px solid var(--gold);
     }
 
-    .eyebrow {
-      color: var(--green2);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-size: 12px;
+    .page-title span {
+      display: inline-block;
+      background: var(--gold);
+      color: #17211f;
+      padding: 7px 10px;
+      font-size: 11px;
       font-weight: bold;
-      margin-bottom: 8px;
+      text-transform: uppercase;
     }
 
-    h1 {
-      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      font-size: 46px;
-      line-height: 1.1;
-      margin: 0 0 12px;
+    .page-title h2 {
+      font: 700 45px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      margin: 14px 0 8px;
+      color: #063f37;
+    }
+
+    .page-title p {
+      margin: 0;
+      color: #3d4d49;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section-header {
+      border-bottom: 3px solid var(--green);
+      padding-bottom: 10px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      margin: 0;
       color: var(--green);
+      font: 700 25px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
     }
 
-    .intro {
-      max-width: 780px;
+    .section-header small {
       color: var(--muted);
-      font-size: 17px;
     }
 
-    .featured {
+    .featured,
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .news-card {
+      display: block;
+      background: transparent;
+      border: 0;
+      color: #161616;
+      text-decoration: none;
+    }
+
+    .news-image {
+      aspect-ratio: 16 / 10;
+      background:
+        linear-gradient(135deg, #4e7f74, #d0ad50)
+        center / cover no-repeat;
+    }
+
+    .news-body {
+      padding: 12px 0 0;
+    }
+
+    .news-body h4 {
+      font: 700 16px/1.35 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: #161616;
+      margin: 0 0 8px;
+    }
+
+    .news-date {
+      color: #8a8a8a;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .featured-legacy {
       display: grid;
       grid-template-columns: 1.7fr 1fr;
       gap: 25px;
@@ -391,8 +465,9 @@
     }
 
     @media (max-width: 900px) {
-      .featured {
-        grid-template-columns: 1fr;
+      .featured,
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .articles-grid {
@@ -412,9 +487,53 @@
       }
     }
 
+    @media (max-width: 800px) {
+      .page-title {
+        padding: 30px 22px;
+        background-image:
+          linear-gradient(
+            90deg,
+            rgba(255,255,255,.98) 0%,
+            rgba(255,255,255,.95) 50%,
+            rgba(255,255,255,.78) 100%
+          ),
+          url("economie-acteurs.jpg");
+        background-size: auto, 260% auto;
+        background-position: center, 80% center;
+        background-repeat: no-repeat;
+      }
+
+      .page-title h2 {
+        font-size: 34px;
+      }
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 36px;
+      .page-title h2 {
+        font-size: 32px;
+      }
+
+      .featured,
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .news-body {
+        padding: 8px 0 0;
+      }
+
+      .news-body h4 {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .news-date {
+        font-size: 11px;
+      }
+
+      .section-header h3 {
+        font-size: 18px;
       }
 
       .articles-grid {
@@ -448,135 +567,31 @@
 
   <main>
 
-    <section class="page-heading">
-      <div class="eyebrow">Le Financier Ivoirien</div>
+    <section class="page-title">
+      <span>Politique & chiffres</span>
 
-      <h1>Économie</h1>
+      <h2>Économie</h2>
 
-      <p class="intro">
+      <p>
         Retrouvez l'essentiel de l'actualité économique ivoirienne,
         les grandes tendances de l'UEMOA et les analyses qui permettent
         de mieux comprendre l'économie.
       </p>
     </section>
 
-    <section class="featured">
-
-      <div id="featuredArticle" class="featured-main">
-        <div class="category">Économie</div>
-
-        <h2>
-          L'actualité économique ivoirienne
-        </h2>
-
-        <p>
-          Les principales informations et analyses économiques
-          publiées par Le Financier Ivoirien.
-        </p>
+    <section class="section">
+      <div class="section-header">
+        <h3>À la une</h3>
       </div>
-
-      <div id="sideNews" class="side-news">
-        <div class="news-item">
-          <div class="category">Économie</div>
-          <h3>Les dernières actualités économiques</h3>
-          <p>Chargement des articles...</p>
-        </div>
-      </div>
-
+      <div id="featuredArea" class="featured"></div>
     </section>
 
-    <section>
-
-      <div class="section-title">
-        <h2>Dernières actualités</h2>
+    <section class="section" id="latestSection">
+      <div class="section-header">
+        <h3>Dernières actualités</h3>
+        <small id="newsCount"></small>
       </div>
-
-      <div id="articlesGrid" class="articles-grid">
-        <div class="empty">
-          Chargement des actualités économiques...
-        </div>
-      </div>
-
-    </section>
-
-    <section class="domains">
-
-      <div class="section-title">
-        <h2>Les grands dossiers économiques</h2>
-      </div>
-
-      <div class="domain-grid">
-
-        <div class="domain">
-          <strong>01</strong>
-          <h3>Croissance & PIB</h3>
-        </div>
-
-        <div class="domain">
-          <strong>02</strong>
-          <h3>Inflation & Prix</h3>
-        </div>
-
-        <div class="domain">
-          <strong>03</strong>
-          <h3>Emploi & Développement</h3>
-        </div>
-
-        <div class="domain">
-          <strong>04</strong>
-          <h3>Finances publiques</h3>
-        </div>
-
-      </div>
-
-    </section>
-
-    <section class="education">
-
-      <div class="section-title">
-        <h2>Comprendre l'économie</h2>
-      </div>
-
-      <div class="education-grid">
-
-        <div class="education-card">
-          <h3>Le PIB</h3>
-          <p>
-            Comprendre ce que mesure le produit intérieur brut
-            et pourquoi il est important pour l'économie.
-          </p>
-        </div>
-
-        <div class="education-card">
-          <h3>L'inflation</h3>
-          <p>
-            Comprendre l'évolution générale des prix et
-            ses conséquences pour les ménages et les entreprises.
-          </p>
-        </div>
-
-        <div class="education-card">
-          <h3>La dette publique</h3>
-          <p>
-            Comprendre pourquoi les États empruntent et
-            comment leur dette est financée.
-          </p>
-        </div>
-
-      </div>
-
-    </section>
-
-    <section class="info">
-
-      <strong>Notre approche</strong>
-
-      <p>
-        Le Financier Ivoirien souhaite proposer une information économique
-        accessible, rigoureuse et utile aux étudiants, professionnels,
-        investisseurs, entrepreneurs et décideurs.
-      </p>
-
+      <div id="articlesGrid" class="news-grid"></div>
     </section>
 
   </main>
@@ -654,25 +669,48 @@
     }
 
 
-    function resume(text, length = 150) {
+    function formatDate(date) {
 
-      if (!text) return "";
+      if (!date) return "";
 
-      const clean = text.replace(/\s+/g, " ").trim();
+      const parsed = new Date(date);
+      const month = parsed.toLocaleDateString("fr-FR", { month: "long" });
 
-      if (clean.length <= length) {
-        return clean;
-      }
-
-      return clean.substring(0, length) + "...";
+      return parsed.getDate() + " " + month + ", " + parsed.getFullYear();
 
     }
 
 
-    function ouvrirArticle(id) {
+    function creerCarte(article) {
 
-      window.location.href =
-        `/article?id=${encodeURIComponent(id)}`;
+      const card = document.createElement("a");
+
+      card.className = "news-card";
+      card.href = "/article?id=" + encodeURIComponent(article.id);
+
+      const image = document.createElement("div");
+      image.className = "news-image";
+
+      if (article.image_url) {
+        image.style.backgroundImage = `url("${article.image_url}")`;
+      }
+
+      const body = document.createElement("div");
+      body.className = "news-body";
+
+      const title = document.createElement("h4");
+      title.textContent = article.titre || "Sans titre";
+
+      const date = document.createElement("div");
+      date.className = "news-date";
+      date.textContent = formatDate(article.created_at);
+
+      body.appendChild(title);
+      body.appendChild(date);
+      card.appendChild(image);
+      card.appendChild(body);
+
+      return card;
 
     }
 
@@ -680,13 +718,13 @@
     async function chargerArticles() {
 
       const featured =
-        document.getElementById("featuredArticle");
-
-      const sideNews =
-        document.getElementById("sideNews");
+        document.getElementById("featuredArea");
 
       const grid =
         document.getElementById("articlesGrid");
+
+      const latest =
+        document.getElementById("latestSection");
 
 
       try {
@@ -709,135 +747,48 @@
         if (!articles.length) {
 
           featured.innerHTML = `
-            <div class="category">Économie</div>
-
-            <h2>
-              Aucun article économique pour le moment
-            </h2>
-
-            <p>
-              Les prochaines actualités économiques apparaîtront ici.
-            </p>
-          `;
-
-          sideNews.innerHTML = "";
-
-          grid.innerHTML = `
             <div class="empty">
               Aucun article dans la catégorie « Économie » pour le moment.
             </div>
           `;
 
+          latest.hidden = true;
           return;
         }
 
 
-        const premier =
-          articles[0];
+        articles.slice(0, 4).forEach(article => {
+          featured.appendChild(creerCarte(article));
+        });
 
 
-        featured.innerHTML = `
+        const suite = articles.slice(4);
 
-          <div class="category">
-            ${escapeHtml(premier.categorie || "Économie")}
-          </div>
-
-          <h2>
-            ${escapeHtml(premier.titre)}
-          </h2>
-
-          <p>
-            ${escapeHtml(resume(premier.contenu, 220))}
-          </p>
-
-          <div style="margin-top:20px;">
-            <button
-              onclick="ouvrirArticle('${escapeHtml(premier.id)}')"
-              style="
-                border:0;
-                background:#e9b83f;
-                color:#111;
-                padding:11px 18px;
-                font-weight:bold;
-                cursor:pointer;
-              "
-            >
-              Lire l'article
-            </button>
-          </div>
-
-        `;
-
-
-        const secondaires =
-          articles.slice(1, 4);
-
-
-        sideNews.innerHTML =
-          secondaires.length
-            ? secondaires.map(article => `
-
-              <a
-                href="/article?id=${encodeURIComponent(article.id)}"
-                class="news-item"
-              >
-
-                <div class="category">
-                  ${escapeHtml(article.categorie || "Économie")}
-                </div>
-
-                <h3>
-                  ${escapeHtml(article.titre)}
-                </h3>
-
-                <p>
-                  ${escapeHtml(resume(article.contenu, 100))}
-                </p>
-
-              </a>
-
-            `).join("")
+        document.getElementById("newsCount").textContent =
+          suite.length
+            ? suite.length + " article" + (suite.length > 1 ? "s" : "")
             : "";
 
+        suite.forEach(article => {
+          grid.appendChild(creerCarte(article));
+        });
 
-        grid.innerHTML =
-          articles.map(article => `
-
-            <a
-              href="/article?id=${encodeURIComponent(article.id)}"
-              class="article-card"
-            >
-
-              <div class="category">
-                ${escapeHtml(article.categorie || "Économie")}
-              </div>
-
-              <h3>
-                ${escapeHtml(article.titre)}
-              </h3>
-
-              <p>
-                ${escapeHtml(resume(article.contenu, 180))}
-              </p>
-
-              <small style="color:#6d746f;">
-                ${escapeHtml(article.auteur || "Le Financier Ivoirien")}
-              </small>
-
-            </a>
-
-          `).join("");
+        if (!suite.length) {
+          latest.hidden = true;
+        }
 
 
       } catch (error) {
 
         console.error(error);
 
-        grid.innerHTML = `
+        featured.innerHTML = `
           <div class="empty">
             Impossible de charger les articles pour le moment.
           </div>
         `;
+
+        latest.hidden = true;
 
       }
 
