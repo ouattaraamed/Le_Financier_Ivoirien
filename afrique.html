@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Afrique & International — Le Financier Ivoirien</title>
+
+  <meta
+    name="description"
+    content="Actualités économiques africaines et décisions des institutions internationales qui comptent pour la Côte d'Ivoire."
+  >
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
+
+  <style>
+    :root {
+      --green: #063f37;
+      --green2: #0b6657;
+      --gold: #e9b83f;
+      --paper: #f7f7f3;
+      --white: #ffffff;
+      --black: #111111;
+      --muted: #6d746f;
+      --line: #dfe3df;
+      --red: #d92f35;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      background: var(--paper);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      background: var(--green);
+      color: white;
+      padding: 8px 5%;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 22px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .brand {
+      display: block;
+    }
+
+    .logo {
+      width: auto;
+      height: 80px;
+      max-width: min(420px, 90vw);
+      object-fit: contain;
+      background: #000;
+      display: block;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    nav {
+      background: var(--green);
+      color: white;
+    }
+
+    .nav-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 0 5%;
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 14px 13px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--green2);
+      color: var(--gold);
+    }
+
+    main {
+      max-width: 1250px;
+      margin: auto;
+      padding: 45px 5%;
+    }
+
+    .page-title {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.94) 0%,
+          rgba(255,255,255,.90) 34%,
+          rgba(255,255,255,.42) 62%,
+          rgba(255,255,255,.08) 100%
+        ),
+        url("afrique-acteurs.jpg") center / cover no-repeat;
+      color: #10211f;
+      padding: 45px;
+      margin-bottom: 28px;
+      border-bottom: 5px solid var(--gold);
+    }
+
+    .page-title span {
+      display: inline-block;
+      background: var(--gold);
+      color: #17211f;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .page-title h2 {
+      font: 700 45px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      margin: 14px 0 8px;
+      color: #063f37;
+    }
+
+    .page-title p {
+      margin: 0;
+      color: #3d4d49;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section-header {
+      border-bottom: 3px solid var(--green);
+      padding-bottom: 10px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      margin: 0;
+      color: var(--green);
+      font: 700 25px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+    }
+
+    .section-header small {
+      color: var(--muted);
+    }
+
+    .featured,
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .news-card {
+      display: block;
+      background: transparent;
+      border: 0;
+      color: #161616;
+      text-decoration: none;
+    }
+
+    .news-image {
+      aspect-ratio: 16 / 10;
+      background:
+        linear-gradient(135deg, #4e7f74, #d0ad50)
+        center / cover no-repeat;
+    }
+
+    .news-body {
+      padding: 12px 0 0;
+    }
+
+    .news-body h4 {
+      font: 700 16px/1.35 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: #161616;
+      margin: 0 0 8px;
+    }
+
+    .news-date {
+      color: #8a8a8a;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .featured-legacy {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 25px;
+      margin-bottom: 45px;
+    }
+
+    .featured-main {
+      background: var(--green);
+      color: white;
+      min-height: 350px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 4px;
+    }
+
+    .featured-main .category {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .featured-main h2 {
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 34px;
+      line-height: 1.15;
+      margin: 0 0 12px;
+    }
+
+    .featured-main p {
+      color: #dce7e4;
+      margin: 0;
+    }
+
+    .side-news {
+      display: grid;
+      gap: 15px;
+    }
+
+    .news-item {
+      background: white;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--gold);
+    }
+
+    .news-item .category {
+      color: var(--green2);
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .news-item h3 {
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 20px;
+      line-height: 1.25;
+      margin: 7px 0;
+    }
+
+    .news-item p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 28px;
+      color: var(--green);
+    }
+
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .article-card {
+      background: white;
+      border: 1px solid var(--line);
+      padding: 22px;
+      transition: transform .2s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .article-card .category {
+      color: var(--green2);
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .article-card h3 {
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 21px;
+      line-height: 1.25;
+      margin: 8px 0;
+    }
+
+    .article-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .domains {
+      margin-top: 50px;
+    }
+
+    .domain-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .domain {
+      background: var(--green);
+      color: white;
+      padding: 25px 20px;
+      min-height: 130px;
+      border-radius: 3px;
+    }
+
+    .domain strong {
+      color: var(--gold);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .domain h3 {
+      margin: 8px 0 0;
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 21px;
+    }
+
+    .education {
+      margin-top: 50px;
+      background: white;
+      padding: 30px;
+      border: 1px solid var(--line);
+    }
+
+    .education-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .education-card {
+      border-top: 3px solid var(--gold);
+      padding-top: 15px;
+    }
+
+    .education-card h3 {
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: var(--green);
+      margin: 0 0 8px;
+    }
+
+    .education-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .info {
+      margin-top: 45px;
+      background: #edf1ed;
+      border-left: 5px solid var(--green2);
+      padding: 25px;
+    }
+
+    .info strong {
+      color: var(--green);
+    }
+
+    footer {
+      background: var(--green);
+      color: white;
+      margin-top: 50px;
+    }
+
+    .footer-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 40px 5%;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 35px;
+    }
+
+    footer h3 {
+      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: var(--gold);
+      margin-top: 0;
+    }
+
+    footer p,
+    footer a {
+      color: #dce7e4;
+      font-size: 14px;
+    }
+
+    footer a {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .copyright {
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding: 15px 5%;
+      text-align: center;
+      color: #bfcac6;
+      font-size: 12px;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed var(--line);
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 900px) {
+      .featured,
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .domain-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .education-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .page-title {
+        padding: 30px 22px;
+        background-image:
+          linear-gradient(
+            90deg,
+            rgba(255,255,255,.98) 0%,
+            rgba(255,255,255,.95) 50%,
+            rgba(255,255,255,.78) 100%
+          ),
+          url("afrique-acteurs.jpg");
+        background-size: auto, 260% auto;
+        background-position: center, 80% center;
+        background-repeat: no-repeat;
+      }
+
+      .page-title h2 {
+        font-size: 34px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-title h2 {
+        font-size: 32px;
+      }
+
+      .featured,
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .news-body {
+        padding: 8px 0 0;
+      }
+
+      .news-body h4 {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .news-date {
+        font-size: 11px;
+      }
+
+      .section-header h3 {
+        font-size: 18px;
+      }
+
+      .articles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .domain-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .featured-main {
+        padding: 25px;
+      }
+
+      .featured-main h2 {
+        font-size: 27px;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+
+<body>
+  <div id="site-chrome"></div>
+  <script src="js/site.js"></script>
+
+  <main>
+
+    <section class="page-title">
+      <span>Continent & monde</span>
+
+      <h2>Afrique & International</h2>
+
+      <p>
+        Retrouvez l'actualité économique africaine et les décisions
+        des institutions internationales qui comptent pour la Côte d'Ivoire.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h3>À la une</h3>
+      </div>
+      <div id="featuredArea" class="featured"></div>
+    </section>
+
+    <section class="section" id="latestSection">
+      <div class="section-header">
+        <h3>Dernières actualités</h3>
+        <small id="newsCount"></small>
+      </div>
+      <div id="articlesGrid" class="news-grid"></div>
+    </section>
+
+  </main>
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <div>
+        <h3>Le Financier Ivoirien</h3>
+
+        <p>
+          L'information financière qui compte.
+        </p>
+
+        <p>
+          Actualité économique, finance, entreprises,
+          marchés et éducation financière.
+        </p>
+      </div>
+
+      <div>
+        <h3>Rubriques</h3>
+
+        <a href="index.html">Accueil</a>
+        <a href="brvm.html">Marchés & Bourse</a>
+        <a href="banques.html">Banques & Finance</a>
+        <a href="entreprises.html">Entreprises</a>
+        <a href="economie.html">Économie</a>
+      </div>
+
+      <div>
+        <h3>Le média</h3>
+
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2026 Le Financier Ivoirien — Tous droits réservés.
+    </div>
+
+  </footer>
+
+
+  <script src="js/config.js"></script>
+  <script>
+
+    const SUPABASE_URL = window.LFI.supabaseUrl;
+    const SUPABASE_KEY = window.LFI.supabaseKey;
+
+    const API_URL =
+      `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq.${encodeURIComponent("Afrique & International")}&order=created_at.desc&limit=20`;
+
+    const headers = {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    };
+
+
+    function escapeHtml(text) {
+
+      if (!text) return "";
+
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    function formatDate(date) {
+
+      if (!date) return "";
+
+      const parsed = new Date(date);
+      const month = parsed.toLocaleDateString("fr-FR", { month: "long" });
+
+      return parsed.getDate() + " " + month + ", " + parsed.getFullYear();
+
+    }
+
+
+    function creerCarte(article) {
+
+      const card = document.createElement("a");
+
+      card.className = "news-card";
+      card.href = "/article?id=" + encodeURIComponent(article.id);
+
+      const image = document.createElement("div");
+      image.className = "news-image";
+
+      if (article.image_url) {
+        image.style.backgroundImage = `url("${article.image_url}")`;
+      }
+
+      const body = document.createElement("div");
+      body.className = "news-body";
+
+      const title = document.createElement("h4");
+      title.textContent = article.titre || "Sans titre";
+
+      const date = document.createElement("div");
+      date.className = "news-date";
+      date.textContent = formatDate(article.created_at);
+
+      body.appendChild(title);
+      body.appendChild(date);
+      card.appendChild(image);
+      card.appendChild(body);
+
+      return card;
+
+    }
+
+
+    async function chargerArticles() {
+
+      const featured =
+        document.getElementById("featuredArea");
+
+      const grid =
+        document.getElementById("articlesGrid");
+
+      const latest =
+        document.getElementById("latestSection");
+
+
+      try {
+
+        const response =
+          await fetch(API_URL, {
+            headers
+          });
+
+
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement.");
+        }
+
+
+        const articles =
+          await response.json();
+
+
+        if (!articles.length) {
+
+          featured.innerHTML = `
+            <div class="empty">
+              Aucun article dans la catégorie « Afrique & International » pour le moment.
+            </div>
+          `;
+
+          latest.hidden = true;
+          return;
+        }
+
+
+        articles.slice(0, 4).forEach(article => {
+          featured.appendChild(creerCarte(article));
+        });
+
+
+        const suite = articles.slice(4);
+
+        document.getElementById("newsCount").textContent =
+          suite.length
+            ? suite.length + " article" + (suite.length > 1 ? "s" : "")
+            : "";
+
+        suite.forEach(article => {
+          grid.appendChild(creerCarte(article));
+        });
+
+        if (!suite.length) {
+          latest.hidden = true;
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        featured.innerHTML = `
+          <div class="empty">
+            Impossible de charger les articles pour le moment.
+          </div>
+        `;
+
+        latest.hidden = true;
+
+      }
+
+    }
+
+
+    chargerArticles();
+
+  </script>
+
+</body>
+
+</html>

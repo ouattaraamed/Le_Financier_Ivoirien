@@ -17,7 +17,7 @@
     { href: root + "banques.html", id: "banques.html", label: "Banques & Finance" },
     { href: root + "entreprises.html", id: "entreprises.html", label: "Entreprises" },
     { href: root + "economie.html", id: "economie.html", label: "Économie" },
-    { href: root + "index.html", id: "afrique", label: "Afrique & International" },
+    { href: root + "afrique.html", id: "afrique.html", label: "Afrique & International" },
     { href: root + "index.html", id: "investissement", label: "Investissement" },
     { href: root + "portraits.html", id: "portraits.html", label: "Portraits & Interviews" }
   ];
@@ -80,6 +80,7 @@
       { href: root + "banques.html", label: "Banques & Finance" },
       { href: root + "entreprises.html", label: "Entreprises" },
       { href: root + "economie.html", label: "Économie" },
+      { href: root + "afrique.html", label: "Afrique & International" },
       { href: root + "index.html", label: "Investissement" }
     ];
 
