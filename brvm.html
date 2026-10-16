@@ -1,1232 +1,186 @@
 <!doctype html>
 <html lang="fr">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>BRVM & Marchés — Le Financier Ivoirien</title>
-
-  <meta
-    name="description"
-    content="BRVM, marchés financiers, actions, indices et actualités boursières par Le Financier Ivoirien."
-  >
+  <meta name="color-scheme" content="light">
+  <title>Marchés & Bourse — Le Financier Ivoirien</title>
+  <meta name="description" content="Le parquet de la BRVM : indices, compartiments et actualités des marchés, par Le Financier Ivoirien.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/brvm.html">
   <link rel="stylesheet" href="css/site.css">
-
-  <style>
-
-    :root {
-      --green: #063f37;
-      --green2: #0b6657;
-      --gold: #e9b83f;
-      --paper: #f5f7f5;
-      --white: #fff;
-      --ink: #10211f;
-      --muted: #667471;
-      --border: #dce4e0;
-      --red: #d92f35;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* TOP */
-
-    .top {
-      background: #082d2a;
-      color: white;
-      padding: 9px 4%;
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-    }
-
-    /* HEADER */
-
-    header {
-      background: white;
-      padding: 22px 4%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-
-  .logo {
-  width: auto;
-  height: 80px;
-  max-width: min(420px, 70vw);
-  object-fit: contain;
-  background: #000;
-  border: none;
-  border-radius: 0;
-  display: block;
-}
-    .brand h1 {
-      margin: 0;
-      color: var(--green);
-      font: 700 32px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    .brand p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .claim {
-      background: #e8f1ee;
-      border-right: 5px solid var(--gold);
-      padding: 14px 20px;
-      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      color: var(--green);
-      font-weight: bold;
-    }
-
-    /* NAV */
-
-    nav {
-      background: var(--green);
-      color: white;
-      display: flex;
-      padding: 0 4%;
-      overflow-x: auto;
-    }
-
-    nav a {
-      padding: 16px 14px;
-      white-space: nowrap;
-      font-size: 13px;
-    }
-
-    nav a:hover,
-    nav a.active {
-      background: var(--gold);
-      color: #10211f;
-    }
-
-    /* MAIN */
-
-    main {
-      max-width: 1250px;
-      margin: auto;
-      padding: 25px 4% 60px;
-    }
-
-    /* TITLE */
-
-    .page-title {
-      background:
-        linear-gradient(
-          120deg,
-          rgba(6,63,55,.96),
-          rgba(11,102,87,.90)
-        );
-      color: white;
-      padding: 45px;
-      margin-bottom: 25px;
-      border-bottom: 5px solid var(--gold);
-    }
-
-    .page-title span {
-      display: inline-block;
-      background: var(--gold);
-      color: #17211f;
-      padding: 7px 10px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .page-title h2 {
-      font: 700 45px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      margin: 14px 0 8px;
-    }
-
-    .page-title p {
-      margin: 0;
-      color: #dce9e5;
-      max-width: 700px;
-      line-height: 1.6;
-    }
-
-    /* SECTION */
-
-    .section {
-      margin-top: 28px;
-    }
-
-    .section-header {
-      border-bottom: 3px solid var(--green);
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section-header h3 {
-      margin: 0;
-      color: var(--green);
-      font: 700 25px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    .section-header small {
-      color: var(--muted);
-    }
-
-    /* INDICES */
-
-    .indices {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-
-    .index-card {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 22px;
-    }
-
-    .index-card small {
-      color: var(--muted);
-    }
-
-    .index-card strong {
-      display: block;
-      font-size: 28px;
-      margin: 12px 0;
-      color: var(--green);
-    }
-
-    .pending {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* PALMARES */
-
-    .palmares {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .panel {
-      background: white;
-      border: 1px solid var(--border);
-    }
-
-    .panel h4 {
-      margin: 0;
-      padding: 15px;
-      background: #edf3f0;
-      color: var(--green);
-      font-family: Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    .panel-body {
-      padding: 25px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    /* TABLE */
-
-    .table-container {
-      background: white;
-      border: 1px solid var(--border);
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-    }
-
-    th {
-      background: var(--green);
-      color: white;
-      padding: 14px;
-      text-align: left;
-      font-size: 12px;
-    }
-
-    td {
-      padding: 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .empty-table {
-      text-align: center;
-      padding: 35px;
-      color: var(--muted);
-    }
-
-    /* ACTUALITES */
-
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .news-card {
-      background: white;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .news-image {
-      height: 170px;
-      background: linear-gradient(135deg, #4e7f74, #d0ad50);
-      background-size: cover;
-      background-position: center;
-    }
-
-    .news-body {
-      padding: 16px;
-    }
-
-    .news-category {
-      color: var(--green2);
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .news-body h4 {
-      font: 700 19px/1.2 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      color: var(--green);
-      margin: 8px 0;
-    }
-
-    .news-body p {
-      font-size: 13px;
-      line-height: 1.5;
-      color: #53635f;
-    }
-
-    .news-date {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    /* EDUCATION */
-
-    .education {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-
-    .education-card {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 22px;
-    }
-
-    .education-card .number {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: var(--gold);
-      display: grid;
-      place-items: center;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .education-card h4 {
-      color: var(--green);
-      font: 700 19px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      margin: 0 0 8px;
-    }
-
-    .education-card p {
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 13px;
-    }
-
-    /* INFO */
-
-    .info {
-      margin-top: 28px;
-      background: #063f37;
-      color: white;
-      padding: 28px;
-    }
-
-    .info h3 {
-      font: 700 25px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      margin-top: 0;
-    }
-
-    .info p {
-      color: #d9e7e3;
-      line-height: 1.7;
-      max-width: 850px;
-    }
-
-    /* FOOTER */
-
-    footer {
-      background: #071d1b;
-      color: #dce7e4;
-      padding: 40px 4% 20px;
-    }
-
-    .footer-grid {
-      max-width: 1250px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 30px;
-    }
-
-    .footer-brand {
-      color: white;
-      font: 700 27px Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    footer h4 {
-      color: var(--gold);
-      margin-top: 0;
-    }
-
-    footer a {
-      display: block;
-      color: #bdcbc8;
-      margin: 9px 0;
-      font-size: 13px;
-    }
-
-    .copyright {
-      max-width: 1250px;
-      margin: 30px auto 0;
-      padding-top: 15px;
-      border-top: 1px solid #29413d;
-      color: #8da09c;
-      font-size: 12px;
-    }
-
-    /* MOBILE */
-
-    @media(max-width: 800px) {
-
-      .claim {
-        display: none;
-      }
-
-      .brand h1 {
-        font-size: 25px;
-      }
-
-      .indices,
-      .palmares,
-      .news-grid,
-      .education,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .page-title {
-        padding: 30px 22px;
-      }
-
-      .page-title h2 {
-        font-size: 34px;
-      }
-
-    }
-
-    @media(max-width: 500px) {
-
-      .top {
-        display: none;
-      }
-
-      header {
-        padding: 18px 4%;
-      }
-
-      .logo {
-        width: auto;
-        height: 56px;
-        max-width: 70vw;
-      }
-
-      .brand h1 {
-        font-size: 22px;
-      }
-
-      .brand p {
-        font-size: 10px;
-      }
-
-      nav a {
-        padding: 14px 10px;
-      }
-
-      main {
-        padding-left: 3%;
-        padding-right: 3%;
-      }
-
-      .page-title h2 {
-        font-size: 30px;
-      }
-
-    }
-
-  </style>
-  <link rel="stylesheet" href="css/site.css">
-
 </head>
-
-
 <body>
-
   <div id="site-chrome"></div>
   <script src="js/site.js"></script>
 
-
-  <main>
-
-
-    <!-- TITRE -->
-
-    <section class="page-title">
-
-      <span>
-        Marchés financiers
-      </span>
-
-      <h2>
-        BRVM & Marchés
-      </h2>
-
-      <p>
-        Retrouvez l'essentiel de l'actualité boursière,
-        des indices et des sociétés cotées de la
-        Bourse Régionale des Valeurs Mobilières.
-      </p>
-
+  <main class="parquet">
+    <section class="parquet-stage">
+      <div class="parquet-stage-copy">
+        <p class="parquet-kicker">Place de la bourse · Abidjan</p>
+        <h1>Le parquet</h1>
+        <p>La BRVM lue comme une séance : les indices qui donnent le ton, les compartiments de la cote, le fil de l’actualité.</p>
+      </div>
+      <div class="parquet-clock" aria-live="polite">
+        <span class="parquet-clock-time" id="parquetTime">--:--:--</span>
+        <span class="parquet-clock-day" id="parquetDay">Abidjan</span>
+        <span class="parquet-clock-meta">Heure d’Abidjan</span>
+      </div>
     </section>
 
+    <div class="parquet-tape" aria-hidden="true">
+      <div class="parquet-tape-track" id="parquetTape"></div>
+    </div>
 
-    <!-- INDICES -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          📊 Indices BRVM
-        </h3>
-
-        <small>
-          Données de marché
-        </small>
-
-      </div>
-
-
-      <div class="indices">
-
-        <div class="index-card">
-
-          <small>
-            BRVM Composite
-          </small>
-
-          <strong>
-            —
-          </strong>
-
-          <span class="pending">
-            Donnée de marché à connecter
-          </span>
-
-        </div>
-
-
-        <div class="index-card">
-
-          <small>
-            BRVM 30
-          </small>
-
-          <strong>
-            —
-          </strong>
-
-          <span class="pending">
-            Donnée de marché à connecter
-          </span>
-
-        </div>
-
-
-        <div class="index-card">
-
-          <small>
-            BRVM Prestige
-          </small>
-
-          <strong>
-            —
-          </strong>
-
-          <span class="pending">
-            Donnée de marché à connecter
-          </span>
-
-        </div>
-
-      </div>
-
+    <section class="parquet-books">
+      <article>
+        <p>01</p>
+        <h2>Composite</h2>
+        <span>L’ensemble de la cote. Le thermomètre du marché régional.</span>
+      </article>
+      <article>
+        <p>02</p>
+        <h2>BRVM 30</h2>
+        <span>Les trente valeurs les plus suivies. Là où se concentre l’activité.</span>
+      </article>
+      <article>
+        <p>03</p>
+        <h2>Prestige</h2>
+        <span>Les sociétés tenues à un socle de gouvernance plus exigeant.</span>
+      </article>
     </section>
 
-
-    <!-- PALMARES -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          📈 Palmarès
-        </h3>
-
-        <small>
-          Séance boursière
-        </small>
-
+    <section class="parquet-floor">
+      <header>
+        <h2>Les compartiments</h2>
+        <span>Six lectures de la même séance</span>
+      </header>
+      <div class="parquet-sectors">
+        <article><b>01</b><h3>Banques</h3><p>Le cœur de la cote, et souvent son volume.</p></article>
+        <article><b>02</b><h3>Télécoms</h3><p>Les titres que tout le marché regarde en premier.</p></article>
+        <article><b>03</b><h3>Agro-industrie</h3><p>Le lien entre la campagne, l’usine et la bourse.</p></article>
+        <article><b>04</b><h3>Énergie</h3><p>Production, distribution, et le prix de l’activité.</p></article>
+        <article><b>05</b><h3>Distribution</h3><p>La consommation, lue dans les résultats.</p></article>
+        <article><b>06</b><h3>Industrie</h3><p>Les valeurs qui fabriquent l’économie réelle.</p></article>
       </div>
-
-
-      <div class="palmares">
-
-
-        <div class="panel">
-
-          <h4>
-            🟢 Plus fortes hausses
-          </h4>
-
-          <div class="panel-body">
-
-            Les données du palmarès seront
-            affichées après connexion à une
-            source de marché fiable.
-
-          </div>
-
-        </div>
-
-
-        <div class="panel">
-
-          <h4>
-            🔴 Plus fortes baisses
-          </h4>
-
-          <div class="panel-body">
-
-            Les données du palmarès seront
-            affichées après connexion à une
-            source de marché fiable.
-
-          </div>
-
-        </div>
-
-      </div>
-
     </section>
 
-
-    <!-- VALEURS -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          🏢 Valeurs cotées
-        </h3>
-
-        <small>
-          Tableau de suivi
-        </small>
-
+    <section class="parquet-news">
+      <header>
+        <h2>Le fil de la séance</h2>
+        <span id="newsCount">—</span>
+      </header>
+      <div id="newsGrid">
+        <p class="parquet-empty">Ouverture du fil…</p>
       </div>
-
-
-      <div class="table-container">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Société
-              </th>
-
-              <th>
-                Symbole
-              </th>
-
-              <th>
-                Cours
-              </th>
-
-              <th>
-                Variation
-              </th>
-
-              <th>
-                Volume
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            <tr>
-
-              <td
-                colspan="5"
-                class="empty-table"
-              >
-
-                Les cours des sociétés cotées
-                seront disponibles après
-                connexion aux données BRVM.
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
     </section>
-
-
-    <!-- ACTUALITES -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          📰 Actualités BRVM
-        </h3>
-
-        <small id="newsCount">
-          Chargement...
-        </small>
-
-      </div>
-
-
-      <div
-        class="news-grid"
-        id="newsGrid"
-      >
-
-        <div class="panel">
-
-          <div class="panel-body">
-            Chargement des actualités...
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- EDUCATION -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          📚 Comprendre la BRVM
-        </h3>
-
-        <small>
-          Éducation financière
-        </small>
-
-      </div>
-
-
-      <div class="education">
-
-
-        <div class="education-card">
-
-          <div class="number">
-            1
-          </div>
-
-          <h4>
-            Qu'est-ce que la BRVM ?
-          </h4>
-
-          <p>
-            Découvrez le fonctionnement de la
-            Bourse Régionale des Valeurs Mobilières
-            et son rôle dans le financement des
-            entreprises de l'UEMOA.
-          </p>
-
-        </div>
-
-
-        <div class="education-card">
-
-          <div class="number">
-            2
-          </div>
-
-          <h4>
-            Comment acheter une action ?
-          </h4>
-
-          <p>
-            Comprenez les étapes essentielles
-            pour investir sur le marché boursier
-            régional avec un intermédiaire habilité.
-          </p>
-
-        </div>
-
-
-        <div class="education-card">
-
-          <div class="number">
-            3
-          </div>
-
-          <h4>
-            Comprendre un dividende
-          </h4>
-
-          <p>
-            Découvrez ce qu'est un dividende,
-            pourquoi une entreprise en verse et
-            comment l'investisseur peut en bénéficier.
-          </p>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- INFO -->
-
-    <section class="info">
-
-      <h3>
-        Le marché en perspective
-      </h3>
-
-      <p>
-        Le Financier Ivoirien ambitionne de rendre
-        l'information financière et boursière plus
-        accessible aux investisseurs, aux étudiants,
-        aux entrepreneurs et au grand public.
-      </p>
-
-      <p>
-        Les données de cours affichées sur cette page
-        seront alimentées par une source de marché
-        fiable avant leur mise en ligne.
-      </p>
-
-    </section>
-
-
   </main>
 
-
-  <!-- FOOTER -->
-
-  <footer>
-
-    <div class="footer-grid">
-
-
-      <div>
-
-        <div class="footer-brand">
-          Le Financier Ivoirien
-        </div>
-
-        <p>
-          L'information financière qui compte.
-        </p>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Navigation
-        </h4>
-
-        <a href="index.html">
-          Accueil
-        </a>
-
-        <a href="brvm.html">
-          BRVM & Marchés
-        </a>
-
-        <a href="entreprises.html">
-          Entreprises
-        </a>
-
-        <a href="economie.html">
-          Économie
-        </a>
-        <a href="a-propos.html">À propos</a>
-        <a href="contact.html">Contact</a>
-        <a href="mentions-legales.html">Mentions légales</a>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Finance
-        </h4>
-
-        <a href="#">
-          Actions
-        </a>
-
-        <a href="#">
-          Obligations
-        </a>
-
-        <a href="#">
-          Dividendes
-        </a>
-
-        <a href="#">
-          Investissement
-        </a>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Suivez-nous
-        </h4>
-
-        <a href="#">
-          LinkedIn
-        </a>
-
-        <a href="#">
-          Facebook
-        </a>
-
-        <a href="#">
-          X
-        </a>
-
-        <a href="#">
-          WhatsApp
-        </a>
-
-      </div>
-
-
-    </div>
-
-
-    <div class="copyright">
-
-      © 2026 Le Financier Ivoirien.
-      Tous droits réservés.
-
-    </div>
-
-  </footer>
-
-
+  <footer></footer>
   <script src="js/config.js"></script>
   <script>
+    (function () {
+      var timeEl = document.getElementById("parquetTime");
+      var dayEl = document.getElementById("parquetDay");
 
-    const SUPABASE_URL = window.LFI.supabaseUrl;
-    const SUPABASE_KEY = window.LFI.supabaseKey;
-
-
-    function formatDate(date) {
-
-      if (!date) return "";
-
-      return new Date(date).toLocaleDateString(
-        "fr-FR",
-        {
+      function tick() {
+        var now = new Date();
+        timeEl.textContent = new Intl.DateTimeFormat("fr-FR", {
+          timeZone: "Africa/Abidjan",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hourCycle: "h23"
+        }).format(now);
+        var day = new Intl.DateTimeFormat("fr-FR", {
+          timeZone: "Africa/Abidjan",
+          weekday: "long",
           day: "numeric",
-          month: "long",
-          year: "numeric"
-        }
-      );
+          month: "long"
+        }).format(now);
+        dayEl.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+      }
 
-    }
+      tick();
+      setInterval(tick, 1000);
 
+      function setTape(items) {
+        var track = document.getElementById("parquetTape");
+        var line = items.join("    ·    ");
+        track.innerHTML = "<span>" + line + "</span><span>" + line + "</span>";
+      }
 
-    function extrait(text, length = 130) {
+      setTape([
+        "BRVM Composite",
+        "BRVM 30",
+        "BRVM Prestige",
+        "Actions",
+        "Obligations",
+        "Place d’Abidjan"
+      ]);
 
-      if (!text) return "";
+      var cfg = window.LFI || {};
+      var grid = document.getElementById("newsGrid");
+      var count = document.getElementById("newsCount");
 
-      return text.length > length
-        ? text.substring(0, length) + "..."
-        : text;
-
-    }
-
-
-    async function chargerActualites() {
-
-      const grid =
-        document.getElementById(
-          "newsGrid"
-        );
-
-
-      try {
-
-        const response =
-          await fetch(
-            `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq.Marchés%20%26%20Bourse&order=created_at.desc&limit=6`,
-            {
-              headers: {
-                apikey: SUPABASE_KEY,
-                Authorization:
-                  `Bearer ${SUPABASE_KEY}`
-              }
-            }
-          );
-
-
-        if (!response.ok) {
-          throw new Error(
-            "Erreur Supabase"
-          );
-        }
-
-
-        const articles =
-          await response.json();
-
-
-        document.getElementById(
-          "newsCount"
-        ).textContent =
-          `${articles.length} article${articles.length > 1 ? "s" : ""}`;
-
-
-        grid.innerHTML = "";
-
-
-        if (!articles.length) {
-
-          grid.innerHTML =
-            `<div class="panel">
-              <div class="panel-body">
-                Aucun article BRVM n'est encore publié.
-              </div>
-            </div>`;
-
-          return;
-
-        }
-
-
-        articles.forEach(article => {
-
-          const card =
-            document.createElement("article");
-
-          card.className =
-            "news-card";
-
-
-          const image =
-            document.createElement("div");
-
-          image.className =
-            "news-image";
-
-
-          if (article.image_url) {
-
-            image.style.backgroundImage =
-              `url("${article.image_url}")`;
-
+      fetch(
+        cfg.supabaseUrl +
+          "/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq.Marchés%20%26%20Bourse&order=created_at.desc&limit=6",
+        {
+          headers: {
+            apikey: cfg.supabaseKey,
+            Authorization: "Bearer " + cfg.supabaseKey
           }
-
-
-          const body =
-            document.createElement("div");
-
-          body.className =
-            "news-body";
-
-
-          const category =
-            document.createElement("div");
-
-          category.className =
-            "news-category";
-
-          category.textContent =
-            article.categorie || "Marchés";
-
-
-          const title =
-            document.createElement("h4");
-
-          title.textContent =
-            article.titre || "Sans titre";
-
-
-          const text =
-            document.createElement("p");
-
-          text.textContent =
-            extrait(article.contenu);
-
-
-          const date =
-            document.createElement("div");
-
-          date.className =
-            "news-date";
-
-          date.textContent =
-            `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
-
-
-          body.appendChild(category);
-
-          body.appendChild(title);
-
-          body.appendChild(text);
-
-          body.appendChild(date);
-
-
-          card.appendChild(image);
-
-          card.appendChild(body);
-
-
-          card.addEventListener(
-            "click",
-            function() {
-
-              window.location.href =
-                `index.html?article=${encodeURIComponent(article.id)}`;
-
+        }
+      )
+        .then(function (response) {
+          if (!response.ok) throw new Error("marche");
+          return response.json();
+        })
+        .then(function (articles) {
+          count.textContent = articles.length + " article" + (articles.length > 1 ? "s" : "");
+          if (articles.length) {
+            setTape(articles.map(function (article) {
+              return article.titre || "Marchés";
+            }));
+          }
+          grid.innerHTML = "";
+          if (!articles.length) {
+            grid.innerHTML = '<p class="parquet-empty">Le fil s’ouvrira avec le prochain article Marchés & Bourse.</p>';
+            return;
+          }
+          articles.forEach(function (article) {
+            var card = document.createElement("a");
+            card.className = "parquet-wire";
+            card.href = "/article?id=" + encodeURIComponent(article.id);
+            var copy = document.createElement("div");
+            var title = document.createElement("h3");
+            title.textContent = article.titre || "Sans titre";
+            var meta = document.createElement("p");
+            var when = article.created_at
+              ? new Date(article.created_at).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric"
+                })
+              : "";
+            meta.textContent = when;
+            copy.appendChild(title);
+            copy.appendChild(meta);
+            var thumb = document.createElement("div");
+            if (article.image_url) {
+              thumb.style.backgroundImage = 'url("' + article.image_url + '")';
             }
-          );
-
-
-          grid.appendChild(card);
-
+            card.appendChild(copy);
+            card.appendChild(thumb);
+            grid.appendChild(card);
+          });
+        })
+        .catch(function () {
+          count.textContent = "—";
+          grid.innerHTML = '<p class="parquet-empty">Le fil des marchés est momentanément indisponible.</p>';
         });
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        document.getElementById(
-          "newsCount"
-        ).textContent =
-          "Erreur";
-
-
-        grid.innerHTML =
-          `<div class="panel">
-            <div class="panel-body">
-              Impossible de charger les actualités.
-            </div>
-          </div>`;
-
-      }
-
-    }
-
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      function() {
-
-        chargerActualites();
-
-      }
-    );
-
+    })();
   </script>
-
-
 </body>
 </html>
