@@ -76,15 +76,14 @@
     }
 
     .logo {
-      width: 52px;
-      height: 52px;
-      border: 4px solid var(--gold);
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-size: 25px;
-      font-weight: 900;
-      color: var(--green);
+      width: auto;
+      height: 72px;
+      max-width: min(360px, 70vw);
+      object-fit: contain;
+      background: #000;
+      border: none;
+      border-radius: 0;
+      display: block;
     }
 
     .brand h1 {
@@ -604,9 +603,9 @@
       }
 
       .logo {
-        width: 43px;
-        height: 43px;
-        font-size: 20px;
+        width: auto;
+        height: 56px;
+        max-width: 70vw;
       }
 
       .brand h1 {
@@ -665,20 +664,10 @@
 
     <a href="index.html" class="brand">
 
-      <div class="logo">
-        ↗
-      </div>
+      <img class="logo" src="logo.png" alt="Le Financier Ivoirien">
 
-      <div>
-
-        <h1>
-          Le Financier Ivoirien
-        </h1>
-
-        <p>
-          L'information financière qui compte.
-        </p>
-
+      <div class="visually-hidden">
+        <h1>Le Financier Ivoirien</h1>
       </div>
 
     </a>

@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
   const siteUrl = "https://le-financier-ivoirien.vercel.app";
-  const fallbackImage = `${siteUrl}/og-image.png`;
+  const fallbackImage = `${siteUrl}/logo.png`;
 
   try {
     const response = await fetch(
@@ -109,12 +109,8 @@ export default async function handler(req, res) {
   </div>
   <header class="header">
     <a class="brand" href="/">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <p class="kicker">Média financier · Côte d’Ivoire</p>
-        <h1>Le Financier Ivoirien</h1>
-        <p class="tagline">L’information financière qui compte.</p>
-      </div>
+      <img class="logo" src="/logo.png" alt="Le Financier Ivoirien">
+      <h1 class="visually-hidden">Le Financier Ivoirien</h1>
     </a>
   </header>
   <nav class="nav">

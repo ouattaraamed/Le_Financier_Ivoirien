@@ -62,13 +62,13 @@ select {
 }
 
 .header {
-  background: #fff;
-  padding: 26px 4% 18px;
+  background: #000;
+  padding: 16px 4% 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  border-bottom: 3px double var(--green);
+  border-bottom: 0;
 }
 
 .brand {
@@ -76,19 +76,32 @@ select {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.logo {
-  width: 64px;
-  height: 64px;
-  background-image: url("../logo.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+.logo,
+img.logo {
+  display: block;
+  width: auto;
+  height: 88px;
+  max-width: min(520px, 92vw);
+  object-fit: contain;
+  background: #000;
   border: none;
   border-radius: 0;
   font-size: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .brand h1 {
@@ -746,9 +759,9 @@ footer a:hover,
     font-size: 13px;
   }
 
-  .logo {
-    width: 48px;
-    height: 48px;
+  .logo,
+  img.logo {
+    height: 64px;
   }
 
   .hero {

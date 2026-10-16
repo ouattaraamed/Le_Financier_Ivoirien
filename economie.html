@@ -70,14 +70,16 @@
     }
 
     .brand {
-      font-family: Georgia, serif;
-      font-size: 30px;
-      font-weight: bold;
-      color: var(--green);
+      display: block;
     }
 
-    .brand span {
-      color: var(--gold);
+    .logo {
+      width: auto;
+      height: 80px;
+      max-width: min(420px, 90vw);
+      object-fit: contain;
+      background: #000;
+      display: block;
     }
 
     .tagline {
@@ -460,8 +462,9 @@
   <header>
     <div class="header-inner">
       <div>
-        <div class="brand">Le Financier <span>Ivoirien</span></div>
-        <div class="tagline">Économie • Finance • Entreprises • Marchés</div>
+        <a href="index.html" class="brand">
+          <img class="logo" src="logo.png" alt="Le Financier Ivoirien">
+        </a>
       </div>
     </div>
   </header>
