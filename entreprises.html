@@ -1386,7 +1386,7 @@
 
         const response =
           await fetch(
-            `${SUPABASE_URL}/rest/v1/Articles?select=*&categorie=eq.Entreprises&order=created_at.desc&limit=12`,
+            `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq.Entreprises&order=created_at.desc&limit=12`,
             {
               headers: {
                 apikey: SUPABASE_KEY,

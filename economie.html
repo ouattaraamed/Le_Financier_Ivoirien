@@ -632,7 +632,7 @@
     const SUPABASE_KEY = window.LFI.supabaseKey;
 
     const API_URL =
-      `${SUPABASE_URL}/rest/v1/Articles?select=*&or=(categorie.eq.Économie,categorie.eq.Économie%20ivoirienne)&order=created_at.desc&limit=20`;
+      `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&or=(categorie.eq.Économie,categorie.eq.Économie%20ivoirienne)&order=created_at.desc&limit=20`;
 
     const headers = {
       apikey: SUPABASE_KEY,

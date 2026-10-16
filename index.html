@@ -324,7 +324,7 @@
 
         const response =
           await fetch(
-            `${SUPABASE_URL}/rest/v1/Articles?select=*&order=created_at.desc&limit=50`,
+            `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&order=created_at.desc&limit=20`,
             {
               headers: {
                 apikey: SUPABASE_KEY,
@@ -878,6 +878,19 @@
 
     }
 
+    /* LANCEMENT */
+
+    function lancerSite() {
+      afficherDate();
+      chargerArticles();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", lancerSite);
+    } else {
+      lancerSite();
+    }
+
     /* NAVIGATION */
 
     document
@@ -1034,7 +1047,6 @@
 
         }
       );
-      });
     }
 
     /* URL ARTICLE */
@@ -1107,19 +1119,6 @@
 
       }
     );
-
-    /* LANCEMENT */
-
-    function lancerSite() {
-      afficherDate();
-      chargerArticles();
-    }
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", lancerSite);
-    } else {
-      lancerSite();
-    }
 
   </script>
 
