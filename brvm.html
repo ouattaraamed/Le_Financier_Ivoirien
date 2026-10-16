@@ -65,6 +65,29 @@
       <p class="quote-source">Source : <a href="https://www.brvm.org/fr/cours-actions/0" target="_blank" rel="noopener">BRVM</a> · séance publiée sur brvm.org</p>
     </section>
 
+    <section class="fx-calendar" id="fxCalendar">
+      <header>
+        <div>
+          <p>Forex</p>
+          <h2>Annonces économiques</h2>
+        </div>
+        <div class="fx-filters" id="fxFilters">
+          <button type="button" data-filter="today" class="is-active">Aujourd'hui</button>
+          <button type="button" data-filter="next">À venir</button>
+          <button type="button" data-filter="high">Fort impact</button>
+        </div>
+      </header>
+      <p class="fx-next" id="fxNext">Chargement du calendrier…</p>
+      <div class="quote-scroll">
+        <table id="fxTable">
+          <tbody>
+            <tr><td class="quote-empty">Chargement des annonces…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="quote-source">Source : <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener">calendrier économique Forex Factory</a> · heure d'Abidjan · actualisation chaque minute</p>
+    </section>
+
     <section class="parquet-news">
       <header>
         <h2>Le fil de la séance</h2>
@@ -590,6 +613,168 @@
           count.textContent = "—";
           grid.innerHTML = '<p class="parquet-empty">Le fil des marchés est momentanément indisponible.</p>';
         });
+    })();
+  </script>
+  <script>
+    (function () {
+      var events = [];
+      var filter = "today";
+      var table = document.getElementById("fxTable");
+      var nextEl = document.getElementById("fxNext");
+      var zone = "Africa/Abidjan";
+
+      function dayKey(date) {
+        return new Intl.DateTimeFormat("en-CA", {
+          timeZone: zone,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(date);
+      }
+
+      function clock(date) {
+        return new Intl.DateTimeFormat("fr-FR", {
+          timeZone: zone,
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23"
+        }).format(date);
+      }
+
+      function dayLabel(date) {
+        var label = new Intl.DateTimeFormat("fr-FR", {
+          timeZone: zone,
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }).format(date);
+        return label.charAt(0).toUpperCase() + label.slice(1);
+      }
+
+      function impactLabel(impact) {
+        if (impact === "High") return "Fort";
+        if (impact === "Medium") return "Moyen";
+        if (impact === "Low") return "Faible";
+        if (impact === "Holiday") return "Férié";
+        return impact || "—";
+      }
+
+      function visible(item, now) {
+        if (item.impact === "Holiday") return false;
+        if (filter === "high") return item.impact === "High";
+        if (filter === "today") return dayKey(item.date) === dayKey(now);
+        return item.date.getTime() >= now.getTime() - 30 * 60 * 1000 && item.impact !== "Low";
+      }
+
+      function cell(text, className) {
+        var td = document.createElement("td");
+        td.className = className || "";
+        td.textContent = text || "—";
+        return td;
+      }
+
+      function render() {
+        var now = new Date();
+        var rows = events.filter(function (item) {
+          return visible(item, now);
+        });
+        var upcoming = events.filter(function (item) {
+          return item.impact === "High" && item.date.getTime() >= now.getTime();
+        })[0];
+        if (upcoming) {
+          var minutes = Math.round((upcoming.date.getTime() - now.getTime()) / 60000);
+          var when = minutes < 60 ? "dans " + Math.max(minutes, 0) + " min" : "dans " + Math.floor(minutes / 60) + " h " + (minutes % 60) + " min";
+          nextEl.textContent = "Prochaine annonce forte : " + upcoming.currency + " · " + upcoming.title + " · " + when;
+        } else {
+          nextEl.textContent = "Aucune annonce à fort impact prévue sur le reste de la semaine.";
+        }
+
+        table.innerHTML = "";
+        var head = document.createElement("thead");
+        var hr = document.createElement("tr");
+        ["Heure", "Devise", "Impact", "Annonce", "Publié", "Prévision", "Précédent"].forEach(function (label, index) {
+          var th = document.createElement("th");
+          th.textContent = label;
+          if (index > 3) th.className = "num";
+          hr.appendChild(th);
+        });
+        head.appendChild(hr);
+        table.appendChild(head);
+        var body = document.createElement("tbody");
+        if (!rows.length) {
+          var empty = document.createElement("tr");
+          var td = document.createElement("td");
+          td.colSpan = 7;
+          td.className = "quote-empty";
+          td.textContent = "Aucune annonce pour ce filtre.";
+          empty.appendChild(td);
+          body.appendChild(empty);
+        }
+        var lastDay = "";
+        rows.forEach(function (item) {
+          var key = dayKey(item.date);
+          if (key !== lastDay) {
+            lastDay = key;
+            var dayRow = document.createElement("tr");
+            var dayCell = document.createElement("td");
+            dayCell.colSpan = 7;
+            dayCell.className = "fx-day";
+            dayCell.textContent = dayLabel(item.date);
+            dayRow.appendChild(dayCell);
+            body.appendChild(dayRow);
+          }
+          var tr = document.createElement("tr");
+          var soon = Math.abs(item.date.getTime() - now.getTime()) < 20 * 60 * 1000;
+          if (soon) tr.className = "is-soon";
+          tr.appendChild(cell(clock(item.date)));
+          tr.appendChild(cell(item.currency, "fx-ccy"));
+          var impact = cell(impactLabel(item.impact), "fx-impact fx-" + String(item.impact || "").toLowerCase());
+          tr.appendChild(impact);
+          tr.appendChild(cell(item.title, "fx-title"));
+          tr.appendChild(cell(item.actual, "num"));
+          tr.appendChild(cell(item.forecast, "num"));
+          tr.appendChild(cell(item.previous, "num"));
+          body.appendChild(tr);
+        });
+        table.appendChild(body);
+      }
+
+      document.getElementById("fxFilters").addEventListener("click", function (event) {
+        var button = event.target.closest("button");
+        if (!button) return;
+        filter = button.getAttribute("data-filter");
+        document.querySelectorAll("#fxFilters button").forEach(function (item) {
+          item.classList.toggle("is-active", item === button);
+        });
+        render();
+      });
+
+      function load() {
+        fetch("/api/calendar")
+          .then(function (response) {
+            if (!response.ok) throw new Error("calendar");
+            return response.json();
+          })
+          .then(function (data) {
+            events = (data.events || []).map(function (item) {
+              item.date = new Date(item.date);
+              return item;
+            }).filter(function (item) {
+              return !isNaN(item.date.getTime());
+            }).sort(function (a, b) {
+              return a.date - b.date;
+            });
+            render();
+          })
+          .catch(function () {
+            nextEl.textContent = "Le calendrier forex est momentanément indisponible.";
+            table.innerHTML = "<tbody><tr><td class=\"quote-empty\">Impossible de récupérer les annonces.</td></tr></tbody>";
+          });
+      }
+
+      load();
+      setInterval(load, 60000);
+      setInterval(render, 30000);
     })();
   </script>
 </body>

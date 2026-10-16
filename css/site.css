@@ -1715,6 +1715,130 @@ main.parquet {
   font-size: 14px;
 }
 
+.fx-calendar {
+  margin: 36px 4% 8px;
+}
+
+.fx-calendar header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.fx-calendar header p {
+  margin: 0 0 4px;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.fx-calendar h2 {
+  margin: 0;
+  color: var(--green);
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.fx-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fx-filters button {
+  border: 1px solid #d7dde3;
+  background: #fff;
+  color: #596068;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.fx-filters button.is-active {
+  background: #e8f1ff;
+  border-color: #8eb4ef;
+  color: #1257c5;
+  font-weight: 700;
+}
+
+.fx-next {
+  margin: 0 0 10px;
+  color: #163a72;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fx-day {
+  background: #f6f7f8;
+  color: #3d474f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fx-ccy {
+  font-weight: 700;
+  color: #163a72;
+}
+
+.fx-title {
+  font-weight: 600;
+}
+
+.fx-impact {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fx-high { color: #d12626; }
+.fx-medium { color: #b86e00; }
+.fx-low { color: #667085; }
+.fx-holiday { color: #98a2b3; }
+
+.fx-calendar tr.is-soon td {
+  background: #fff8e8;
+}
+
+.fx-calendar table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.fx-calendar th,
+.fx-calendar td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #efefef;
+  text-align: left;
+  font-size: 14px;
+  background: #fff;
+}
+
+.fx-calendar th {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fx-calendar .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .fx-calendar header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .parquet-news {
   margin-bottom: 48px;
 }
