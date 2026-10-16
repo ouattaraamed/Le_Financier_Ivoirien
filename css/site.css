@@ -839,14 +839,6 @@ footer a:hover,
     font-size: 26px;
   }
 
-  .hero p {
-    font-size: 15px;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
   .side {
     margin: 0 16px;
     background: #fff;
