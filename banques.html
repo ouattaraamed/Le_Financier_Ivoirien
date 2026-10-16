@@ -670,6 +670,59 @@
     </section>
 
 
+    <section class="bceao-feed" id="bceaoFeed">
+      <header>
+        <p>Banque centrale</p>
+        <h2>Communiqués BCEAO</h2>
+        <p>Les annonces officielles, reprises dès leur parution sur bceao.int.</p>
+      </header>
+      <div id="bceaoList">Chargement des communiqués…</div>
+    </section>
+    <script>
+      (function () {
+        var list = document.getElementById("bceaoList");
+
+        function esc(value) {
+          return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        fetch("/api/bceao")
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            var items = data.items || [];
+            if (!items.length) {
+              list.textContent = "Aucun communiqué récent pour le moment.";
+              return;
+            }
+            list.innerHTML = items
+              .map(function (item) {
+                var pdf = item.pdf
+                  ? '<a href="' + esc(item.pdf) + '" target="_blank" rel="noopener">PDF</a>'
+                  : "";
+                return (
+                  "<article>" +
+                    "<time>" + esc(item.date) + "</time>" +
+                    "<h3><a href=\"" + esc(item.url) + "\" target=\"_blank\" rel=\"noopener\">" + esc(item.title) + "</a></h3>" +
+                    (item.excerpt ? "<p>" + esc(item.excerpt) + "</p>" : "") +
+                    "<div class=\"bceao-links\"><a href=\"" + esc(item.url) + "\" target=\"_blank\" rel=\"noopener\">Lire le communiqué</a>" + pdf + "</div>" +
+                  "</article>"
+                );
+              })
+              .join("");
+          })
+          .catch(function () {
+            list.textContent = "Les communiqués BCEAO sont momentanément indisponibles.";
+          });
+      })();
+    </script>
+
+
     <!-- INTRODUCTION -->
 
     <section class="section">
