@@ -1209,7 +1209,7 @@ main.parquet {
 .parquet-stage {
   margin: 0;
   padding: 28px 4% 26px;
-  background: #e4e0d8;
+  background: #fff;
   color: #1c1c1c;
 }
 
@@ -1248,11 +1248,11 @@ main.parquet {
   display: block;
   width: 100%;
   height: auto;
-  background: #e4e0d8;
+  background: #fff;
 }
 
 .world-map path {
-  fill: #c3b49a;
+  fill: #e6e6e6;
 }
 
 .world-map text {
@@ -1277,15 +1277,26 @@ main.parquet {
   height: auto;
 }
 
-.hero-clock span {
+.hero-clock span,
+.hero-clock b {
   position: absolute;
   left: 50%;
-  top: 34%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   color: #1a1a1a;
-  font-size: clamp(14px, 2vw, 22px);
   font-weight: 700;
+}
+
+.hero-clock span {
+  top: 32%;
+  font-size: clamp(14px, 2vw, 22px);
   letter-spacing: 0.14em;
+}
+
+.hero-clock b {
+  top: 58%;
+  font-size: clamp(13px, 1.6vw, 18px);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
 }
 
 .world-clocks {
@@ -1308,13 +1319,22 @@ main.parquet {
   color: #1c1c1c;
 }
 
-.world-clock span {
+.world-clock span,
+.world-clock time {
   display: block;
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.world-clock time {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
 }
 
 .world-clock svg {

@@ -141,8 +141,9 @@
 
       hero.querySelector("svg").innerHTML =
         ticks(92, 200) +
-        '<line class="hour" x1="100" y1="108" x2="100" y2="58" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"></line>' +
-        '<line class="minute" x1="100" y1="112" x2="100" y2="28" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"></line>' +
+        '<g class="hour"><line x1="100" y1="108" x2="100" y2="58" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"></line></g>' +
+        '<g class="minute"><line x1="100" y1="116" x2="100" y2="24" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"></line></g>' +
+        '<g class="second"><line x1="100" y1="122" x2="100" y2="18" stroke="#c0392b" stroke-width="1.4" stroke-linecap="round"></line></g>' +
         '<circle cx="100" cy="100" r="5" fill="#1a1a1a"></circle>';
 
       function smallFace() {
@@ -151,15 +152,16 @@
           marks += '<line x1="50" y1="10" x2="50" y2="16" transform="rotate(' + (i * 30) + ' 50 50)" stroke="#4a4a4a" stroke-width="1.3"></line>';
         }
         return '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-          '<circle cx="50" cy="50" r="47" fill="#f7f7f5" stroke="#b9b9b4"></circle>' +
+          '<circle cx="50" cy="50" r="47" fill="#fff" stroke="#d0d0d0"></circle>' +
           marks +
           '<text x="50" y="24" text-anchor="middle">12</text>' +
           '<text x="80" y="54" text-anchor="middle">3</text>' +
           '<text x="50" y="84" text-anchor="middle">6</text>' +
           '<text x="20" y="54" text-anchor="middle">9</text>' +
-          '<line class="hour" x1="50" y1="54" x2="50" y2="30" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round"></line>' +
-          '<line class="minute" x1="50" y1="56" x2="50" y2="18" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"></line>' +
-          '<circle cx="50" cy="50" r="2" fill="#1a1a1a"></circle>' +
+          '<g class="hour"><line x1="50" y1="54" x2="50" y2="30" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round"></line></g>' +
+          '<g class="minute"><line x1="50" y1="58" x2="50" y2="16" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"></line></g>' +
+          '<g class="second"><line x1="50" y1="62" x2="50" y2="12" stroke="#c0392b" stroke-width="1" stroke-linecap="round"></line></g>' +
+          '<circle cx="50" cy="50" r="2.2" fill="#1a1a1a"></circle>' +
         "</svg>";
       }
 
@@ -168,7 +170,7 @@
         figure.type = "button";
         figure.className = "world-clock" + (place.zone === activeZone ? " is-active" : "");
         figure.dataset.zone = place.zone;
-        figure.innerHTML = smallFace() + "<span>" + place.label + "</span>";
+        figure.innerHTML = smallFace() + "<span>" + place.label + "</span><time></time>";
         figure.addEventListener("click", function () {
           activeZone = place.zone;
           hero.dataset.zone = place.zone;
@@ -181,30 +183,48 @@
         clocks.appendChild(figure);
       });
 
-      function setHands(root, zone, hourOrigin, minuteOrigin) {
-        var parts = {};
-        new Intl.DateTimeFormat("en-GB", {
+      function localTime(zone) {
+        var text = new Intl.DateTimeFormat("en-GB", {
           timeZone: zone,
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
           hourCycle: "h23"
-        }).formatToParts(new Date()).forEach(function (part) {
-          parts[part.type] = part.value;
-        });
-        var hours = Number(parts.hour) % 12;
-        var minutes = Number(parts.minute);
-        var seconds = Number(parts.second);
+        }).format(new Date());
+        var bits = text.split(":");
+        return {
+          hour: Number(bits[0]),
+          minute: Number(bits[1]),
+          second: Number(bits[2]),
+          label: bits[0] + ":" + bits[1] + ":" + bits[2]
+        };
+      }
+
+      function setHands(root, zone, origin) {
+        var time = localTime(zone);
+        var hours = time.hour % 12;
         var hour = root.querySelector(".hour");
         var minute = root.querySelector(".minute");
-        if (hour) hour.setAttribute("transform", "rotate(" + ((hours + minutes / 60) * 30) + " " + hourOrigin + ")");
-        if (minute) minute.setAttribute("transform", "rotate(" + ((minutes + seconds / 60) * 6) + " " + minuteOrigin + ")");
+        var second = root.querySelector(".second");
+        if (hour) hour.setAttribute("transform", "rotate(" + ((hours + time.minute / 60) * 30) + " " + origin + ")");
+        if (minute) minute.setAttribute("transform", "rotate(" + ((time.minute + time.second / 60) * 6) + " " + origin + ")");
+        if (second) second.setAttribute("transform", "rotate(" + (time.second * 6) + " " + origin + ")");
+        return time;
       }
 
       function tick() {
-        setHands(hero, hero.dataset.zone, "100 100", "100 100");
+        var heroTime = setHands(hero, hero.dataset.zone, "100 100");
+        heroName.textContent = heroName.textContent.replace(/\s+\d{2}:\d{2}:\d{2}$/, "");
+        var shown = document.getElementById("heroClockTime");
+        if (!shown) {
+          shown = document.createElement("b");
+          shown.id = "heroClockTime";
+          hero.appendChild(shown);
+        }
+        shown.textContent = heroTime.label;
         clocks.querySelectorAll(".world-clock").forEach(function (figure) {
-          setHands(figure, figure.dataset.zone, "50 50", "50 50");
+          var time = setHands(figure, figure.dataset.zone, "50 50");
+          figure.querySelector("time").textContent = time.label.slice(0, 5);
         });
       }
 
