@@ -251,8 +251,9 @@
 
     .featured {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: start;
     }
 
     .featured-main {
@@ -324,27 +325,25 @@
 
     /* NEWS */
 
-    .news-grid {
+    .news-grid,
+    .featured {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: start;
     }
 
     .news-card {
-      background: white;
-      border: 1px solid var(--border);
-      overflow: hidden;
+      display: block;
+      background: transparent;
+      border: 0;
+      color: #161616;
+      text-decoration: none;
       cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-    }
-
-    .news-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,.08);
     }
 
     .news-image {
-      height: 175px;
+      aspect-ratio: 16 / 10;
       background:
         linear-gradient(
           135deg,
@@ -356,32 +355,19 @@
     }
 
     .news-body {
-      padding: 17px;
-    }
-
-    .news-category {
-      color: var(--green2);
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
+      padding: 12px 0 0;
     }
 
     .news-body h4 {
-      font: 700 20px/1.25 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
-      color: var(--green);
-      margin: 8px 0;
-    }
-
-    .news-body p {
-      font-size: 13px;
-      line-height: 1.55;
-      color: #53635f;
+      font: 700 16px/1.35 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: #161616;
+      margin: 0 0 8px;
     }
 
     .news-date {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 12px;
+      color: #8a8a8a;
+      font-size: 13px;
+      margin: 0;
     }
 
     /* SECTORS */
@@ -539,7 +525,8 @@
 
     @media(max-width: 900px) {
 
-      .news-grid {
+      .news-grid,
+      .featured {
         grid-template-columns: repeat(2, 1fr);
       }
 
@@ -548,7 +535,7 @@
       }
 
       .featured {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
       }
 
     }
@@ -582,12 +569,26 @@
     @media(max-width: 600px) {
 
       .news-grid,
-      .sector-grid {
-        grid-template-columns: 1fr;
+      .featured {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
       }
 
-      .featured-image {
-        height: 220px;
+      .news-body {
+        padding: 8px 0 0;
+      }
+
+      .news-body h4 {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .news-date {
+        font-size: 11px;
+      }
+
+      .section-header h3 {
+        font-size: 18px;
       }
 
     }
@@ -671,74 +672,6 @@
     </section>
 
 
-    <!-- INTRODUCTION -->
-
-    <section class="section">
-
-      <div class="intro-grid">
-
-
-        <div class="intro-card">
-
-          <h3>
-            Les entreprises au cœur de l'économie
-          </h3>
-
-          <p>
-            Les entreprises sont au cœur de la création
-            de valeur, de l'emploi et de l'investissement.
-            Le Financier Ivoirien suit leurs évolutions
-            et analyse les décisions qui façonnent
-            l'économie ivoirienne.
-          </p>
-
-          <p>
-            Nous nous intéressons aussi bien aux grands
-            groupes qu'aux PME, aux startups et aux
-            entrepreneurs qui participent à la transformation
-            du tissu économique.
-          </p>
-
-        </div>
-
-
-        <div class="topics">
-
-          <h3>
-            À suivre
-          </h3>
-
-          <ul>
-
-            <li>
-              Résultats et performances
-            </li>
-
-            <li>
-              Investissements
-            </li>
-
-            <li>
-              Fusions et acquisitions
-            </li>
-
-            <li>
-              Stratégies d'entreprise
-            </li>
-
-            <li>
-              Innovation & startups
-            </li>
-
-          </ul>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
     <!-- VEDETTE -->
 
     <section class="section">
@@ -746,7 +679,7 @@
       <div class="section-header">
 
         <h3>
-          📰 À la une
+          À la une
         </h3>
 
         <small id="featuredStatus">
@@ -804,209 +737,6 @@
         </div>
 
       </div>
-
-    </section>
-
-
-    <!-- DOMAINES -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          🔎 Nos domaines de suivi
-        </h3>
-
-        <small>
-          Entreprises & business
-        </small>
-
-      </div>
-
-
-      <div class="sector-grid">
-
-
-        <div class="sector-card">
-
-          <div class="sector-icon">
-            🏭
-          </div>
-
-          <h4>
-            Industrie
-          </h4>
-
-          <p>
-            Production, investissements, capacités
-            industrielles et développement des entreprises.
-          </p>
-
-        </div>
-
-
-        <div class="sector-card">
-
-          <div class="sector-icon">
-            🛒
-          </div>
-
-          <h4>
-            Commerce
-          </h4>
-
-          <p>
-            Distribution, consommation, commerce
-            et évolution des marchés.
-          </p>
-
-        </div>
-
-
-        <div class="sector-card">
-
-          <div class="sector-icon">
-            💻
-          </div>
-
-          <h4>
-            Technologie
-          </h4>
-
-          <p>
-            Startups, innovation, numérique,
-            transformation digitale et nouveaux modèles.
-          </p>
-
-        </div>
-
-
-        <div class="sector-card">
-
-          <div class="sector-icon">
-            🚧
-          </div>
-
-          <h4>
-            Infrastructures
-          </h4>
-
-          <p>
-            Construction, énergie, transport,
-            immobilier et grands projets.
-          </p>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- EDUCATION -->
-
-    <section class="section">
-
-      <div class="section-header">
-
-        <h3>
-          📚 Comprendre l'entreprise
-        </h3>
-
-        <small>
-          Éducation économique
-        </small>
-
-      </div>
-
-
-      <div class="education">
-
-
-        <div class="education-card">
-
-          <div class="number">
-            1
-          </div>
-
-          <h4>
-            Comprendre les résultats
-          </h4>
-
-          <p>
-            Découvrez comment lire les principaux
-            indicateurs financiers d'une entreprise
-            et comprendre sa performance.
-          </p>
-
-        </div>
-
-
-        <div class="education-card">
-
-          <div class="number">
-            2
-          </div>
-
-          <h4>
-            Qu'est-ce qu'un investissement ?
-          </h4>
-
-          <p>
-            Comprenez pourquoi les entreprises
-            investissent et comment ces décisions
-            peuvent transformer leur activité.
-          </p>
-
-        </div>
-
-
-        <div class="education-card">
-
-          <div class="number">
-            3
-          </div>
-
-          <h4>
-            PME, startup ou grand groupe ?
-          </h4>
-
-          <p>
-            Découvrez les différences entre les
-            principaux modèles d'entreprises et
-            leurs enjeux économiques.
-          </p>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- INFO -->
-
-    <section class="info">
-
-      <h3>
-        L'entreprise, moteur de l'économie
-      </h3>
-
-      <p>
-        Le Financier Ivoirien souhaite donner davantage
-        de visibilité aux entreprises qui créent de la
-        valeur, investissent, innovent et contribuent
-        au développement économique.
-      </p>
-
-      <p>
-        Cette rubrique suivra particulièrement les
-        entreprises ivoiriennes et africaines, leurs
-        performances, leurs stratégies et leurs projets.
-      </p>
 
     </section>
 
@@ -1136,14 +866,10 @@
 
       if (!date) return "";
 
-      return new Date(date).toLocaleDateString(
-        "fr-FR",
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }
-      );
+      const parsed = new Date(date);
+      const month = parsed.toLocaleDateString("fr-FR", { month: "long" });
+
+      return parsed.getDate() + " " + month + ", " + parsed.getFullYear();
 
     }
 
@@ -1162,10 +888,13 @@
     function creerCarte(article) {
 
       const card =
-        document.createElement("article");
+        document.createElement("a");
 
       card.className =
         "news-card";
+
+      card.href =
+        "/article?id=" + encodeURIComponent(article.id);
 
 
       const image =
@@ -1190,28 +919,11 @@
         "news-body";
 
 
-      const category =
-        document.createElement("div");
-
-      category.className =
-        "news-category";
-
-      category.textContent =
-        article.categorie || "Entreprises";
-
-
       const title =
         document.createElement("h4");
 
       title.textContent =
         article.titre || "Sans titre";
-
-
-      const text =
-        document.createElement("p");
-
-      text.textContent =
-        extrait(article.contenu);
 
 
       const date =
@@ -1221,27 +933,14 @@
         "news-date";
 
       date.textContent =
-        `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
+        formatDate(article.created_at);
 
 
-      body.appendChild(category);
       body.appendChild(title);
-      body.appendChild(text);
       body.appendChild(date);
 
       card.appendChild(image);
       card.appendChild(body);
-
-
-      card.addEventListener(
-        "click",
-        function() {
-
-          window.location.href =
-            `/article?id=${encodeURIComponent(article.id)}`;
-
-        }
-      );
 
 
       return card;
@@ -1420,7 +1119,7 @@
           "featuredStatus"
         ).textContent =
           articles.length
-            ? "Dernière publication"
+            ? ""
             : "Aucun article";
 
 
@@ -1468,53 +1167,42 @@
         }
 
 
-        /* ARTICLE VEDETTE */
-
-        featuredArea.appendChild(
-          creerArticleVedette(
-            articles[0]
-          )
-        );
-
-
-        /* ARTICLES SECONDAIRES */
-
-        const side =
-          document.createElement("div");
-
-        side.className =
-          "side-news";
-
-
         articles
-          .slice(1, 4)
+          .slice(0, 4)
           .forEach(article => {
 
-            side.appendChild(
-              creerSideArticle(
-                article
-              )
-            );
-
-          });
-
-
-        featuredArea.appendChild(
-          side
-        );
-
-
-        /* GRILLE */
-
-        articles
-          .slice(0, 12)
-          .forEach(article => {
-
-            grid.appendChild(
+            featuredArea.appendChild(
               creerCarte(article)
             );
 
           });
+
+
+        const suite =
+          articles.slice(4);
+
+        document.getElementById(
+          "newsCount"
+        ).textContent =
+          suite.length
+            ? `${suite.length} article${suite.length > 1 ? "s" : ""}`
+            : "";
+
+
+        suite.forEach(article => {
+
+          grid.appendChild(
+            creerCarte(article)
+          );
+
+        });
+
+
+        if (!suite.length) {
+
+          grid.closest("section").hidden = true;
+
+        }
 
 
       } catch (error) {
