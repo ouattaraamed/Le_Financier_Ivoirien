@@ -79,18 +79,25 @@
       { href: root + "brvm.html", label: "Marchés & Bourse" },
       { href: root + "banques.html", label: "Banques & Finance" },
       { href: root + "entreprises.html", label: "Entreprises" },
-      { href: root + "economie.html", label: "Économie" }
+      { href: root + "economie.html", label: "Économie" },
+      { href: root + "index.html", label: "Investissement" }
     ];
 
-    return (
-      '<nav class="footer-links">' +
-        items
-          .map(function (item) {
-            return '<a href="' + item.href + '">' + item.label + "</a>";
-          })
-          .join('<span class="footer-sep" aria-hidden="true">|</span>') +
-      "</nav>"
-    );
+    var rows = [];
+    for (var i = 0; i < items.length; i += 3) {
+      rows.push(
+        '<div class="footer-row">' +
+          items
+            .slice(i, i + 3)
+            .map(function (item) {
+              return '<a href="' + item.href + '">' + item.label + "</a>";
+            })
+            .join('<span class="footer-sep" aria-hidden="true">|</span>') +
+        "</div>"
+      );
+    }
+
+    return '<nav class="footer-links">' + rows.join("") + "</nav>";
   }
 
   function placeFooter() {
@@ -119,9 +126,10 @@
     footerStyle.id = "footer-bar-style";
     footerStyle.textContent =
       "footer{background:#111!important;color:#fff!important;padding:22px 4%!important;text-align:center!important}" +
-      "footer .footer-links{display:block;text-align:center;max-width:920px;margin:0 auto;line-height:1.9}" +
-      "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;margin:0!important;padding:0!important;white-space:nowrap}" +
-      "footer .footer-sep{color:#fff;font-size:13px;padding:0 8px}" +
+      "footer .footer-links{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 auto}" +
+      "footer .footer-row{display:flex;justify-content:center;align-items:center}" +
+      "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;margin:0!important;padding:0 10px!important;white-space:nowrap}" +
+      "footer .footer-sep{color:#fff;font-size:13px;padding:0 2px}" +
       "footer .footer-links a:hover{color:#c4a34d!important}";
     document.head.appendChild(footerStyle);
   }
