@@ -70,10 +70,6 @@
             Le Financier Ivoirien
           </h2>
 
-          <p id="heroText">
-            L’information financière qui compte.
-          </p>
-
           <div class="meta" id="heroMeta">
             Chargement...
           </div>
@@ -399,11 +395,6 @@
           "Bienvenue sur Le Financier Ivoirien";
 
         document.getElementById(
-          "heroText"
-        ).textContent =
-          "L’information financière qui compte.";
-
-        document.getElementById(
           "heroMeta"
         ).textContent =
           "Publiez votre premier article depuis l’administration.";
@@ -416,11 +407,6 @@
         "heroTitle"
       ).textContent =
         article.titre || "Sans titre";
-
-      document.getElementById(
-        "heroText"
-      ).textContent =
-        extrait(article.contenu, 230);
 
       document.getElementById(
         "heroCategory"

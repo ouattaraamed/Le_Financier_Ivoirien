@@ -357,10 +357,7 @@ main {
 }
 
 .hero p {
-  font-size: var(--text-lg);
-  line-height: 1.47;
-  color: #e8f0ee;
-  max-width: 700px;
+  display: none;
 }
 
 .meta {
