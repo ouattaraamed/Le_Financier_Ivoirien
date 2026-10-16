@@ -6,7 +6,7 @@
   --gold: #c9a227;
   --ink: #12201e;
   --muted: #5e6e6a;
-  --paper: #f4f1ea;
+  --paper: #ffffff;
   --white: #ffffff;
   --red: #c42b31;
   --border: #ddd6c8;
@@ -1803,7 +1803,7 @@ main.parquet {
 .fx-holiday { color: #98a2b3; }
 
 .fx-calendar tr.is-soon td {
-  background: #fff8e8;
+  background: #ffffff;
 }
 
 .fx-calendar table {
