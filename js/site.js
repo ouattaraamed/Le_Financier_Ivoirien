@@ -126,7 +126,7 @@
     footerStyle.id = "footer-bar-style";
     footerStyle.textContent =
       "footer{background:#111!important;color:#fff!important;padding:22px 4%!important;text-align:center!important}" +
-      "footer .footer-links{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 auto}" +
+      "footer .footer-links{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 auto;background:transparent!important}" +
       "footer .footer-row{display:flex;justify-content:center;align-items:center}" +
       "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;margin:0!important;padding:0 10px!important;white-space:nowrap}" +
       "footer .footer-sep{color:#fff;font-size:13px;padding:0 2px}" +

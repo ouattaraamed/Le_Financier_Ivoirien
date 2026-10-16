@@ -647,6 +647,7 @@ footer .footer-links {
   align-items: center;
   gap: 8px;
   margin: 0 auto;
+  background: transparent;
 }
 
 footer .footer-row {
