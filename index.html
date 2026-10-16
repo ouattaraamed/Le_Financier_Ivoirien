@@ -472,6 +472,47 @@
         card.className =
           "side-card";
 
+        const content =
+          document.createElement("div");
+
+        content.className =
+          "side-copy";
+
+        const title =
+          document.createElement("h4");
+
+        title.textContent =
+          article.titre || "Sans titre";
+
+        const meta =
+          document.createElement("div");
+
+        meta.className =
+          "side-meta";
+
+        const category =
+          document.createElement("span");
+
+        category.className =
+          "side-cat";
+
+        category.textContent =
+          article.categorie || "Actualités";
+
+        const date =
+          document.createElement("span");
+
+        date.className =
+          "side-date";
+
+        date.textContent =
+          " — " + formatDate(article.created_at);
+
+        meta.appendChild(category);
+        meta.appendChild(date);
+        content.appendChild(title);
+        content.appendChild(meta);
+
         const thumb =
           document.createElement("div");
 
@@ -487,36 +528,8 @@
 
         }
 
-        const content =
-          document.createElement("div");
-
-        const category =
-          document.createElement("small");
-
-        category.textContent =
-          article.categorie || "Actualités";
-
-        const title =
-          document.createElement("h4");
-
-        title.textContent =
-          article.titre || "Sans titre";
-
-        const date =
-          document.createElement("small");
-
-        date.textContent =
-          formatDate(article.created_at);
-
-        content.appendChild(category);
-
-        content.appendChild(title);
-
-        content.appendChild(date);
-
-        card.appendChild(thumb);
-
         card.appendChild(content);
+        card.appendChild(thumb);
 
         card.onclick =
           () => afficherArticle(article);

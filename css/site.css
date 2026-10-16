@@ -391,10 +391,11 @@ main {
 
 .side-card {
   display: grid;
-  grid-template-columns: 105px 1fr;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #e3e7e5;
+  grid-template-columns: 1fr 112px;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
 }
 
@@ -402,22 +403,45 @@ main {
   border-bottom: 0;
 }
 
+.side-copy {
+  min-width: 0;
+}
+
 .thumb {
+  width: 112px;
+  height: 80px;
   background: linear-gradient(135deg, #9dbab2, #d9b75c);
-  min-height: 82px;
-  border-radius: 3px;
   background-size: cover;
   background-position: center;
 }
 
 .side-card h4 {
-  font-size: 14px;
-  margin: 5px 0;
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1.25;
+  margin: 0 0 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.side-card small {
+.side-meta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.side-cat {
+  color: #b76e79;
+}
+
+.side-date {
   color: var(--muted);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .articles-section {
@@ -897,11 +921,17 @@ footer a:hover,
   }
 
   .side-card {
-    grid-template-columns: 88px 1fr;
+    grid-template-columns: 1fr 96px;
+    gap: 12px;
+  }
+
+  .thumb {
+    width: 96px;
+    height: 70px;
   }
 
   .side-card h4 {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--ink);
   }
 
