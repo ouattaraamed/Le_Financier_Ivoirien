@@ -587,6 +587,7 @@
             card.className = "parquet-wire";
             card.href = "/article?id=" + encodeURIComponent(article.id);
             var copy = document.createElement("div");
+            copy.className = "wire-copy";
             var title = document.createElement("h3");
             title.textContent = article.titre || "Sans titre";
             var meta = document.createElement("p");
@@ -601,6 +602,7 @@
             copy.appendChild(title);
             copy.appendChild(meta);
             var thumb = document.createElement("div");
+            thumb.className = "wire-thumb";
             if (article.image_url) {
               thumb.style.backgroundImage = 'url("' + article.image_url + '")';
             }

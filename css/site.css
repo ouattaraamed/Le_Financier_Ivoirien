@@ -1866,7 +1866,11 @@ main.parquet {
   font-size: 12px;
 }
 
-.parquet-wire div {
+.parquet-wire .wire-copy {
+  min-width: 0;
+}
+
+.parquet-wire .wire-thumb {
   width: 120px;
   height: 78px;
   background: linear-gradient(135deg, #0a5c4f, #c9a227) center / cover no-repeat;
@@ -1909,7 +1913,7 @@ main.parquet {
     grid-template-columns: 1fr 88px;
   }
 
-  .parquet-wire div {
+  .parquet-wire .wire-thumb {
     width: 88px;
     height: 64px;
   }
