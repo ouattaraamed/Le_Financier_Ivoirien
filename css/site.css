@@ -1208,8 +1208,8 @@ main.parquet {
 
 .parquet-stage {
   margin: 0;
-  padding: 28px 4% 32px;
-  background: #ececec;
+  padding: 28px 4% 26px;
+  background: #e4e0d8;
   color: #1c1c1c;
 }
 
@@ -1238,34 +1238,98 @@ main.parquet {
   line-height: 1.5;
 }
 
+.map-clock {
+  position: relative;
+  width: min(980px, 100%);
+  margin: 0 auto 18px;
+}
+
+.world-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #e4e0d8;
+}
+
+.world-map path {
+  fill: #c3b49a;
+}
+
+.world-map text {
+  fill: #6b4e16;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hero-clock {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(300px, 38%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hero-clock svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-clock span {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  transform: translate(-50%, -50%);
+  color: #1a1a1a;
+  font-size: clamp(14px, 2vw, 22px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
 .world-clocks {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
-  width: 100%;
-  margin: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  width: min(820px, 100%);
+  margin: 0 auto;
   padding: 0;
   background: transparent;
 }
 
 .world-clock {
   margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   text-align: center;
+  cursor: pointer;
+  color: #1c1c1c;
 }
 
-.world-clock figcaption {
-  margin: 0 0 8px;
-  color: #1c1c1c;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 1;
+.world-clock span {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .world-clock svg {
   display: block;
-  width: min(168px, 100%);
+  width: min(92px, 100%);
   height: auto;
   margin: 0 auto;
+}
+
+.world-clock.is-active svg {
+  filter: drop-shadow(0 0 0 #1a1a1a);
+}
+
+.world-clock.is-active span {
+  color: #6b4e16;
 }
 
 .parquet-tape {
@@ -1679,13 +1743,17 @@ main.parquet {
     padding: 22px 16px 26px;
   }
 
-  .world-clocks {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px 12px;
+  .hero-clock {
+    width: min(220px, 62%);
   }
 
-  .world-clock figcaption {
-    font-size: 15px;
+  .world-clocks {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .world-clock span {
+    font-size: 10px;
   }
 
   .parquet-books,

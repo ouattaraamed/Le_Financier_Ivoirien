@@ -16,6 +16,13 @@
 
   <main class="parquet">
     <section class="parquet-stage">
+      <div class="map-clock">
+        <svg class="world-map" id="worldMap" viewBox="0 0 1000 500" role="img" aria-label="Carte du monde, Abidjan est indiqué"></svg>
+        <div class="hero-clock" id="heroClock" data-zone="Africa/Abidjan">
+          <svg viewBox="0 0 200 200" aria-hidden="true"></svg>
+          <span id="heroClockName">ABIDJAN</span>
+        </div>
+      </div>
       <div class="world-clocks" id="worldClocks" aria-live="polite"></div>
     </section>
 
@@ -76,57 +83,128 @@
     (function () {
       var places = [
         { zone: "America/New_York", label: "New York" },
-        { zone: "Europe/London", label: "London" },
         { zone: "Europe/Paris", label: "Paris" },
         { zone: "Africa/Abidjan", label: "Abidjan" },
         { zone: "Asia/Tokyo", label: "Tokyo" },
         { zone: "Australia/Sydney", label: "Sydney" }
       ];
       var clocks = document.getElementById("worldClocks");
+      var hero = document.getElementById("heroClock");
+      var heroName = document.getElementById("heroClockName");
+      var activeZone = "Africa/Abidjan";
 
-      function clockFace() {
-        var ticks = "";
+      function project(lon, lat) {
+        return [(lon + 180) / 360 * 1000, (90 - lat) / 180 * 500];
+      }
+
+      function poly(points) {
+        return points.map(function (point, index) {
+          var xy = project(point[0], point[1]);
+          return (index ? "L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
+        }).join(" ") + "Z";
+      }
+
+      var lands = [
+        [[-168, 66], [-141, 70], [-105, 73], [-88, 73], [-62, 60], [-56, 52], [-68, 44], [-80, 25], [-97, 26], [-106, 22], [-112, 30], [-124, 48], [-153, 59], [-166, 65]],
+        [[-81, 9], [-77, 8], [-75, -5], [-80, -5], [-81, -6], [-77, 7]],
+        [[-81, 12], [-70, 12], [-62, 10], [-50, 5], [-35, -8], [-39, -22], [-48, -28], [-68, -55], [-75, -52], [-72, -15], [-81, 1]],
+        [[-10, 36], [-9, 42], [-2, 43], [3, 51], [8, 54], [12, 56], [28, 71], [25, 71], [12, 66], [5, 62], [-6, 54], [-8, 44]],
+        [[-17, 21], [-16, 14], [-10, 5], [8, 4], [9, -1], [12, -17], [18, -34], [26, -34], [32, -29], [35, -20], [42, -15], [51, 11], [43, 11], [39, 15], [32, 30], [25, 32], [10, 37], [-6, 35], [-13, 27]],
+        [[26, 40], [32, 31], [44, 40], [48, 30], [56, 26], [60, 25], [72, 25], [88, 22], [95, 16], [109, 14], [104, 1], [100, 2], [95, 6], [80, 6], [73, 18], [57, 25], [44, 12], [43, 12], [32, 30]],
+        [[104, 1], [109, -2], [114, -3], [120, -8], [131, -1], [141, -2], [151, -8], [145, -8], [141, -3], [130, -2], [122, -4], [114, 0]],
+        [[113, -22], [122, -18], [128, -14], [136, -12], [142, -11], [146, -18], [153, -26], [150, -38], [140, -38], [135, -35], [115, -35], [114, -28]],
+        [[-45, 60], [-40, 68], [-22, 73], [-20, 70], [-44, 60]],
+        [[-22, 64], [-14, 65], [-13, 66], [-22, 66]]
+      ];
+
+      var map = document.getElementById("worldMap");
+      map.innerHTML = lands.map(function (land) {
+        return '<path d="' + poly(land) + '"></path>';
+      }).join("");
+      var abidjan = project(-4.03, 5.36);
+      var labelX = abidjan[0] - 210;
+      var labelY = abidjan[1] + 8;
+      map.innerHTML += '<line x1="' + abidjan[0].toFixed(1) + '" y1="' + abidjan[1].toFixed(1) + '" x2="' + labelX.toFixed(1) + '" y2="' + labelY.toFixed(1) + '" stroke="#8a5a12" stroke-width="1.5"></line>' +
+        '<circle cx="' + abidjan[0].toFixed(1) + '" cy="' + abidjan[1].toFixed(1) + '" r="6" fill="#8a5a12"></circle>' +
+        '<circle cx="' + abidjan[0].toFixed(1) + '" cy="' + abidjan[1].toFixed(1) + '" r="11" fill="none" stroke="#8a5a12" stroke-width="1.5"></circle>' +
+        '<text x="' + (labelX - 8).toFixed(1) + '" y="' + (labelY + 5).toFixed(1) + '" text-anchor="end">Abidjan</text>';
+
+      function ticks(radius, size) {
+        var marks = "";
         for (var i = 0; i < 12; i++) {
-          var major = i % 3 === 0;
-          ticks += '<line x1="50" y1="' + (major ? 8 : 10) + '" x2="50" y2="' + (major ? 16 : 14) + '" transform="rotate(' + (i * 30) + ' 50 50)" stroke="#6d6d6d" stroke-width="' + (major ? 1.6 : 1) + '"></line>';
+          var cardinal = i % 3 === 0;
+          var inner = radius - (cardinal ? 16 : 10);
+          marks += '<line x1="0" y1="-' + inner + '" x2="0" y2="-' + (radius - 4) + '" transform="rotate(' + (i * 30) + ')" stroke="' + (cardinal ? "#c0392b" : "#1a1a1a") + '" stroke-width="' + (cardinal ? 4 : 2) + '" stroke-linecap="butt"></line>';
+        }
+        return '<g transform="translate(' + size / 2 + " " + size / 2 + ')">' + marks + "</g>";
+      }
+
+      hero.querySelector("svg").innerHTML =
+        ticks(92, 200) +
+        '<line class="hour" x1="100" y1="108" x2="100" y2="58" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"></line>' +
+        '<line class="minute" x1="100" y1="112" x2="100" y2="28" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"></line>' +
+        '<circle cx="100" cy="100" r="5" fill="#1a1a1a"></circle>';
+
+      function smallFace() {
+        var marks = "";
+        for (var i = 0; i < 12; i++) {
+          marks += '<line x1="50" y1="10" x2="50" y2="16" transform="rotate(' + (i * 30) + ' 50 50)" stroke="#4a4a4a" stroke-width="1.3"></line>';
         }
         return '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-          '<circle cx="50" cy="50" r="48" fill="#f3f3f3" stroke="#c8c8c8"></circle>' +
-          ticks +
-          '<line class="hour" x1="50" y1="54" x2="50" y2="28" stroke="#1a1a1a" stroke-width="3.2" stroke-linecap="round"></line>' +
-          '<line class="minute" x1="50" y1="56" x2="50" y2="16" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"></line>' +
-          '<line class="second" x1="50" y1="62" x2="50" y2="12" stroke="#d12626" stroke-width="1.1" stroke-linecap="round"></line>' +
-          '<circle cx="50" cy="50" r="2.4" fill="#d12626"></circle>' +
+          '<circle cx="50" cy="50" r="47" fill="#f7f7f5" stroke="#b9b9b4"></circle>' +
+          marks +
+          '<text x="50" y="24" text-anchor="middle">12</text>' +
+          '<text x="80" y="54" text-anchor="middle">3</text>' +
+          '<text x="50" y="84" text-anchor="middle">6</text>' +
+          '<text x="20" y="54" text-anchor="middle">9</text>' +
+          '<line class="hour" x1="50" y1="54" x2="50" y2="30" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round"></line>' +
+          '<line class="minute" x1="50" y1="56" x2="50" y2="18" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"></line>' +
+          '<circle cx="50" cy="50" r="2" fill="#1a1a1a"></circle>' +
         "</svg>";
       }
 
       places.forEach(function (place) {
-        var figure = document.createElement("figure");
-        figure.className = "world-clock";
+        var figure = document.createElement("button");
+        figure.type = "button";
+        figure.className = "world-clock" + (place.zone === activeZone ? " is-active" : "");
         figure.dataset.zone = place.zone;
-        figure.innerHTML = "<figcaption>" + place.label + "</figcaption>" + clockFace();
+        figure.innerHTML = smallFace() + "<span>" + place.label + "</span>";
+        figure.addEventListener("click", function () {
+          activeZone = place.zone;
+          hero.dataset.zone = place.zone;
+          heroName.textContent = place.label.toUpperCase();
+          clocks.querySelectorAll(".world-clock").forEach(function (item) {
+            item.classList.toggle("is-active", item === figure);
+          });
+          tick();
+        });
         clocks.appendChild(figure);
       });
 
+      function setHands(root, zone, hourOrigin, minuteOrigin) {
+        var parts = {};
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: zone,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hourCycle: "h23"
+        }).formatToParts(new Date()).forEach(function (part) {
+          parts[part.type] = part.value;
+        });
+        var hours = Number(parts.hour) % 12;
+        var minutes = Number(parts.minute);
+        var seconds = Number(parts.second);
+        var hour = root.querySelector(".hour");
+        var minute = root.querySelector(".minute");
+        if (hour) hour.setAttribute("transform", "rotate(" + ((hours + minutes / 60) * 30) + " " + hourOrigin + ")");
+        if (minute) minute.setAttribute("transform", "rotate(" + ((minutes + seconds / 60) * 6) + " " + minuteOrigin + ")");
+      }
+
       function tick() {
-        var now = new Date();
+        setHands(hero, hero.dataset.zone, "100 100", "100 100");
         clocks.querySelectorAll(".world-clock").forEach(function (figure) {
-          var parts = {};
-          new Intl.DateTimeFormat("en-GB", {
-            timeZone: figure.dataset.zone,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hourCycle: "h23"
-          }).formatToParts(now).forEach(function (part) {
-            parts[part.type] = part.value;
-          });
-          var hours = Number(parts.hour) % 12;
-          var minutes = Number(parts.minute);
-          var seconds = Number(parts.second);
-          figure.querySelector(".hour").setAttribute("transform", "rotate(" + ((hours + minutes / 60) * 30) + " 50 50)");
-          figure.querySelector(".minute").setAttribute("transform", "rotate(" + ((minutes + seconds / 60) * 6) + " 50 50)");
-          figure.querySelector(".second").setAttribute("transform", "rotate(" + (seconds * 6) + " 50 50)");
+          setHands(figure, figure.dataset.zone, "50 50", "50 50");
         });
       }
 
