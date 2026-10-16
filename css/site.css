@@ -56,13 +56,7 @@ select {
 }
 
 .top {
-  background: #082d2a;
-  color: #fff;
-  font-size: 12px;
-  padding: 9px 4%;
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
+  display: none;
 }
 
 .top span {
@@ -608,13 +602,11 @@ footer {
 }
 
 footer .footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  row-gap: 8px;
-  max-width: 1080px;
+  display: block;
+  text-align: center;
+  max-width: 920px;
   margin: 0 auto;
+  line-height: 1.9;
 }
 
 footer .footer-links a {
@@ -622,9 +614,9 @@ footer .footer-links a {
   color: #fff;
   font-size: 13px;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.9;
   margin: 0;
-  padding: 0 10px;
+  padding: 0;
   white-space: nowrap;
 }
 

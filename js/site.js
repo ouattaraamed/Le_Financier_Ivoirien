@@ -43,15 +43,6 @@
 
   function chromeHtml() {
     return (
-      '<div class="top">' +
-        '<span id="currentDate">Le Financier Ivoirien</span>' +
-        '<span id="date" class="visually-hidden"></span>' +
-        "<span>" +
-          '<a href="' + root + 'a-propos.html">À propos</a>' +
-          " &nbsp;|&nbsp; " +
-          '<a href="' + root + 'contact.html">Contact</a>' +
-        "</span>" +
-      "</div>" +
       '<header class="header">' +
         '<button class="menu-button" id="menuButton" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">' +
           '<span></span><span></span><span></span>' +
@@ -102,23 +93,43 @@
     );
   }
 
-  var footer = document.querySelector("footer");
-  if (!footer) {
-    footer = document.createElement("footer");
+  function placeFooter() {
+    var extras = document.querySelectorAll(".top");
+    extras.forEach(function (el) {
+      el.remove();
+    });
+
+    var footers = document.querySelectorAll("footer");
+    var footer = footers.length ? footers[footers.length - 1] : null;
+    if (!footer) {
+      footer = document.createElement("footer");
+      document.body.appendChild(footer);
+    }
+    footer.innerHTML = footerHtml();
+    footers.forEach(function (el) {
+      if (el !== footer) {
+        el.remove();
+      }
+    });
     document.body.appendChild(footer);
   }
-  footer.innerHTML = footerHtml();
 
   if (!document.getElementById("footer-bar-style")) {
     var footerStyle = document.createElement("style");
     footerStyle.id = "footer-bar-style";
     footerStyle.textContent =
       "footer{background:#111!important;color:#fff!important;padding:22px 4%!important;text-align:center!important}" +
-      "footer .footer-links{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;row-gap:8px;max-width:1080px;margin:0 auto}" +
-      "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;line-height:1.5;margin:0!important;padding:0 10px!important;white-space:nowrap}" +
-      "footer .footer-sep{color:#fff;font-size:13px;line-height:1.5}" +
+      "footer .footer-links{display:block;text-align:center;max-width:920px;margin:0 auto;line-height:1.9}" +
+      "footer .footer-links a{display:inline!important;color:#fff!important;font-size:13px!important;font-weight:500;margin:0!important;padding:0!important;white-space:nowrap}" +
+      "footer .footer-sep{color:#fff;font-size:13px;padding:0 8px}" +
       "footer .footer-links a:hover{color:#c4a34d!important}";
     document.head.appendChild(footerStyle);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", placeFooter);
+  } else {
+    placeFooter();
   }
 
   if (!document.querySelector('meta[name="color-scheme"]')) {
