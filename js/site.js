@@ -79,6 +79,13 @@
     mount.outerHTML = chromeHtml();
   }
 
+  if (!document.querySelector('meta[name="color-scheme"]')) {
+    var colorScheme = document.createElement("meta");
+    colorScheme.setAttribute("name", "color-scheme");
+    colorScheme.setAttribute("content", "light");
+    document.head.appendChild(colorScheme);
+  }
+
   var searchButtons = document.querySelectorAll(".search-button");
   if (page !== "index.html" && page !== "") {
     searchButtons.forEach(function (btn) {
