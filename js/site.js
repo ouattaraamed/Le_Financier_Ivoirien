@@ -19,7 +19,7 @@
     { href: root + "economie.html", id: "economie.html", label: "Économie" },
     { href: root + "index.html", id: "afrique", label: "Afrique & International" },
     { href: root + "index.html", id: "investissement", label: "Investissement" },
-    { href: root + "index.html", id: "portraits", label: "Portraits & Interviews" }
+    { href: root + "portraits.html", id: "portraits.html", label: "Portraits & Interviews" }
   ];
 
   function isActive(item) {
