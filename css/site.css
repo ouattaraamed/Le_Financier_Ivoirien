@@ -378,51 +378,6 @@ main {
   color: var(--muted);
 }
 
-.market {
-  background: #fff;
-  margin-top: 20px;
-  border: 1px solid var(--border);
-}
-
-.market-head {
-  padding: 13px 17px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--green);
-}
-
-.market-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.market-item {
-  padding: 16px;
-  border-right: 1px solid #e1e6e4;
-}
-
-.market-item:last-child {
-  border: 0;
-}
-
-.market-item small {
-  color: var(--muted);
-}
-
-.market-item strong {
-  display: block;
-  font-size: 20px;
-  margin: 8px 0;
-}
-
-.up {
-  color: #16865b;
-  font-size: 12px;
-  font-weight: bold;
-}
-
 .articles-section {
   margin-top: 28px;
 }
@@ -765,14 +720,6 @@ footer a:hover,
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .market-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .market-item:nth-child(2n) {
-    border-right: 0;
-  }
-
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -805,14 +752,8 @@ footer a:hover,
   }
 
   .articles-grid,
-  .market-grid,
   .footer-grid {
     grid-template-columns: 1fr;
-  }
-
-  .market-item {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
   }
 
   .side-card {
