@@ -66,6 +66,8 @@ export default async function handler(req, res) {
     const categorie = article.categorie || "Actualités";
     const contenu = article.contenu || "";
     const articleUrl = `${siteUrl}/article?id=${encodeURIComponent(id)}`;
+    const shareUrl = JSON.stringify(articleUrl).replace(/</g, "\\u003c");
+    const shareTitle = JSON.stringify(titre).replace(/</g, "\\u003c");
 
     const titreHTML = escapeHtml(titre);
     const descriptionHTML = escapeHtml(description);
@@ -107,10 +109,29 @@ export default async function handler(req, res) {
       <span class="detail-category">${categorieHTML}</span>
       <h1 class="detail-title">${titreHTML}</h1>
       <div class="detail-meta">Par ${auteurHTML}</div>
+      <div class="share-bar">
+        <button type="button" id="shareButton">Partager</button>
+        <a class="share-wa" href="https://wa.me/?text=${encodeURIComponent(titre + " " + articleUrl)}" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" target="_blank" rel="noopener">Facebook</a>
+      </div>
       <img class="detail-image" src="${imageHTML}" alt="${titreHTML}">
       <div class="detail-content">${contenuHTML}</div>
     </article>
   </main>
+  <script>
+    document.getElementById("shareButton").addEventListener("click", function () {
+      var url = ${shareUrl};
+      var title = ${shareTitle};
+      var button = this;
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function () {});
+        return;
+      }
+      navigator.clipboard.writeText(url).then(function () {
+        button.textContent = "Lien copié";
+      });
+    });
+  </script>
   <footer>
     <div class="footer-grid">
       <div>

@@ -397,6 +397,12 @@
 
     }
 
+    function lienArticle(id) {
+
+      return "/article?id=" + encodeURIComponent(id);
+
+    }
+
     /* ARTICLE PRINCIPAL */
 
     function afficherHero() {
@@ -451,8 +457,28 @@
 
       }
 
-      hero.onclick =
-        () => afficherArticle(article);
+      let open =
+        hero.querySelector(".hero-open");
+
+      if (!open) {
+
+        open =
+          document.createElement("a");
+
+        open.className =
+          "hero-open";
+
+        hero.appendChild(open);
+
+      }
+
+      open.href =
+        lienArticle(article.id);
+
+      open.setAttribute(
+        "aria-label",
+        article.titre || "Lire l'article"
+      );
 
     }
 
@@ -489,10 +515,13 @@
       selection.forEach(article => {
 
         const card =
-          document.createElement("article");
+          document.createElement("a");
 
         card.className =
           "side-card";
+
+        card.href =
+          lienArticle(article.id);
 
         const content =
           document.createElement("div");
@@ -553,9 +582,6 @@
         card.appendChild(content);
         card.appendChild(thumb);
 
-        card.onclick =
-          () => afficherArticle(article);
-
         container.appendChild(card);
 
       });
@@ -614,10 +640,13 @@
       liste.forEach(article => {
 
         const card =
-          document.createElement("article");
+          document.createElement("a");
 
         card.className =
           "article-card";
+
+        card.href =
+          lienArticle(article.id);
 
         const image =
           document.createElement("div");
@@ -681,9 +710,6 @@
         card.appendChild(image);
 
         card.appendChild(body);
-
-        card.onclick =
-          () => afficherArticle(article);
 
         grid.appendChild(card);
 
@@ -1085,21 +1111,9 @@
         return;
       }
 
-      const article =
-        articles.find(
-          item =>
-            String(item.id)
-            === String(id)
-        );
-
-      if (article) {
-
-        afficherArticle(
-          article,
-          false
-        );
-
-      }
+      window.location.replace(
+        lienArticle(id)
+      );
 
     }
 

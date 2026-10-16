@@ -672,7 +672,7 @@
     function ouvrirArticle(id) {
 
       window.location.href =
-        `index.html?article=${encodeURIComponent(id)}`;
+        `/article?id=${encodeURIComponent(id)}`;
 
     }
 
@@ -778,7 +778,7 @@
             ? secondaires.map(article => `
 
               <a
-                href="index.html?article=${encodeURIComponent(article.id)}"
+                href="/article?id=${encodeURIComponent(article.id)}"
                 class="news-item"
               >
 
@@ -804,7 +804,7 @@
           articles.map(article => `
 
             <a
-              href="index.html?article=${encodeURIComponent(article.id)}"
+              href="/article?id=${encodeURIComponent(article.id)}"
               class="article-card"
             >
 
