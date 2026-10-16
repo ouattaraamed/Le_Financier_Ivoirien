@@ -1160,6 +1160,12 @@ th {
   font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
 }
 
+main.parquet {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 48px;
+}
+
 .parquet-stage {
   display: flex;
   justify-content: space-between;
@@ -1244,7 +1250,7 @@ th {
 }
 
 .parquet-tape span {
-  padding: 9px 0;
+  padding: 9px 48px 9px 0;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.16em;
