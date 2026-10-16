@@ -122,12 +122,43 @@ nav.nav {
   display: flex;
   align-items: center;
   padding: 0 4%;
-  overflow-x: auto;
+  overflow: visible;
   width: 100%;
+  position: relative;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-button {
+  display: none;
+  width: 44px;
+  height: 44px;
+  margin: 4px 0;
+  padding: 10px 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.menu-button span {
+  display: block;
+  height: 2px;
+  width: 22px;
+  background: #fff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 body > nav.nav a,
-nav.nav a {
+nav.nav a,
+.nav-links a {
   padding: 14px 13px;
   font-size: var(--text-caption);
   font-weight: 600;
@@ -199,7 +230,7 @@ nav.nav a.active {
   display: flex;
   align-items: center;
   padding: 0 4%;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .nav a {
@@ -229,6 +260,7 @@ nav.nav a.active {
   font-size: 22px;
   cursor: pointer;
   padding: 10px 14px;
+  flex-shrink: 0;
 }
 
 .search-box {
@@ -640,6 +672,65 @@ footer a:hover,
 
 .legal button:hover {
   background: var(--green2);
+}
+
+@media (max-width: 900px) {
+  .menu-button {
+    display: flex;
+  }
+
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  body > nav.nav,
+  nav.nav {
+    flex-wrap: wrap;
+    padding: 0 3%;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    order: 3;
+    background: #041f1b;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+  }
+
+  nav.nav.is-open .nav-links {
+    display: flex;
+  }
+
+  body > nav.nav a,
+  nav.nav a,
+  .nav-links a {
+    padding: 16px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid transparent;
+    white-space: normal;
+  }
+
+  body > nav.nav a.active,
+  nav.nav a.active {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: var(--gold);
+    color: var(--gold);
+  }
+
+  nav.nav.is-open .menu-button span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  nav.nav.is-open .menu-button span:nth-child(2) {
+    opacity: 0;
+  }
+
+  nav.nav.is-open .menu-button span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
 }
 
 @media (max-width: 850px) {

@@ -58,8 +58,13 @@
           '<h1 class="visually-hidden">Le Financier Ivoirien</h1>' +
         "</a>" +
       "</header>" +
-      '<nav class="nav">' +
-        navHtml() +
+      '<nav class="nav" id="siteNav">' +
+        '<button class="menu-button" id="menuButton" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">' +
+          '<span></span><span></span><span></span>' +
+        "</button>" +
+        '<div class="nav-links" id="navLinks">' +
+          navHtml() +
+        "</div>" +
         '<button class="search-button" id="searchButton" type="button" aria-label="Rechercher">⌕</button>' +
       "</nav>"
     );
@@ -73,6 +78,34 @@
   if (searchBtn && page !== "index.html" && page !== "") {
     searchBtn.addEventListener("click", function () {
       location.href = root + "index.html";
+    });
+  }
+
+  var nav = document.getElementById("siteNav");
+  var menuBtn = document.getElementById("menuButton");
+  if (nav && menuBtn) {
+    function closeMenu() {
+      nav.classList.remove("is-open");
+      document.body.classList.remove("nav-open");
+      menuBtn.setAttribute("aria-expanded", "false");
+      menuBtn.setAttribute("aria-label", "Ouvrir le menu");
+    }
+
+    menuBtn.addEventListener("click", function () {
+      var open = nav.classList.toggle("is-open");
+      document.body.classList.toggle("nav-open", open);
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+    });
+
+    nav.querySelectorAll(".nav-links a").forEach(function (link) {
+      link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
     });
   }
 
