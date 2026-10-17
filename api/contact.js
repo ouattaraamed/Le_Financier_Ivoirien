@@ -1,4 +1,7 @@
+import { request as httpsRequest } from "node:https";
+
 const DESTINATION = "lefinancierivoirien@gmail.com";
+const PAGE = "https://le-financier-ivoirien.vercel.app/contact.html";
 
 function clean(value, max) {
   return String(value || "")
@@ -10,6 +13,44 @@ function clean(value, max) {
 
 function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function postForm(body) {
+  const payload = body.toString();
+  return new Promise(function (resolve, reject) {
+    const req = httpsRequest(
+      "https://formsubmit.co/ajax/" + encodeURIComponent(DESTINATION),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+          "Content-Length": Buffer.byteLength(payload),
+          Referer: PAGE,
+          Origin: "https://le-financier-ivoirien.vercel.app"
+        }
+      },
+      function (response) {
+        const chunks = [];
+        response.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+        response.on("end", function () {
+          const text = Buffer.concat(chunks).toString("utf8");
+          let data = {};
+          try {
+            data = JSON.parse(text);
+          } catch (error) {
+            data = { message: text.slice(0, 180) };
+          }
+          resolve({ status: response.statusCode || 0, data: data });
+        });
+      }
+    );
+    req.on("error", reject);
+    req.write(payload);
+    req.end();
+  });
 }
 
 export default async function handler(req, res) {
@@ -44,31 +85,28 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(
-      "https://formsubmit.co/ajax/" + encodeURIComponent(DESTINATION),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          _replyto: email,
-          _subject: "Le Financier Ivoirien — " + subject,
-          _template: "table",
-          _captcha: "false",
-          message: message
-        })
-      }
-    );
+    const form = new URLSearchParams();
+    form.set("name", name);
+    form.set("email", email);
+    form.set("_replyto", email);
+    form.set("_subject", "Le Financier Ivoirien — " + subject);
+    form.set("_template", "table");
+    form.set("_captcha", "false");
+    form.set("_url", PAGE);
+    form.set("message", message);
 
-    const data = await response.json().catch(function () {
-      return {};
-    });
+    const response = await postForm(form);
+    const upstream = String(response.data.message || "");
 
-    if (!response.ok || String(data.success) === "false") {
+    if (/activat/i.test(upstream)) {
+      return res.status(200).json({
+        pending: true,
+        error: "Ouvrez lefinancierivoirien@gmail.com et cliquez sur « Activer le formulaire ». Ensuite, renvoyez le message."
+      });
+    }
+
+    if (response.status < 200 || response.status >= 300 || String(response.data.success) === "false") {
+      console.error("contact", response.status, upstream.slice(0, 180));
       return res.status(502).json({
         error: "L’envoi n’a pas abouti. Réessayez dans un instant."
       });
