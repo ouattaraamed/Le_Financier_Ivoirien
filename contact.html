@@ -20,7 +20,7 @@
       <h1>Contact</h1>
       <p class="lead">Rédaction, partenariats, corrections : un message suffit.</p>
 
-      <form id="contactForm" action="https://formsubmit.co/lefinancierivoirien@gmail.com" method="POST">
+      <form id="contactForm">
         <label for="name">Nom</label>
         <input id="name" name="name" type="text" required maxlength="120" autocomplete="name">
 
@@ -33,12 +33,7 @@
         <label for="message">Message</label>
         <textarea id="message" name="message" required minlength="10" maxlength="4000"></textarea>
 
-        <input type="hidden" name="_subject" id="mailSubject" value="Le Financier Ivoirien">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_url" value="https://le-financier-ivoirien.vercel.app/contact.html">
-        <input type="hidden" name="_next" value="https://le-financier-ivoirien.vercel.app/contact.html?envoye=1">
-        <input id="company" name="_honey" class="contact-honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input id="company" name="company" class="contact-honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <button type="submit">Envoyer</button>
       </form>
@@ -74,16 +69,41 @@
     <div class="copy">© 2026 Le Financier Ivoirien. Tous droits réservés.</div>
   </footer>
   <script>
-    const status = document.getElementById("contactStatus");
-    if (new URLSearchParams(location.search).get("envoye") === "1") {
+    document.getElementById("contactForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button");
+      const status = document.getElementById("contactStatus");
+      button.disabled = true;
       status.hidden = false;
-      status.classList.add("is-ok");
-      status.textContent = "Message envoyé. La rédaction vous répondra à l’adresse indiquée.";
-    }
+      status.className = "lead";
+      status.textContent = "Envoi en cours…";
 
-    document.getElementById("contactForm").addEventListener("submit", function () {
-      const subject = document.getElementById("subject").value.trim();
-      document.getElementById("mailSubject").value = "Le Financier Ivoirien — " + subject;
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value,
+            company: document.getElementById("company").value
+          })
+        });
+        const data = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(data.error || "L’envoi n’a pas abouti.");
+        }
+        form.reset();
+        status.classList.add("is-ok");
+        status.textContent = "Message envoyé. La rédaction vous répondra à l’adresse indiquée.";
+      } catch (error) {
+        status.classList.add("is-error");
+        status.textContent = error.message || "L’envoi n’a pas abouti. Réessayez.";
+      } finally {
+        button.disabled = false;
+      }
     });
   </script>
 </body>
