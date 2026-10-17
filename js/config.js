@@ -1,7 +1,7 @@
 window.LFI = {
   supabaseUrl: "https://xjwimhgdqcaqqadhhtnz.supabase.co",
   supabaseKey: "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ",
-  siteUrl: "https://le-financier-ivoirien.vercel.app",
+  siteUrl: "https://lefinancierivoirien.com",
   categories: [
     "Marchés & Bourse",
     "Banques & Finance",

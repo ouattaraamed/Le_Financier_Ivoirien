@@ -2,7 +2,7 @@
 
 Média financier ivoirien : actualités économiques, BRVM, banques, entreprises et investissement.
 
-Site : [le-financier-ivoirien.vercel.app](https://le-financier-ivoirien.vercel.app/)
+Site : [lefinancierivoirien.com](https://lefinancierivoirien.com/)
 
 ## Structure
 

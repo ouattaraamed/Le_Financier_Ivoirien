@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     process.env.SUPABASE_ANON_KEY ||
     "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 
-  const siteUrl = "https://le-financier-ivoirien.vercel.app";
+  const siteUrl = "https://lefinancierivoirien.com";
   const fallbackImage = `${siteUrl}/logo.png`;
 
   try {

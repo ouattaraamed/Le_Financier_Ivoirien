@@ -14,7 +14,7 @@ function isoDate(value) {
   return date.toISOString();
 }
 
-const SITE = "https://le-financier-ivoirien.vercel.app";
+const SITE = "https://lefinancierivoirien.com";
 const SUPABASE_URL =
   process.env.SUPABASE_URL || "https://xjwimhgdqcaqqadhhtnz.supabase.co";
 const SUPABASE_KEY =

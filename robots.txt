@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /api/
 
-Sitemap: https://le-financier-ivoirien.vercel.app/sitemap.xml
+Sitemap: https://lefinancierivoirien.com/sitemap.xml
