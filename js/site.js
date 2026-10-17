@@ -19,6 +19,7 @@
     { href: root + "economie.html", id: "economie.html", label: "Économie" },
     { href: root + "afrique.html", id: "afrique.html", label: "Afrique & International" },
     { href: root + "investissement.html", id: "investissement.html", label: "Investissement" },
+    { href: root + "actualites.html", id: "actualites.html", label: "Actualités" },
     { href: root + "portraits.html", id: "portraits.html", label: "Portraits & Interviews" }
   ];
 
@@ -81,7 +82,9 @@
       { href: root + "entreprises.html", label: "Entreprises" },
       { href: root + "economie.html", label: "Économie" },
       { href: root + "afrique.html", label: "Afrique & International" },
-      { href: root + "investissement.html", label: "Investissement" }
+      { href: root + "investissement.html", label: "Investissement" },
+      { href: root + "actualites.html", label: "Actualités" },
+      { href: root + "portraits.html", label: "Portraits & Interviews" }
     ];
 
     var rows = [];
@@ -149,12 +152,145 @@
   }
 
   var searchButtons = document.querySelectorAll(".search-button");
-  if (page !== "index.html" && page !== "") {
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function articleHref(id) {
+    var prefix = root === "/" ? "/" : "";
+    return prefix + "article?id=" + encodeURIComponent(id);
+  }
+
+  function ensureSearch() {
+    var box = document.getElementById("searchBox");
+    if (!box) {
+      box = document.createElement("div");
+      box.className = "search-box";
+      box.id = "searchBox";
+      box.innerHTML =
+        '<input id="searchInput" type="search" placeholder="Rechercher un article..." aria-label="Rechercher un article">';
+      var nav = document.getElementById("siteNav");
+      if (nav && nav.nextSibling) {
+        nav.parentNode.insertBefore(box, nav.nextSibling);
+      } else {
+        document.body.insertBefore(box, document.body.firstChild);
+      }
+    }
+    if (!document.getElementById("searchResults")) {
+      var results = document.createElement("div");
+      results.id = "searchResults";
+      results.className = "search-results";
+      box.appendChild(results);
+    }
+    return box;
+  }
+
+  function renderHits(articles, term) {
+    var results = document.getElementById("searchResults");
+    if (!results) {
+      return;
+    }
+    if (!term || term.length < 2) {
+      results.innerHTML = "";
+      return;
+    }
+    if (!articles.length) {
+      results.innerHTML = "<p>Aucun article pour « " + escapeHtml(term) + " ».</p>";
+      return;
+    }
+    results.innerHTML = articles.map(function (article) {
+      var date = article.created_at
+        ? new Date(article.created_at).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            timeZone: "Africa/Abidjan"
+          })
+        : "";
+      return (
+        '<a href="' + articleHref(article.id) + '">' +
+          "<strong>" + escapeHtml(article.titre || "Sans titre") + "</strong>" +
+          "<span>" + escapeHtml(article.categorie || "Actualités") + "</span>" +
+          "<em>" + escapeHtml(article.auteur || "") + (date ? " · " + escapeHtml(date) : "") + "</em>" +
+        "</a>"
+      );
+    }).join("");
+  }
+
+  function startSearch() {
+    var box = ensureSearch();
+    var input = document.getElementById("searchInput");
+    var timer = 0;
+
+    function run(term) {
+      var clean = String(term || "").trim();
+      if (clean.length < 2) {
+        renderHits([], "");
+        return;
+      }
+      fetch("/api/search?q=" + encodeURIComponent(clean))
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("search");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          renderHits((data && data.articles) || [], clean);
+        })
+        .catch(function () {
+          var results = document.getElementById("searchResults");
+          if (results) {
+            results.innerHTML = "<p>La recherche est momentanément indisponible.</p>";
+          }
+        });
+    }
+
     searchButtons.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        location.href = root + "index.html";
+        box.classList.toggle("show");
+        if (box.classList.contains("show")) {
+          input.focus();
+        }
       });
     });
+
+    if (input) {
+      input.addEventListener("input", function () {
+        var value = input.value;
+        window.clearTimeout(timer);
+        timer = window.setTimeout(function () {
+          var params = new URLSearchParams(location.search);
+          var clean = value.trim();
+          if (clean) {
+            params.set("q", clean);
+          } else {
+            params.delete("q");
+          }
+          var next = location.pathname + (params.toString() ? "?" + params.toString() : "");
+          history.replaceState(null, "", next);
+          run(value);
+        }, 250);
+      });
+    }
+
+    var initial = new URLSearchParams(location.search).get("q");
+    if (initial && input) {
+      box.classList.add("show");
+      input.value = initial;
+      run(initial);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startSearch);
+  } else {
+    startSearch();
   }
 
   var nav = document.getElementById("siteNav");

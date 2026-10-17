@@ -26,19 +26,20 @@
 <meta name="twitter:image" content="https://le-financier-ivoirien.vercel.app/logo.png">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/">
+  <link rel="alternate" type="application/rss+xml" title="Le Financier Ivoirien" href="/rss.xml">
   <meta name="theme-color" content="#052e29">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261016c">
+  <link rel="stylesheet" href="css/site.css?v=20261017a">
 
 </head>
 
 <body>
 
   <div id="site-chrome"></div>
-  <script src="js/site.js?v=20261016c"></script>
+  <script src="js/site.js?v=20261017a"></script>
 
   <!-- RECHERCHE -->
 
@@ -254,7 +255,7 @@
 
   </footer>
 
-  <script src="js/config.js?v=20261016c"></script>
+  <script src="js/config.js?v=20261017a"></script>
   <script>
 
     const SUPABASE_URL = window.LFI.supabaseUrl;
@@ -1080,87 +1081,6 @@
       );
     }
 
-    /* RECHERCHE */
-
-    const searchButtons = document.querySelectorAll(".search-button");
-    const searchBox = document.getElementById("searchBox");
-    const searchInput = document.getElementById("searchInput");
-
-    if (searchButtons.length && searchBox && searchInput) {
-      searchButtons.forEach(function (searchButton) {
-        searchButton.addEventListener(
-          "click",
-          function() {
-
-            searchBox.classList.toggle("show");
-            searchInput.focus();
-
-          }
-        );
-      });
-
-      searchInput.addEventListener(
-        "input",
-        function() {
-
-          const terme =
-            this.value
-              .trim()
-              .toLowerCase();
-
-          if (!terme) {
-
-            afficherArticles(
-              categorieActuelle === "all"
-                ? articles
-                : articles.filter(
-                    article =>
-                      (article.categorie || "")
-                        .toLowerCase()
-                      === categorieActuelle.toLowerCase()
-                  )
-            );
-
-            return;
-
-          }
-
-          const resultat =
-            articles.filter(
-              article => {
-
-                const titre =
-                  (article.titre || "")
-                    .toLowerCase();
-
-                const contenu =
-                  (article.contenu || "")
-                    .toLowerCase();
-
-                const categorie =
-                  (article.categorie || "")
-                    .toLowerCase();
-
-                return (
-                  titre.includes(terme) ||
-                  contenu.includes(terme) ||
-                  categorie.includes(terme)
-                );
-
-              }
-            );
-
-          categorieActuelle =
-            "all";
-
-          afficherArticles(
-            resultat
-          );
-
-        }
-      );
-    }
-
     /* URL ARTICLE */
 
     function ouvrirArticleDepuisURL() {
@@ -1221,7 +1141,7 @@
     );
 
   </script>
-  <script src="js/portraits.js?v=20261016c"></script>
+  <script src="js/portraits.js?v=20261017a"></script>
 
 </body>
   </html>

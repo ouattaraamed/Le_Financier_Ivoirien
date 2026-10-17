@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261016d">
+  <link rel="stylesheet" href="css/site.css?v=20261017a">
 </head>
 <body>
   <div id="site-chrome"></div>
-  <script src="js/site.js?v=20261016c"></script>
+  <script src="js/site.js?v=20261017a"></script>
 
   <main>
     <article class="legal">
@@ -38,6 +38,16 @@
         <button type="submit">Envoyer</button>
       </form>
       <p id="contactStatus" class="lead" hidden></p>
+
+      <h2>Lettre d’information</h2>
+      <p class="lead">Laissez votre adresse. Elle est enregistrée pour les prochaines éditions, envoyées depuis la rédaction.</p>
+      <form id="letterForm">
+        <label for="letterEmail">E-mail</label>
+        <input id="letterEmail" type="email" required maxlength="160" autocomplete="email">
+        <input class="contact-honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" id="letterCompany">
+        <button type="submit">S’inscrire</button>
+      </form>
+      <p id="letterStatus" class="lead" hidden></p>
     </article>
   </main>
 
@@ -101,6 +111,39 @@
       } catch (error) {
         status.classList.add("is-error");
         status.textContent = error.message || "L’envoi n’a pas abouti. Réessayez.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("letterForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button");
+      const status = document.getElementById("letterStatus");
+      button.disabled = true;
+      status.hidden = false;
+      status.className = "lead";
+      status.textContent = "Inscription…";
+      try {
+        const response = await fetch("/api/newsletter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("letterEmail").value,
+            company: document.getElementById("letterCompany").value
+          })
+        });
+        const data = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(data.error || "L’inscription n’a pas abouti.");
+        }
+        form.reset();
+        status.classList.add("is-ok");
+        status.textContent = "Adresse enregistrée. Elle servira aux prochaines éditions.";
+      } catch (error) {
+        status.classList.add("is-error");
+        status.textContent = error.message || "L’inscription n’a pas abouti.";
       } finally {
         button.disabled = false;
       }

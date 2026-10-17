@@ -1,3 +1,5 @@
+import { frenchDate, isoDate } from "../lib/text.mjs";
+
 function escapeHtml(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -75,6 +77,23 @@ export default async function handler(req, res) {
     const categorieHTML = escapeHtml(categorie);
     const imageHTML = escapeHtml(image);
     const contenuHTML = escapeHtml(contenu).replace(/\n/g, "<br>");
+    const dateLabel = frenchDate(article.created_at);
+    const dateHTML = escapeHtml(dateLabel);
+    const published = isoDate(article.created_at);
+    const jsonLd = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      headline: titre,
+      datePublished: published || undefined,
+      author: { "@type": "Person", name: auteur },
+      image: [image],
+      mainEntityOfPage: articleUrl,
+      publisher: {
+        "@type": "Organization",
+        name: "Le Financier Ivoirien",
+        url: siteUrl
+      }
+    }).replace(/</g, "\\u003c");
 
     const html = `<!DOCTYPE html>
 <html lang="fr">
@@ -94,21 +113,23 @@ export default async function handler(req, res) {
   <meta name="twitter:description" content="${descriptionHTML}">
   <meta name="twitter:image" content="${imageHTML}">
   <link rel="canonical" href="${escapeHtml(articleUrl)}">
+  <link rel="alternate" type="application/rss+xml" title="Le Financier Ivoirien" href="/rss.xml">
+  <script type="application/ld+json">${jsonLd}</script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261016c">
+  <link rel="stylesheet" href="/css/site.css?v=20261017a">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261016c"></script>
+  <script src="/js/site.js?v=20261017a"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
       <span class="detail-category">${categorieHTML}</span>
       <h1 class="detail-title">${titreHTML}</h1>
-      <div class="detail-meta">Par ${auteurHTML}</div>
+      <div class="detail-meta">Par ${auteurHTML}${dateHTML ? " · " + dateHTML : ""}</div>
       <div class="share-bar">
         <button type="button" id="shareButton">Partager</button>
         <a class="share-wa" href="https://wa.me/?text=${encodeURIComponent(titre + " " + articleUrl)}" target="_blank" rel="noopener">WhatsApp</a>

@@ -284,6 +284,16 @@
 
     .article-actions a.reply:hover { background: var(--green2); }
 
+    #preview { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+    #preview img { max-width: 100%; margin: 12px 0; }
+    .preview-body { white-space: pre-wrap; line-height: 1.55; margin: 0; }
+    #image_file { margin-top: 8px; }
+    #subscribers a, #writeSubscribers {
+      color: var(--green);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
     .empty, .loading {
       text-align: center;
       padding: 28px 12px;
@@ -343,6 +353,7 @@
     <nav class="admin-tabs" aria-label="Sections">
       <button type="button" class="is-on" data-panel="publish">Publier</button>
       <button type="button" data-panel="messages">Messages <span class="count" id="messagesCount"></span></button>
+      <button type="button" data-panel="subscribers">Lettre <span class="count" id="subscribersCount"></span></button>
       <button type="button" data-panel="articles">Articles <span class="count" id="articlesCount"></span></button>
     </nav>
 
@@ -362,7 +373,6 @@
               <option>Banques & Finance</option>
               <option>Entreprises</option>
               <option>Économie</option>
-              <option>Économie ivoirienne</option>
               <option>Afrique & International</option>
               <option>Investissement</option>
               <option>Portraits & Interviews</option>
@@ -375,18 +385,31 @@
           </div>
         </div>
 
-        <label for="image_url">URL de l'image</label>
+        <label for="image_url">Image</label>
         <input id="image_url" type="url" placeholder="https://...">
+        <label for="image_file">Déposer une image (JPEG, PNG ou WebP, 1,4 Mo maximum)</label>
+        <input id="image_file" type="file" accept="image/jpeg,image/png,image/webp">
+        <p class="lead" id="imageStatus"></p>
 
         <label for="contenu">Contenu de l'article</label>
         <textarea id="contenu" placeholder="Écrivez votre article ici..." required></textarea>
 
         <div class="form-actions">
           <button type="submit" id="submitButton">Publier l'article</button>
+          <button type="button" class="secondary" id="previewButton">Aperçu</button>
+          <button type="button" class="secondary" id="draftButton">Enregistrer le brouillon</button>
+          <button type="button" class="secondary" id="restoreDraftButton" style="display:none;">Reprendre le brouillon</button>
           <button type="button" class="secondary" id="cancelEditButton" style="display:none;">Annuler</button>
         </div>
         <div id="articleMessage" class="message"></div>
       </form>
+      <article id="preview" hidden>
+        <div class="badge" id="previewCategory"></div>
+        <h2 id="previewTitle"></h2>
+        <p class="lead" id="previewMeta"></p>
+        <img id="previewImage" alt="" hidden>
+        <p class="preview-body" id="previewBody"></p>
+      </article>
     </section>
 
     <section class="box panel" id="messages">
@@ -394,6 +417,15 @@
         <h2>Messages reçus</h2>
       </div>
       <div id="messagesList" class="loading">Chargement des messages...</div>
+    </section>
+
+    <section class="box panel" id="subscribers">
+      <div class="section-title">
+        <h2>Lettre d’information</h2>
+        <a id="writeSubscribers" href="mailto:lefinancierivoirien@gmail.com">Écrire aux inscrits</a>
+      </div>
+      <p class="lead">Les adresses sont enregistrées ici. L’envoi de la lettre se fait depuis votre messagerie.</p>
+      <div id="subscribersList" class="loading">Chargement des inscrits...</div>
     </section>
 
     <section class="box panel" id="articles">
@@ -408,7 +440,7 @@
 </main>
 
 
-<script src="js/config.js?v=20261016c"></script>
+<script src="js/config.js?v=20261017a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -515,6 +547,7 @@ async function verifierConnexion() {
 
     chargerArticles();
     chargerMessages();
+    chargerAbonnes();
 
   } else {
 
@@ -579,6 +612,7 @@ loginForm.addEventListener(
 
       chargerArticles();
     chargerMessages();
+    chargerAbonnes();
     }
 
   }
@@ -685,9 +719,12 @@ articleForm.addEventListener(
 
 
       annulerModification();
+      localStorage.removeItem("lfi-admin-draft-v1");
+      majBrouillon();
 
       chargerArticles();
     chargerMessages();
+    chargerAbonnes();
 
       return;
     }
@@ -723,9 +760,12 @@ articleForm.addEventListener(
 
 
     articleForm.reset();
+    localStorage.removeItem("lfi-admin-draft-v1");
+    majBrouillon();
 
     chargerArticles();
     chargerMessages();
+    chargerAbonnes();
 
   }
 );
@@ -890,7 +930,7 @@ function modifierArticle(article) {
   document
     .getElementById("categorie")
     .value =
-      article.categorie || "";
+      (article.categorie === "Économie ivoirienne" ? "Économie" : article.categorie) || "";
 
 
   document
@@ -1006,6 +1046,7 @@ refreshButton.addEventListener(
   function () {
     chargerArticles();
     chargerMessages();
+    chargerAbonnes();
   }
 );
 
@@ -1081,6 +1122,154 @@ async function chargerMessages() {
     compte.textContent = "(" + messages.length + ")";
   }
 }
+
+const DRAFT_KEY = "lfi-admin-draft-v1";
+
+function majBrouillon() {
+  const button = document.getElementById("restoreDraftButton");
+  if (!button) {
+    return;
+  }
+  button.style.display = localStorage.getItem(DRAFT_KEY) ? "inline-block" : "none";
+}
+
+function lireFormulaire() {
+  return {
+    titre: document.getElementById("titre").value,
+    categorie: document.getElementById("categorie").value,
+    auteur: document.getElementById("auteur").value,
+    image_url: document.getElementById("image_url").value,
+    contenu: document.getElementById("contenu").value
+  };
+}
+
+document.getElementById("draftButton").addEventListener("click", function () {
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(lireFormulaire()));
+  majBrouillon();
+  message(articleMessage, "Brouillon enregistré sur cet appareil.", true);
+});
+
+document.getElementById("restoreDraftButton").addEventListener("click", function () {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) {
+    return;
+  }
+  const draft = JSON.parse(raw);
+  document.getElementById("titre").value = draft.titre || "";
+  document.getElementById("categorie").value = draft.categorie || "";
+  document.getElementById("auteur").value = draft.auteur || "";
+  document.getElementById("image_url").value = draft.image_url || "";
+  document.getElementById("contenu").value = draft.contenu || "";
+  montrerPanneau("publish");
+});
+
+document.getElementById("previewButton").addEventListener("click", function () {
+  const article = lireFormulaire();
+  const preview = document.getElementById("preview");
+  document.getElementById("previewCategory").textContent = article.categorie || "Sans catégorie";
+  document.getElementById("previewTitle").textContent = article.titre || "Sans titre";
+  document.getElementById("previewMeta").textContent = article.auteur || "";
+  document.getElementById("previewBody").textContent = article.contenu || "";
+  const image = document.getElementById("previewImage");
+  if (article.image_url) {
+    image.src = article.image_url;
+    image.hidden = false;
+  } else {
+    image.removeAttribute("src");
+    image.hidden = true;
+  }
+  preview.hidden = false;
+  preview.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.getElementById("image_file").addEventListener("change", async function () {
+  const file = this.files && this.files[0];
+  const status = document.getElementById("imageStatus");
+  if (!file) {
+    return;
+  }
+  if (file.size > 1400000) {
+    status.textContent = "L’image doit faire moins de 1,4 Mo.";
+    return;
+  }
+  status.textContent = "Dépôt de l’image…";
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    status.textContent = "Connectez-vous pour déposer une image.";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async function () {
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ data: reader.result })
+    });
+    const body = await response.json().catch(function () { return {}; });
+    if (!response.ok || !body.url) {
+      status.textContent = body.error || "Le dépôt n’a pas abouti.";
+      return;
+    }
+    document.getElementById("image_url").value = body.url;
+    status.textContent = "Image déposée. Elle sera publiée avec l’article.";
+  };
+  reader.readAsDataURL(file);
+});
+
+async function chargerAbonnes() {
+  const liste = document.getElementById("subscribersList");
+  if (!liste) {
+    return;
+  }
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    liste.textContent = "Connexion requise.";
+    return;
+  }
+  liste.textContent = "Chargement des inscrits...";
+  const response = await fetch("/api/subscribers", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const body = await response.json().catch(function () { return {}; });
+  if (!response.ok) {
+    liste.textContent = body.error || "Lecture impossible.";
+    return;
+  }
+  const subscribers = body.subscribers || [];
+  const compte = document.getElementById("subscribersCount");
+  if (compte) {
+    compte.textContent = subscribers.length ? "(" + subscribers.length + ")" : "";
+  }
+  const write = document.getElementById("writeSubscribers");
+  if (write) {
+    const emails = subscribers.map(function (item) { return item.email; }).filter(Boolean).slice(0, 30);
+    write.href = emails.length
+      ? "mailto:lefinancierivoirien@gmail.com?bcc=" + emails.map(encodeURIComponent).join(",")
+      : "mailto:lefinancierivoirien@gmail.com";
+  }
+  if (!subscribers.length) {
+    liste.textContent = "Aucune inscription pour le moment.";
+    return;
+  }
+  liste.innerHTML = subscribers.map(function (item) {
+    const date = item.created_at
+      ? new Date(item.created_at).toLocaleString("fr-FR")
+      : "";
+    return (
+      '<article class="message-card">' +
+        "<h3>" + echapper(item.email) + "</h3>" +
+        "<p>" + echapper(date) + "</p>" +
+      "</article>"
+    );
+  }).join("");
+}
+
+majBrouillon();
 
 /* Lancement */
 

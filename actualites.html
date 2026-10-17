@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Actualités — Le Financier Ivoirien</title>
+  <meta name="description" content="Les dernières actualités économiques et financières publiées par Le Financier Ivoirien.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/actualites.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css?v=20261017a">
+</head>
+<body>
+  <div id="site-chrome"></div>
+  <script src="js/site.js?v=20261017a"></script>
+
+  <main>
+    <section class="articles-section">
+      <div class="articles-header">
+        <h2>Actualités</h2>
+        <span class="articles-count" id="newsCount">—</span>
+      </div>
+      <div class="articles-grid" id="newsList" aria-busy="true"></div>
+    </section>
+  </main>
+
+  <footer></footer>
+  <script src="js/config.js?v=20261017a"></script>
+  <script>
+    (function () {
+      var list = document.getElementById("newsList");
+      var count = document.getElementById("newsCount");
+      var url = window.LFI.supabaseUrl +
+        "/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq." +
+        encodeURIComponent("Actualités") +
+        "&order=created_at.desc&limit=24";
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      fetch(url, {
+        headers: {
+          apikey: window.LFI.supabaseKey,
+          Authorization: "Bearer " + window.LFI.supabaseKey
+        }
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error("load");
+        }
+        return response.json();
+      }).then(function (articles) {
+        var rows = Array.isArray(articles) ? articles : [];
+        count.textContent = String(rows.length);
+        list.setAttribute("aria-busy", "false");
+        if (!rows.length) {
+          list.innerHTML = '<p class="lead">Aucun article dans la catégorie « Actualités ».</p>';
+          return;
+        }
+        list.innerHTML = rows.map(function (article) {
+          var date = article.created_at
+            ? new Date(article.created_at).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                timeZone: "Africa/Abidjan"
+              })
+            : "";
+          var text = String(article.contenu || "").replace(/\s+/g, " ").trim().slice(0, 160);
+          var image = article.image_url
+            ? ' style="background-image:url(\'' + escapeHtml(article.image_url) + '\')"'
+            : "";
+          return (
+            '<a class="article-card" href="/article?id=' + encodeURIComponent(article.id) + '">' +
+              '<div class="article-image"' + image + '></div>' +
+              '<div class="article-body">' +
+                '<div class="article-category">Actualités</div>' +
+                "<h3>" + escapeHtml(article.titre || "Sans titre") + "</h3>" +
+                "<p>" + escapeHtml(text) + "</p>" +
+                '<div class="meta">' + escapeHtml(article.auteur || "") +
+                  (date ? " · " + escapeHtml(date) : "") + "</div>" +
+              "</div>" +
+            "</a>"
+          );
+        }).join("");
+      }).catch(function () {
+        count.textContent = "0";
+        list.setAttribute("aria-busy", "false");
+        list.innerHTML = '<p class="lead">Les actualités sont momentanément indisponibles.</p>';
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -9,6 +9,14 @@
     {
       "source": "/article",
       "destination": "/api/article"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/rss.xml",
+      "destination": "/api/rss"
     }
   ],
   "headers": [
