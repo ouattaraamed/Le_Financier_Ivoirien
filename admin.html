@@ -1232,7 +1232,7 @@ async function chargerAbonnes() {
     return;
   }
   liste.textContent = "Chargement des inscrits...";
-  const response = await fetch("/api/subscribers", {
+  const response = await fetch("/api/newsletter", {
     headers: { Authorization: "Bearer " + token }
   });
   const body = await response.json().catch(function () { return {}; });

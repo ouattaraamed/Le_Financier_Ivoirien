@@ -12,11 +12,11 @@
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
+      "destination": "/api/feed?type=sitemap"
     },
     {
       "source": "/rss.xml",
-      "destination": "/api/rss"
+      "destination": "/api/feed?type=rss"
     }
   ],
   "headers": [

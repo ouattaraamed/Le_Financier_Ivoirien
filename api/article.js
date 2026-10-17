@@ -1,4 +1,23 @@
-import { frenchDate, isoDate } from "../lib/text.mjs";
+function frenchDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Africa/Abidjan"
+  });
+}
+
+function isoDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return date.toISOString();
+}
 
 function escapeHtml(value) {
   return String(value || "")

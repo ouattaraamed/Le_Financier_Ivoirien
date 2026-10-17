@@ -1,4 +1,10 @@
-import { searchTerm } from "../lib/text.mjs";
+function searchTerm(value) {
+  return String(value || "")
+    .replace(/[*%_,.()"'\\<>]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
 
 const SUPABASE_URL =
   process.env.SUPABASE_URL || "https://xjwimhgdqcaqqadhhtnz.supabase.co";
