@@ -1396,10 +1396,12 @@ async function chargerOpportunites() {
     const limite = item.date_limite ? " · limite " + item.date_limite : "";
     return (
       '<article class="message-card">' +
-        '<div class="badge">' + echapper(item.type) + "</div>" +
+        '<div class="badge">' + echapper(item.automatique ? "Automatique" : item.type) + "</div>" +
         "<h3>" + echapper(item.titre) + "</h3>" +
         "<p>" + echapper(item.organisme) + " · " + echapper(item.domaine) + echapper(limite) + "</p>" +
-        '<div class="article-actions"><button type="button" class="danger" data-opp="' + echapper(item.id) + '">Retirer</button></div>' +
+        (item.automatique
+          ? '<p>Reprise du flux CFAO. Le retrait se fait à la source.</p>'
+          : '<div class="article-actions"><button type="button" class="danger" data-opp="' + echapper(item.id) + '">Retirer</button></div>') +
       "</article>"
     );
   }).join("");

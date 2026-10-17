@@ -128,21 +128,130 @@ async function readAll(key) {
   return items;
 }
 
+const CFAO_FEED =
+  "https://cfaocareers.talent-soft.com/handlers/offerRss.ashx?LCID=1036&Rss_JobFamily=2407&Rss_JobCountry=65";
+
+function decodeXml(value) {
+  return String(value || "")
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/&#(\d+);/g, function (_, code) {
+      return String.fromCharCode(Number(code));
+    })
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function cfaoOffersFromXml(xml) {
+  return String(xml)
+    .split("<item>")
+    .slice(1)
+    .map(function (chunk) {
+      const body = chunk.split("</item>")[0];
+      const field = function (tag) {
+        const match = body.match(new RegExp("<" + tag + ">([\\s\\S]*?)</" + tag + ">"));
+        return match ? decodeXml(match[1]) : "";
+      };
+      const categories = [...body.matchAll(/<category>([\s\S]*?)<\/category>/g)].map(function (match) {
+        return decodeXml(match[1]);
+      });
+      const metier = categories.find(function (item) { return item.indexOf("/") >= 0; }) || "";
+      const contrat = categories.find(function (item) {
+        return /^(Stage|CDI|CDD|Autre)$/i.test(item);
+      }) || "";
+      const lieu = categories.find(function (item) {
+        return item !== metier && item !== contrat;
+      }) || "Côte d'Ivoire";
+      const link = field("link");
+      const rawTitle = field("title");
+      const parts = rawTitle.split(" - ");
+      const titre = (parts.length > 1 ? parts.slice(1).join(" - ") : rawTitle).slice(0, 140);
+      if (!titre || !link.startsWith("https://cfaocareers.talent-soft.com/")) {
+        return null;
+      }
+      if (/juridique|avocat/i.test(metier) && !/comptab|finance|fiscal|audit|gestion/i.test(metier + " " + titre)) {
+        return null;
+      }
+      const type = /stage/i.test(contrat + " " + titre) ? "Stage" : "Emploi";
+      const domaine = /gestion/i.test(metier + " " + titre) ? "Gestion" : "Finance";
+      const detail = (metier.split(" - ").pop() || "Finance").toLowerCase();
+      return {
+        id: "cfao-" + link.replace(/[^a-z0-9]+/gi, "").slice(-28),
+        titre: titre,
+        organisme: "CFAO",
+        type: type,
+        domaine: domaine,
+        date_limite: "",
+        lieu: lieu,
+        lien: link,
+        resume: type + " · " + detail + " · " + lieu + ". Annonce CFAO. La candidature se fait sur le site d’origine.",
+        created_at: "",
+        source: "CFAO",
+        automatique: true
+      };
+    })
+    .filter(Boolean);
+}
+
+async function cfaoOffers() {
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, 8000);
+  try {
+    const response = await fetch(CFAO_FEED, {
+      headers: {
+        Accept: "application/rss+xml, text/xml",
+        "User-Agent": "LeFinancierIvoirien/1.0"
+      },
+      signal: controller.signal
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return cfaoOffersFromXml(await response.text()).slice(0, 12);
+  } catch (error) {
+    console.error("cfao");
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function sortOffers(items) {
+  return items.sort(function (a, b) {
+    if (a.type === "Stage" && b.type !== "Stage") return -1;
+    if (b.type === "Stage" && a.type !== "Stage") return 1;
+    if (a.date_limite && b.date_limite) {
+      return a.date_limite < b.date_limite ? -1 : 1;
+    }
+    if (a.date_limite) return -1;
+    if (b.date_limite) return 1;
+    return String(b.created_at).localeCompare(String(a.created_at));
+  });
+}
+
 export default async function handler(req, res) {
   const key = serviceKey();
-  if (!key) {
-    return res.status(503).json({ error: "Rubrique indisponible." });
-  }
 
   if (req.method === "GET") {
-    try {
-      const items = await readAll(key);
-      res.setHeader("Cache-Control", "no-store");
-      return res.status(200).json({ opportunites: items });
-    } catch (error) {
-      console.error("opportunites");
-      return res.status(502).json({ error: "Lecture impossible." });
+    let manual = [];
+    if (key) {
+      try {
+        manual = await readAll(key);
+      } catch (error) {
+        console.error("opportunites");
+      }
     }
+    const remote = await cfaoOffers();
+    res.setHeader("Cache-Control", "public, max-age=300");
+    return res.status(200).json({ opportunites: sortOffers(manual.concat(remote)) });
+  }
+
+  if (!key) {
+    return res.status(503).json({ error: "Rubrique indisponible." });
   }
 
   if (!(await reader(req))) {
