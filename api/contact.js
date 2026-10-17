@@ -14,6 +14,10 @@ function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function serviceKey() {
+  return String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
+}
+
 function headers(key) {
   return {
     apikey: key,
@@ -47,7 +51,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Méthode refusée." });
   }
 
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = serviceKey();
   if (!key) {
     return res.status(503).json({
       error: "L’envoi est momentanément indisponible."
@@ -97,20 +101,16 @@ export default async function handler(req, res) {
       }
     );
     if (!response.ok) {
-      const text = await response.text();
-      console.error("contact upload", response.status, text.slice(0, 180));
+      console.error("contact upload", response.status);
       return res.status(502).json({
-        error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
-        step: "upload",
-        status: response.status
+        error: "L’envoi n’a pas abouti. Réessayez dans un instant."
       });
     }
     return res.status(200).json({ ok: true });
   } catch (error) {
-    console.error(error);
+    console.error("contact");
     return res.status(502).json({
-      error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
-      step: String(error && error.message || "erreur").slice(0, 160)
+      error: "L’envoi n’a pas abouti. Réessayez dans un instant."
     });
   }
 }

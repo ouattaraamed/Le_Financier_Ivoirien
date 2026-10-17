@@ -3,6 +3,10 @@ const SUPABASE_URL =
 const PUBLISHABLE = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 const BUCKET = "contact-messages";
 
+function serviceKey() {
+  return String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
+}
+
 function serviceHeaders(key) {
   return {
     apikey: key,
@@ -32,7 +36,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Méthode refusée." });
   }
 
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = serviceKey();
   if (!key) {
     return res.status(503).json({ error: "Messages indisponibles." });
   }

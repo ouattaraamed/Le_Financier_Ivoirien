@@ -128,7 +128,7 @@ function articleBody(item) {
 }
 
 async function publishNew(items) {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
   if (!key) {
     return 0;
   }
