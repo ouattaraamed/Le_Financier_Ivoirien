@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Étudiants — Le Financier Ivoirien</title>
-  <meta name="description" content="Stages, emplois et concours en finance, gestion et économie, sélectionnés pour les étudiants.">
+  <meta name="description" content="Stages, emplois et concours en finance, gestion et économie, repris automatiquement depuis CFAO, emploi.ci et Educarriere.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/etudiants.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,8 +25,8 @@
       </div>
       <p class="student-lead">
         Stages, premiers emplois, concours et appels à candidatures en finance,
-        gestion et économie. Les offres finance de CFAO en Côte d’Ivoire
-        sont reprises automatiquement. Chaque annonce renvoie vers l’offre d’origine.
+        gestion et économie. Les annonces de CFAO, emploi.ci et Educarriere
+        sont reprises automatiquement. Chaque carte renvoie vers l’offre d’origine.
       </p>
       <div class="opp-filters" role="group" aria-label="Filtrer les annonces">
         <button type="button" class="is-on" data-type="Tous">Tous</button>
@@ -85,7 +85,9 @@
           return;
         }
         list.innerHTML = visibles.map(function (item) {
-          var meta = [item.organisme, item.domaine, item.lieu].filter(Boolean).join(" · ");
+          var meta = [item.organisme, item.domaine, item.lieu].filter(Boolean);
+          if (item.source && item.source !== item.organisme) meta.unshift(item.source);
+          meta = meta.join(" · ");
           var limite = item.date_limite ? "Date limite : " + dateFr(item.date_limite) : "";
           return (
             '<article class="opp-card">' +

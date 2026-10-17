@@ -130,6 +130,11 @@ async function readAll(key) {
 
 const CFAO_FEED =
   "https://cfaocareers.talent-soft.com/handlers/offerRss.ashx?LCID=1036&Rss_JobFamily=2407&Rss_JobCountry=65";
+const EMPLOI_FEEDS = [
+  "https://www.emploi.ci/recherche-jobs-cote-ivoire?f%5B0%5D=im_field_offre_metiers%3A30",
+  "https://www.emploi.ci/recherche-jobs-cote-ivoire?f%5B0%5D=im_field_offre_metiers%3A30&f%5B1%5D=im_field_offre_contrat_type%3A45"
+];
+const EDUCA_FEED = "https://emploi.educarriere.ci/page/all";
 
 function decodeXml(value) {
   return String(value || "")
@@ -144,6 +149,75 @@ function decodeXml(value) {
     .replace(/&amp;/g, "&")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function fold(value) {
+  return String(value || "")
+    .replace(/[àáâãä]/gi, "a")
+    .replace(/[éèêë]/gi, "e")
+    .replace(/[ïî]/gi, "i")
+    .replace(/[ôö]/gi, "o")
+    .replace(/[ùûü]/gi, "u")
+    .replace(/ç/gi, "c")
+    .toLowerCase();
+}
+
+function financeTitle(title) {
+  const value = fold(title);
+  if (/commercial|marketing|office manager|developpeur|informatique|gardien|enseignant|infograph|tele|logistique|approvisionnement|juridique/.test(value)) {
+    return false;
+  }
+  return /comptab|financ|fiscal|audit|tresor|banque|bancaire|caiss|factur|credit|epargne|econom|budget|controleur|controle de gestion|business controller|analyste|\bdaf\b|\braf\b|\bcfo\b|risque|gestion/.test(value);
+}
+
+function offerType(text) {
+  const value = fold(text);
+  if (/concours/.test(value)) return "Concours";
+  if (/appel a candidature/.test(value)) return "Appel à candidatures";
+  if (/stage/.test(value)) return "Stage";
+  return "Emploi";
+}
+
+function offerDomaine(title) {
+  const value = fold(title);
+  if (/econom/.test(value)) return "Économie";
+  if (/gestion/.test(value) && !/financ|compta/.test(value)) return "Gestion";
+  return "Finance";
+}
+
+function dayFromFr(value) {
+  const match = String(value || "").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if (!match) return "";
+  const day = match[3] + "-" + match[2] + "-" + match[1];
+  return validDay(day) ? day : "";
+}
+
+function splitPlace(title) {
+  const parts = String(title || "").split(" - ");
+  if (parts.length < 2) return { titre: title, lieu: "Côte d'Ivoire" };
+  const lieu = parts[parts.length - 1].trim();
+  if (!lieu || lieu.length > 40) return { titre: title, lieu: "Côte d'Ivoire" };
+  return { titre: parts.slice(0, -1).join(" - ").trim(), lieu: lieu };
+}
+
+async function fetchText(url, accept) {
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, 8000);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: accept,
+        "User-Agent": "Mozilla/5.0 (compatible; LeFinancierIvoirien/1.0; +https://le-financier-ivoirien.vercel.app)"
+      },
+      signal: controller.signal
+    });
+    if (!response.ok) return "";
+    return await response.text();
+  } catch (error) {
+    return "";
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function cfaoOffersFromXml(xml) {
@@ -197,27 +271,121 @@ function cfaoOffersFromXml(xml) {
     .filter(Boolean);
 }
 
+function listedOffer(item) {
+  const titre = clean(item.titre, 140);
+  const organisme = clean(item.organisme, 120);
+  const lieu = clean(item.lieu, 80) || "Côte d'Ivoire";
+  const lien = safeLink(item.lien);
+  if (titre.length < 5 || !organisme || !lien || !financeTitle(titre)) return null;
+  const type = offerType((item.typeText || "") + " " + titre);
+  const domaine = offerDomaine(titre);
+  return {
+    id: item.id,
+    titre: titre,
+    organisme: organisme,
+    type: type,
+    domaine: domaine,
+    date_limite: item.date_limite || "",
+    lieu: lieu,
+    lien: lien,
+    resume: type + " · " + organisme + " · " + lieu + ". Annonce " + item.source + ". La candidature se fait sur le site d’origine.",
+    created_at: "",
+    source: item.source,
+    automatique: true
+  };
+}
+
+function emploiOffersFromHtml(html) {
+  return String(html)
+    .split('class="card card-job"')
+    .slice(1)
+    .map(function (block) {
+      const path = (block.match(/href="(\/offre-emploi-cote-ivoire\/[a-z0-9-]+)"/i) || [])[1] || "";
+      const title = decodeXml((block.match(/<h3>\s*<a[^>]*>([\s\S]*?)<\/a>/) || [])[1] || "");
+      const company = decodeXml((block.match(/class="card-job-company[^"]*">([\s\S]*?)<\/a>/) || [])[1] || "");
+      const contract = decodeXml((block.match(/Contrat proposé[\s\S]{0,120}<strong>([\s\S]*?)<\/strong>/) || [])[1] || "");
+      const place = splitPlace(title);
+      const nid = (path.match(/(\d+)$/) || [])[1] || "";
+      if (!path || !nid) return null;
+      return listedOffer({
+        id: "emploi-" + nid,
+        titre: place.titre,
+        organisme: company || "emploi.ci",
+        lieu: place.lieu,
+        lien: "https://www.emploi.ci" + path,
+        typeText: contract + " " + title,
+        source: "emploi.ci"
+      });
+    })
+    .filter(Boolean);
+}
+
+function educaOffersFromHtml(html) {
+  return String(html)
+    .split('class="ej-card"')
+    .slice(1)
+    .map(function (block) {
+      const link = (block.match(/href="(https:\/\/emploi\.educarriere\.ci\/offre-\d+[^"]*)"/) || [])[1] || "";
+      const title = decodeXml((block.match(/class="ej-poste"[^>]*>([^<]+)/) || [])[1] || "");
+      const company = decodeXml((block.match(/class="ej-societe"[^>]*>[\s\S]*?<\/i>\s*([^<]+)/) || [])[1] || "");
+      const place = decodeXml((block.match(/fa-map-marker[\s\S]*?<\/i>\s*([^<]+)/) || [])[1] || "");
+      const kind = decodeXml((block.match(/class="ej-tag[^"]*"[^>]*>([^<]+)/) || [])[1] || "");
+      const deadline = (block.match(/class="ej-expire[^"]*"[^>]*>[\s\S]{0,180}?(\d{2}\/\d{2}\/\d{4})/) || [])[1] || "";
+      const id = (link.match(/offre-(\d+)/) || [])[1] || "";
+      if (!id) return null;
+      return listedOffer({
+        id: "educa-" + id,
+        titre: title,
+        organisme: company || "Educarriere",
+        lieu: place || "Côte d'Ivoire",
+        lien: link,
+        typeText: kind + " " + title,
+        date_limite: dayFromFr(deadline),
+        source: "Educarriere"
+      });
+    })
+    .filter(Boolean);
+}
+
+function takeOffers(items, max) {
+  const seen = new Set();
+  const unique = [];
+  items.forEach(function (item) {
+    if (!item || seen.has(item.lien)) return;
+    seen.add(item.lien);
+    unique.push(item);
+  });
+  return sortOffers(unique).slice(0, max);
+}
+
 async function cfaoOffers() {
-  const controller = new AbortController();
-  const timer = setTimeout(function () { controller.abort(); }, 8000);
-  try {
-    const response = await fetch(CFAO_FEED, {
-      headers: {
-        Accept: "application/rss+xml, text/xml",
-        "User-Agent": "LeFinancierIvoirien/1.0"
-      },
-      signal: controller.signal
-    });
-    if (!response.ok) {
-      return [];
-    }
-    return cfaoOffersFromXml(await response.text()).slice(0, 12);
-  } catch (error) {
-    console.error("cfao");
-    return [];
-  } finally {
-    clearTimeout(timer);
-  }
+  const xml = await fetchText(CFAO_FEED, "application/rss+xml, text/xml");
+  return cfaoOffersFromXml(xml).slice(0, 12);
+}
+
+async function emploiOffers() {
+  const pages = await Promise.all(EMPLOI_FEEDS.map(function (url) {
+    return fetchText(url, "text/html");
+  }));
+  const items = [];
+  pages.forEach(function (page) {
+    emploiOffersFromHtml(page).forEach(function (item) { items.push(item); });
+  });
+  return takeOffers(items, 10);
+}
+
+async function educaOffers() {
+  const html = await fetchText(EDUCA_FEED, "text/html");
+  return takeOffers(educaOffersFromHtml(html), 10);
+}
+
+async function automaticOffers() {
+  const groups = await Promise.all([cfaoOffers(), emploiOffers(), educaOffers()]);
+  const items = [];
+  groups.forEach(function (group) {
+    group.forEach(function (item) { items.push(item); });
+  });
+  return items;
 }
 
 function sortOffers(items) {
@@ -245,7 +413,7 @@ export default async function handler(req, res) {
         console.error("opportunites");
       }
     }
-    const remote = await cfaoOffers();
+    const remote = await automaticOffers();
     res.setHeader("Cache-Control", "public, max-age=300");
     return res.status(200).json({ opportunites: sortOffers(manual.concat(remote)) });
   }
