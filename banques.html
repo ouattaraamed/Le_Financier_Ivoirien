@@ -12,7 +12,7 @@
     content="Actualités bancaires, finance, fintech, assurances et services financiers en Côte d’Ivoire et en Afrique."
   >
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/site.css?v=20261017d">
+  <link rel="stylesheet" href="css/site.css?v=20261017e">
 
   <style>
 
@@ -641,7 +641,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="css/site.css?v=20261017d">
+  <link rel="stylesheet" href="css/site.css?v=20261017e">
 
 </head>
 
@@ -931,6 +931,8 @@
 
 
     function extrait(text, length = 150) {
+
+      text = String(text || "").replace(/@@lfi-images@@[\s\S]*$/, "").trim();
 
       if (!text) return "";
 

@@ -39,6 +39,23 @@ function safeUrl(value, fallback) {
   return fallback;
 }
 
+function splitArticle(value) {
+  const raw = String(value || "");
+  const marker = "@@lfi-images@@";
+  const at = raw.indexOf(marker);
+  if (at < 0) {
+    return { text: raw, images: [] };
+  }
+  const images = [];
+  raw.slice(at + marker.length).split(/\n+/).forEach(function (line) {
+    const url = safeUrl(line.trim(), "");
+    if (url && images.indexOf(url) < 0 && images.length < 8) {
+      images.push(url);
+    }
+  });
+  return { text: raw.slice(0, at).replace(/\s+$/, ""), images: images };
+}
+
 export default async function handler(req, res) {
   const id = req.query.id;
 
@@ -76,7 +93,8 @@ export default async function handler(req, res) {
     }
 
     const titre = article.titre || "Le Financier Ivoirien";
-    const description = (article.contenu || "")
+    const parts = splitArticle(article.contenu || "");
+    const description = parts.text
       .replace(/<[^>]*>/g, "")
       .replace(/\s+/g, " ")
       .trim()
@@ -85,7 +103,10 @@ export default async function handler(req, res) {
     const image = safeUrl(article.image_url, fallbackImage);
     const auteur = article.auteur || "Le Financier Ivoirien";
     const categorie = article.categorie || "Actualités";
-    const contenu = article.contenu || "";
+    const contenu = parts.text;
+    const extras = parts.images.filter(function (url) {
+      return url !== image;
+    });
     const articleUrl = `${siteUrl}/article?id=${encodeURIComponent(id)}`;
     const shareUrl = JSON.stringify(articleUrl).replace(/</g, "\\u003c");
     const shareTitle = JSON.stringify(titre).replace(/</g, "\\u003c");
@@ -96,6 +117,11 @@ export default async function handler(req, res) {
     const categorieHTML = escapeHtml(categorie);
     const imageHTML = escapeHtml(image);
     const contenuHTML = escapeHtml(contenu).replace(/\n/g, "<br>");
+    const galleryHTML = extras.length
+      ? `<div class="detail-gallery">${extras.map(function (url) {
+          return `<img src="${escapeHtml(url)}" alt="">`;
+        }).join("")}</div>`
+      : "";
     const dateLabel = frenchDate(article.created_at);
     const dateHTML = escapeHtml(dateLabel);
     const tribuneNote = categorie === "Tribune libre"
@@ -108,7 +134,7 @@ export default async function handler(req, res) {
       headline: titre,
       datePublished: published || undefined,
       author: { "@type": "Person", name: auteur },
-      image: [image],
+      image: [image].concat(extras),
       mainEntityOfPage: articleUrl,
       publisher: {
         "@type": "Organization",
@@ -141,7 +167,7 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261017d">
+  <link rel="stylesheet" href="/css/site.css?v=20261017e">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
@@ -160,6 +186,7 @@ export default async function handler(req, res) {
       </div>
       <img class="detail-image" src="${imageHTML}" alt="${titreHTML}">
       <div class="detail-content">${contenuHTML}</div>
+      ${galleryHTML}
     </article>
   </main>
   <script>

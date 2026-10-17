@@ -34,7 +34,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261017d">
+  <link rel="stylesheet" href="css/site.css?v=20261017e">
 
 </head>
 
@@ -309,7 +309,18 @@
 
     /* EXTRAIT */
 
+    function texteArticle(texte) {
+
+      const brut = String(texte || "");
+      const coupe = brut.indexOf("@@lfi-images@@");
+
+      return coupe < 0 ? brut.trim() : brut.slice(0, coupe).trim();
+
+    }
+
     function extrait(texte, longueur = 170) {
+
+      texte = texteArticle(texte);
 
       if (!texte) {
         return "";
@@ -368,7 +379,7 @@
           return {
             id: article.id,
             titre: article.titre,
-            contenu: String(article.contenu || "").slice(0, 400),
+            contenu: texteArticle(article.contenu).slice(0, 400),
             categorie: article.categorie,
             auteur: article.auteur,
             image_url: article.image_url,
@@ -920,10 +931,30 @@
       content.className =
         "detail-content";
 
-      content.textContent =
-        article.contenu || "";
+      const parties = String(article.contenu || "");
+      const coupe = parties.indexOf("@@lfi-images@@");
+      const corps = coupe < 0 ? parties : parties.slice(0, coupe).trim();
+      const autres = (coupe < 0 ? [] : parties.slice(coupe + "@@lfi-images@@".length).split(/\n+/))
+        .map(function (ligne) { return ligne.trim(); })
+        .filter(function (ligne) {
+          return /^https?:\/\//i.test(ligne) && ligne !== article.image_url;
+        });
+
+      content.textContent = corps;
 
       detail.appendChild(content);
+
+      if (autres.length) {
+        const galerie = document.createElement("div");
+        galerie.className = "detail-gallery";
+        autres.forEach(function (url) {
+          const photo = document.createElement("img");
+          photo.src = url;
+          photo.alt = "";
+          galerie.appendChild(photo);
+        });
+        detail.appendChild(galerie);
+      }
 
       window.scrollTo(
         {
@@ -1143,7 +1174,7 @@
     );
 
   </script>
-  <script src="js/portraits.js?v=20261017b"></script>
+  <script src="js/portraits.js?v=20261017e"></script>
 
 </body>
   </html>

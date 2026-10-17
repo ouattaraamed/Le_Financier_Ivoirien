@@ -801,6 +801,20 @@ a.side-card {
   white-space: pre-wrap;
 }
 
+.detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.detail-gallery img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
 footer {
   background: #111;
   color: #fff;
