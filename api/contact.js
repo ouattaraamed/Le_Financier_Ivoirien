@@ -1,4 +1,4 @@
-const DESTINATION = "ouattaraamed0507@gmail.com";
+const DESTINATION = "lefinancierivoirien@gmail.com";
 
 function clean(value, max) {
   return String(value || "")
