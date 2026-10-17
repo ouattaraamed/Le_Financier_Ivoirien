@@ -141,7 +141,7 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261017b">
+  <link rel="stylesheet" href="/css/site.css?v=20261017d">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>

@@ -126,7 +126,7 @@ nav.nav {
   color: #fff;
   display: flex;
   align-items: center;
-  padding: 0 4%;
+  padding: 0 16px;
   overflow: visible;
   width: 100%;
   position: relative;
@@ -165,10 +165,10 @@ nav.nav {
 body > nav.nav a,
 nav.nav a,
 .nav-links a {
-  padding: 14px 13px;
+  padding: 14px 8px;
   font-size: var(--text-caption);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   white-space: nowrap;
   border-bottom: 3px solid transparent;
   color: #fff;
@@ -235,15 +235,15 @@ nav.nav a.active {
   color: #fff;
   display: flex;
   align-items: center;
-  padding: 0 4%;
+  padding: 0 16px;
   overflow: visible;
 }
 
 .nav a {
-  padding: 14px 13px;
-  font-size: 13px;
+  padding: 14px 8px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   white-space: nowrap;
   border-bottom: 3px solid transparent;
 }
@@ -1119,7 +1119,7 @@ footer .footer-links a:hover {
   color: #9b1c1c;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1220px) {
   body.nav-open {
     overflow: hidden;
   }
