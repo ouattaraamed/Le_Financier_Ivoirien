@@ -6,30 +6,29 @@
     root = "/";
   }
 
-  var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-  if (!page || page === "article") {
-    page = page === "article" ? "article" : "index.html";
+  var page = (location.pathname.split("/").pop() || "index").toLowerCase().replace(/\.html$/, "");
+  if (!page) page = "index";
+
+  function pageHref(slug) {
+    return slug === "index" ? "/" : "/" + slug;
   }
 
   var links = [
-    { href: root + "index.html", id: "index.html", label: "Accueil" },
-    { href: root + "brvm.html", id: "brvm.html", label: "Marchés & Bourse" },
-    { href: root + "banques.html", id: "banques.html", label: "Banques & Finance" },
-    { href: root + "entreprises.html", id: "entreprises.html", label: "Entreprises" },
-    { href: root + "economie.html", id: "economie.html", label: "Économie" },
-    { href: root + "afrique.html", id: "afrique.html", label: "Afrique & International" },
-    { href: root + "investissement.html", id: "investissement.html", label: "Investissement" },
-    { href: root + "actualites.html", id: "actualites.html", label: "Actualités" },
-    { href: root + "etudiants.html", id: "etudiants.html", label: "Étudiants" },
-    { href: root + "portraits.html", id: "portraits.html", label: "Portraits & Interviews" }
+    { href: pageHref("index"), id: "index", label: "Accueil" },
+    { href: pageHref("brvm"), id: "brvm", label: "Marchés & Bourse" },
+    { href: pageHref("banques"), id: "banques", label: "Banques & Finance" },
+    { href: pageHref("entreprises"), id: "entreprises", label: "Entreprises" },
+    { href: pageHref("economie"), id: "economie", label: "Économie" },
+    { href: pageHref("afrique"), id: "afrique", label: "Afrique & International" },
+    { href: pageHref("investissement"), id: "investissement", label: "Investissement" },
+    { href: pageHref("actualites"), id: "actualites", label: "Actualités" },
+    { href: pageHref("etudiants"), id: "etudiants", label: "Étudiants" },
+    { href: pageHref("portraits"), id: "portraits", label: "Portraits & Interviews" }
   ];
 
   function isActive(item) {
     if (page === "article") {
       return false;
-    }
-    if (item.id === "index.html") {
-      return page === "index.html" || page === "";
     }
     return page === item.id;
   }
@@ -49,7 +48,7 @@
         '<button class="menu-button" id="menuButton" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">' +
           '<span></span><span></span><span></span>' +
         "</button>" +
-        '<a class="brand" href="' + root + 'index.html" id="homeLink">' +
+        '<a class="brand" href="/" id="homeLink">' +
           '<img class="logo" src="' + root + 'logo.png" alt="Le Financier Ivoirien">' +
           '<h1 class="visually-hidden">Le Financier Ivoirien</h1>' +
         "</a>" +
@@ -59,8 +58,8 @@
         '<div class="nav-links" id="navLinks">' +
           navHtml() +
           '<div class="nav-extra">' +
-            '<a href="' + root + 'a-propos.html">À propos</a>' +
-            '<a href="' + root + 'contact.html">Contact</a>' +
+            '<a href="/a-propos">À propos</a>' +
+            '<a href="/contact">Contact</a>' +
           "</div>" +
         "</div>" +
         '<button class="search-button" id="searchButton" type="button" aria-label="Rechercher">⌕</button>' +
@@ -74,19 +73,19 @@
 
   function footerHtml() {
     var items = [
-      { href: root + "index.html", label: "Accueil" },
-      { href: root + "a-propos.html", label: "À propos" },
-      { href: root + "contact.html", label: "Contact" },
-      { href: root + "mentions-legales.html", label: "Mentions légales" },
-      { href: root + "brvm.html", label: "Marchés & Bourse" },
-      { href: root + "banques.html", label: "Banques & Finance" },
-      { href: root + "entreprises.html", label: "Entreprises" },
-      { href: root + "economie.html", label: "Économie" },
-      { href: root + "afrique.html", label: "Afrique & International" },
-      { href: root + "investissement.html", label: "Investissement" },
-      { href: root + "actualites.html", label: "Actualités" },
-      { href: root + "etudiants.html", label: "Étudiants" },
-      { href: root + "portraits.html", label: "Portraits & Interviews" }
+      { href: "/", label: "Accueil" },
+      { href: "/a-propos", label: "À propos" },
+      { href: "/contact", label: "Contact" },
+      { href: "/mentions-legales", label: "Mentions légales" },
+      { href: "/brvm", label: "Marchés & Bourse" },
+      { href: "/banques", label: "Banques & Finance" },
+      { href: "/entreprises", label: "Entreprises" },
+      { href: "/economie", label: "Économie" },
+      { href: "/afrique", label: "Afrique & International" },
+      { href: "/investissement", label: "Investissement" },
+      { href: "/actualites", label: "Actualités" },
+      { href: "/etudiants", label: "Étudiants" },
+      { href: "/portraits", label: "Portraits & Interviews" }
     ];
 
     var rows = [];
@@ -164,8 +163,7 @@
   }
 
   function articleHref(id) {
-    var prefix = root === "/" ? "/" : "";
-    return prefix + "article?id=" + encodeURIComponent(id);
+    return "/article?id=" + encodeURIComponent(id);
   }
 
   function ensureSearch() {

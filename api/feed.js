@@ -23,18 +23,18 @@ const SUPABASE_KEY =
 
 const PAGES = [
   ["/", "daily", "1.0"],
-  ["/brvm.html", "daily", "0.8"],
-  ["/banques.html", "daily", "0.8"],
-  ["/entreprises.html", "daily", "0.8"],
-  ["/economie.html", "daily", "0.8"],
-  ["/afrique.html", "daily", "0.8"],
-  ["/investissement.html", "daily", "0.8"],
-  ["/actualites.html", "daily", "0.8"],
-  ["/etudiants.html", "daily", "0.8"],
-  ["/portraits.html", "weekly", "0.8"],
-  ["/a-propos.html", "monthly", "0.5"],
-  ["/contact.html", "monthly", "0.5"],
-  ["/mentions-legales.html", "yearly", "0.3"]
+  ["/brvm", "daily", "0.8"],
+  ["/banques", "daily", "0.8"],
+  ["/entreprises", "daily", "0.8"],
+  ["/economie", "daily", "0.8"],
+  ["/afrique", "daily", "0.8"],
+  ["/investissement", "daily", "0.8"],
+  ["/actualites", "daily", "0.8"],
+  ["/etudiants", "daily", "0.8"],
+  ["/portraits", "weekly", "0.8"],
+  ["/a-propos", "monthly", "0.5"],
+  ["/contact", "monthly", "0.5"],
+  ["/mentions-legales", "yearly", "0.3"]
 ];
 
 function headers() {

@@ -142,7 +142,7 @@ export default async function handler(req, res) {
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261017b"></script>
+  <script src="/js/site.js?v=20261017c"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
@@ -181,22 +181,22 @@ export default async function handler(req, res) {
       <div>
         <h4>Liens utiles</h4>
         <a href="/">Accueil</a>
-        <a href="/a-propos.html">À propos</a>
-        <a href="/contact.html">Contact</a>
-        <a href="/mentions-legales.html">Mentions légales</a>
+        <a href="/a-propos">À propos</a>
+        <a href="/contact">Contact</a>
+        <a href="/mentions-legales">Mentions légales</a>
       </div>
       <div>
         <h4>Catégories</h4>
-        <a href="/brvm.html">Marchés & Bourse</a>
-        <a href="/banques.html">Banques & Finance</a>
-        <a href="/entreprises.html">Entreprises</a>
-        <a href="/economie.html">Économie</a>
-        <a href="/afrique.html">Afrique & International</a>
-        <a href="/investissement.html">Investissement</a>
+        <a href="/brvm">Marchés & Bourse</a>
+        <a href="/banques">Banques & Finance</a>
+        <a href="/entreprises">Entreprises</a>
+        <a href="/economie">Économie</a>
+        <a href="/afrique">Afrique & International</a>
+        <a href="/investissement">Investissement</a>
       </div>
       <div>
         <h4>Le média</h4>
-        <a href="/contact.html">Contact rédaction</a>
+        <a href="/contact">Contact rédaction</a>
       </div>
     </div>
     <div class="copy">© 2026 Le Financier Ivoirien. Tous droits réservés.</div>
