@@ -20,6 +20,7 @@
     { href: root + "afrique.html", id: "afrique.html", label: "Afrique & International" },
     { href: root + "investissement.html", id: "investissement.html", label: "Investissement" },
     { href: root + "actualites.html", id: "actualites.html", label: "Actualités" },
+    { href: root + "etudiants.html", id: "etudiants.html", label: "Étudiants" },
     { href: root + "portraits.html", id: "portraits.html", label: "Portraits & Interviews" }
   ];
 
@@ -84,6 +85,7 @@
       { href: root + "afrique.html", label: "Afrique & International" },
       { href: root + "investissement.html", label: "Investissement" },
       { href: root + "actualites.html", label: "Actualités" },
+      { href: root + "etudiants.html", label: "Étudiants" },
       { href: root + "portraits.html", label: "Portraits & Interviews" }
     ];
 

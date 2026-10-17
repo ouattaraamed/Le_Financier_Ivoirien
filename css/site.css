@@ -331,6 +331,80 @@ nav.nav a.active {
   color: var(--muted);
 }
 
+.student-lead {
+  max-width: 720px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.opp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.opp-filters button {
+  margin: 0;
+  background: #fff;
+  color: var(--green);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  font: 700 13px/1 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.opp-filters button.is-on {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+.opp-list {
+  display: grid;
+  gap: 12px;
+}
+
+.opp-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: 3px solid #b76e79;
+  padding: 16px;
+}
+
+.opp-kicker {
+  color: #b76e79;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.opp-card h3 {
+  margin: 6px 0;
+  color: #111;
+  font-size: 18px;
+}
+
+.opp-meta {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.opp-card p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.opp-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--green);
+  font-weight: 700;
+}
+
 main {
   max-width: 1250px;
   margin: auto;

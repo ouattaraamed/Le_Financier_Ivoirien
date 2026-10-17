@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Étudiants — Le Financier Ivoirien</title>
+  <meta name="description" content="Stages, emplois et concours en finance, gestion et économie, sélectionnés pour les étudiants.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://le-financier-ivoirien.vercel.app/etudiants.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css?v=20261017b">
+</head>
+<body>
+  <div id="site-chrome"></div>
+  <script src="js/site.js?v=20261017b"></script>
+
+  <main>
+    <section class="articles-section">
+      <div class="articles-header">
+        <h2>Étudiants</h2>
+        <span class="articles-count" id="oppCount">—</span>
+      </div>
+      <p class="student-lead">
+        Stages, premiers emplois, concours et appels à candidatures en finance,
+        gestion et économie. Chaque annonce renvoie vers l’offre d’origine.
+      </p>
+      <div class="opp-filters" role="group" aria-label="Filtrer les annonces">
+        <button type="button" class="is-on" data-type="Tous">Tous</button>
+        <button type="button" data-type="Stage">Stages</button>
+        <button type="button" data-type="Emploi">Emplois</button>
+        <button type="button" data-type="Concours">Concours</button>
+        <button type="button" data-type="Appel à candidatures">Appels</button>
+      </div>
+      <div class="opp-list" id="oppList" aria-busy="true"></div>
+    </section>
+  </main>
+
+  <footer></footer>
+  <script>
+    (function () {
+      var list = document.getElementById("oppList");
+      var count = document.getElementById("oppCount");
+      var items = [];
+      var filtre = "Tous";
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function dateFr(value) {
+        var parts = String(value || "").split("-");
+        if (parts.length !== 3) return "";
+        var date = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
+        if (Number.isNaN(date.getTime())) return "";
+        return date.toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC"
+        });
+      }
+
+      function ouverte(item) {
+        if (!item.date_limite) return true;
+        var today = new Date().toISOString().slice(0, 10);
+        return item.date_limite >= today;
+      }
+
+      function peindre() {
+        var visibles = items.filter(ouverte).filter(function (item) {
+          return filtre === "Tous" || item.type === filtre;
+        });
+        count.textContent = String(visibles.length);
+        list.setAttribute("aria-busy", "false");
+        if (!visibles.length) {
+          list.innerHTML = "<p>Aucune annonce dans cette sélection pour le moment.</p>";
+          return;
+        }
+        list.innerHTML = visibles.map(function (item) {
+          var meta = [item.organisme, item.domaine, item.lieu].filter(Boolean).join(" · ");
+          var limite = item.date_limite ? "Date limite : " + dateFr(item.date_limite) : "";
+          return (
+            '<article class="opp-card">' +
+              '<div class="opp-kicker">' + escapeHtml(item.type) + "</div>" +
+              "<h3>" + escapeHtml(item.titre) + "</h3>" +
+              "<p class=\"opp-meta\">" + escapeHtml(meta) + (limite ? " · " + escapeHtml(limite) : "") + "</p>" +
+              "<p>" + escapeHtml(item.resume) + "</p>" +
+              '<a class="opp-link" href="' + escapeHtml(item.lien) + '" target="_blank" rel="noopener">Voir l’annonce</a>' +
+            "</article>"
+          );
+        }).join("");
+      }
+
+      document.querySelectorAll(".opp-filters button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          filtre = button.dataset.type;
+          document.querySelectorAll(".opp-filters button").forEach(function (other) {
+            other.classList.toggle("is-on", other === button);
+          });
+          peindre();
+        });
+      });
+
+      fetch("/api/opportunites")
+        .then(function (response) {
+          if (!response.ok) throw new Error("load");
+          return response.json();
+        })
+        .then(function (data) {
+          items = (data && data.opportunites) || [];
+          peindre();
+        })
+        .catch(function () {
+          count.textContent = "0";
+          list.setAttribute("aria-busy", "false");
+          list.innerHTML = "<p>Les annonces sont momentanément indisponibles.</p>";
+        });
+    })();
+  </script>
+</body>
+</html>

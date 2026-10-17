@@ -30,6 +30,7 @@ const PAGES = [
   ["/afrique.html", "daily", "0.8"],
   ["/investissement.html", "daily", "0.8"],
   ["/actualites.html", "daily", "0.8"],
+  ["/etudiants.html", "daily", "0.8"],
   ["/portraits.html", "weekly", "0.8"],
   ["/a-propos.html", "monthly", "0.5"],
   ["/contact.html", "monthly", "0.5"],

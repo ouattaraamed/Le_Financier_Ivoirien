@@ -354,6 +354,7 @@
       <button type="button" class="is-on" data-panel="publish">Publier</button>
       <button type="button" data-panel="messages">Messages <span class="count" id="messagesCount"></span></button>
       <button type="button" data-panel="subscribers">Lettre <span class="count" id="subscribersCount"></span></button>
+      <button type="button" data-panel="students">Étudiants <span class="count" id="studentsCount"></span></button>
       <button type="button" data-panel="articles">Articles <span class="count" id="articlesCount"></span></button>
     </nav>
 
@@ -428,6 +429,57 @@
       <div id="subscribersList" class="loading">Chargement des inscrits...</div>
     </section>
 
+    <section class="box panel" id="students">
+      <h2>Annonces étudiants</h2>
+      <p class="lead">Stages, emplois et concours en finance, gestion et économie. Le lien doit mener à l’annonce d’origine.</p>
+      <form id="oppForm">
+        <label for="oppTitle">Titre</label>
+        <input id="oppTitle" type="text" required maxlength="140">
+        <div class="form-grid">
+          <div>
+            <label for="oppOrg">Organisme</label>
+            <input id="oppOrg" type="text" required maxlength="120">
+          </div>
+          <div>
+            <label for="oppType">Type</label>
+            <select id="oppType" required>
+              <option value="">Choisir</option>
+              <option>Stage</option>
+              <option>Emploi</option>
+              <option>Concours</option>
+              <option>Appel à candidatures</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div>
+            <label for="oppField">Domaine</label>
+            <select id="oppField" required>
+              <option value="">Choisir</option>
+              <option>Finance</option>
+              <option>Gestion</option>
+              <option>Économie</option>
+            </select>
+          </div>
+          <div>
+            <label for="oppDeadline">Date limite</label>
+            <input id="oppDeadline" type="date">
+          </div>
+        </div>
+        <label for="oppPlace">Lieu</label>
+        <input id="oppPlace" type="text" maxlength="80" placeholder="Abidjan, ou à distance">
+        <label for="oppLink">Lien de l’annonce</label>
+        <input id="oppLink" type="url" required placeholder="https://...">
+        <label for="oppSummary">Résumé</label>
+        <textarea id="oppSummary" required minlength="10" maxlength="800" placeholder="Quelques lignes, pas le texte complet de l’offre."></textarea>
+        <div class="form-actions">
+          <button type="submit">Publier l’annonce</button>
+        </div>
+        <div id="oppMessage" class="message"></div>
+      </form>
+      <div id="oppAdminList" class="loading">Chargement des annonces...</div>
+    </section>
+
     <section class="box panel" id="articles">
       <div class="section-title">
         <h2>Articles publiés</h2>
@@ -440,7 +492,7 @@
 </main>
 
 
-<script src="js/config.js?v=20261017a"></script>
+<script src="js/config.js?v=20261017b"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -481,6 +533,9 @@ function montrerPanneau(id) {
 document.querySelectorAll(".admin-tabs button").forEach(function (button) {
   button.addEventListener("click", function () {
     montrerPanneau(button.dataset.panel);
+    if (button.dataset.panel === "students") {
+      chargerOpportunites();
+    }
   });
 });
 
@@ -548,6 +603,7 @@ async function verifierConnexion() {
     chargerArticles();
     chargerMessages();
     chargerAbonnes();
+    chargerOpportunites();
 
   } else {
 
@@ -613,6 +669,7 @@ loginForm.addEventListener(
       chargerArticles();
     chargerMessages();
     chargerAbonnes();
+    chargerOpportunites();
     }
 
   }
@@ -725,6 +782,7 @@ articleForm.addEventListener(
       chargerArticles();
     chargerMessages();
     chargerAbonnes();
+    chargerOpportunites();
 
       return;
     }
@@ -766,6 +824,7 @@ articleForm.addEventListener(
     chargerArticles();
     chargerMessages();
     chargerAbonnes();
+    chargerOpportunites();
 
   }
 );
@@ -1047,6 +1106,7 @@ refreshButton.addEventListener(
     chargerArticles();
     chargerMessages();
     chargerAbonnes();
+    chargerOpportunites();
   }
 );
 
@@ -1270,6 +1330,94 @@ async function chargerAbonnes() {
 }
 
 majBrouillon();
+
+document.getElementById("oppForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const box = document.getElementById("oppMessage");
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    message(box, "Connexion requise.");
+    return;
+  }
+  message(box, "Enregistrement…", true);
+  const response = await fetch("/api/opportunites", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      titre: document.getElementById("oppTitle").value,
+      organisme: document.getElementById("oppOrg").value,
+      type: document.getElementById("oppType").value,
+      domaine: document.getElementById("oppField").value,
+      date_limite: document.getElementById("oppDeadline").value,
+      lieu: document.getElementById("oppPlace").value,
+      lien: document.getElementById("oppLink").value,
+      resume: document.getElementById("oppSummary").value
+    })
+  });
+  const body = await response.json().catch(function () { return {}; });
+  if (!response.ok) {
+    message(box, body.error || "L’enregistrement n’a pas abouti.");
+    return;
+  }
+  event.currentTarget.reset();
+  message(box, "Annonce publiée.", true);
+  chargerOpportunites();
+});
+
+async function chargerOpportunites() {
+  const liste = document.getElementById("oppAdminList");
+  if (!liste) return;
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    liste.textContent = "Connexion requise.";
+    return;
+  }
+  const response = await fetch("/api/opportunites", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const body = await response.json().catch(function () { return {}; });
+  if (!response.ok) {
+    liste.textContent = body.error || "Lecture impossible.";
+    return;
+  }
+  const items = body.opportunites || [];
+  const compte = document.getElementById("studentsCount");
+  if (compte) compte.textContent = items.length ? "(" + items.length + ")" : "";
+  if (!items.length) {
+    liste.textContent = "Aucune annonce publiée.";
+    return;
+  }
+  liste.innerHTML = items.map(function (item) {
+    const limite = item.date_limite ? " · limite " + item.date_limite : "";
+    return (
+      '<article class="message-card">' +
+        '<div class="badge">' + echapper(item.type) + "</div>" +
+        "<h3>" + echapper(item.titre) + "</h3>" +
+        "<p>" + echapper(item.organisme) + " · " + echapper(item.domaine) + echapper(limite) + "</p>" +
+        '<div class="article-actions"><button type="button" class="danger" data-opp="' + echapper(item.id) + '">Retirer</button></div>' +
+      "</article>"
+    );
+  }).join("");
+  liste.querySelectorAll("[data-opp]").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      if (!window.confirm("Retirer cette annonce du site ?")) return;
+      const suppression = await fetch("/api/opportunites?id=" + encodeURIComponent(button.dataset.opp), {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+      if (!suppression.ok) {
+        message(document.getElementById("oppMessage"), "Suppression impossible.");
+        return;
+      }
+      chargerOpportunites();
+    });
+  });
+}
 
 /* Lancement */
 
