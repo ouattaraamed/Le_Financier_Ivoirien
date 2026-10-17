@@ -108,7 +108,8 @@ export default async function handler(req, res) {
     if (response.status < 200 || response.status >= 300 || String(response.data.success) === "false") {
       console.error("contact", response.status, upstream.slice(0, 180));
       return res.status(502).json({
-        error: "L’envoi n’a pas abouti. Réessayez dans un instant."
+        error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
+        detail: upstream.slice(0, 180) || "sans message"
       });
     }
 
@@ -116,7 +117,8 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error(error);
     return res.status(502).json({
-      error: "L’envoi n’a pas abouti. Réessayez dans un instant."
+      error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
+      detail: String(error && error.message || error).slice(0, 180)
     });
   }
 }
