@@ -200,15 +200,21 @@ function splitPlace(title) {
   return { titre: parts.slice(0, -1).join(" - ").trim(), lieu: lieu };
 }
 
-async function fetchText(url, accept) {
+async function fetchText(url, accept, options) {
+  const extra = options || {};
   const controller = new AbortController();
-  const timer = setTimeout(function () { controller.abort(); }, 8000);
+  const timer = setTimeout(function () { controller.abort(); }, 7000);
   try {
     const response = await fetch(url, {
+      method: extra.method || "GET",
       headers: {
         Accept: accept,
-        "User-Agent": "Mozilla/5.0 (compatible; LeFinancierIvoirien/1.0; +https://le-financier-ivoirien.vercel.app)"
+        "Accept-Language": "fr-FR,fr;q=0.9",
+        Referer: extra.referer || "https://www.google.com/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        ...(extra.body ? { "Content-Type": "application/x-www-form-urlencoded" } : {})
       },
+      body: extra.body,
       signal: controller.signal
     });
     if (!response.ok) return "";
@@ -375,8 +381,20 @@ async function emploiOffers() {
 }
 
 async function educaOffers() {
-  const html = await fetchText(EDUCA_FEED, "text/html");
-  return takeOffers(educaOffersFromHtml(html), 10);
+  const words = ["comptable", "auditeur", "financier", "banque"];
+  const pages = await Promise.all(words.map(function (word) {
+    return fetchText(EDUCA_FEED, "text/html", {
+      method: "POST",
+      referer: "https://www.educarriere.ci/emploi",
+      body: "typeemploi%5B%5D=FC&niveau=&typeoffre=&anciennete=&codes=&mots_cles=" +
+        encodeURIComponent(word) + "&button=Rechercher"
+    });
+  }));
+  const items = [];
+  pages.forEach(function (page) {
+    educaOffersFromHtml(page).forEach(function (item) { items.push(item); });
+  });
+  return takeOffers(items, 10);
 }
 
 async function automaticOffers() {
