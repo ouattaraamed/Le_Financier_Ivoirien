@@ -30,6 +30,7 @@ const PAGES = [
   ["/afrique", "daily", "0.8"],
   ["/investissement", "daily", "0.8"],
   ["/actualites", "daily", "0.8"],
+  ["/tribune", "weekly", "0.7"],
   ["/etudiants", "daily", "0.8"],
   ["/portraits", "weekly", "0.8"],
   ["/a-propos", "monthly", "0.5"],

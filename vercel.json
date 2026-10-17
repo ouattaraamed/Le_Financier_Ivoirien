@@ -31,7 +31,7 @@
       ]
     },
     {
-      "source": "/:path(brvm|banques|entreprises|economie|afrique|investissement|actualites|etudiants|portraits|a-propos|contact|mentions-legales|admin)",
+      "source": "/:path(brvm|banques|entreprises|economie|afrique|investissement|actualites|tribune|etudiants|portraits|a-propos|contact|mentions-legales|admin)",
       "headers": [
         {
           "key": "Cache-Control",

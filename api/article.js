@@ -98,6 +98,9 @@ export default async function handler(req, res) {
     const contenuHTML = escapeHtml(contenu).replace(/\n/g, "<br>");
     const dateLabel = frenchDate(article.created_at);
     const dateHTML = escapeHtml(dateLabel);
+    const tribuneNote = categorie === "Tribune libre"
+      ? `<p class="detail-meta">Tribune signée par son auteur. Le Financier Ivoirien la publie dans la rubrique <a href="/tribune">Tribune libre</a>.</p>`
+      : "";
     const published = isoDate(article.created_at);
     const jsonLd = JSON.stringify({
       "@context": "https://schema.org",
@@ -142,11 +145,12 @@ export default async function handler(req, res) {
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261017c"></script>
+  <script src="/js/site.js?v=20261017d"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
       <span class="detail-category">${categorieHTML}</span>
+      ${tribuneNote}
       <h1 class="detail-title">${titreHTML}</h1>
       <div class="detail-meta">Par ${auteurHTML}${dateHTML ? " · " + dateHTML : ""}</div>
       <div class="share-bar">

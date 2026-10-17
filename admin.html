@@ -378,7 +378,9 @@
               <option>Investissement</option>
               <option>Portraits & Interviews</option>
               <option>Actualités</option>
+              <option>Tribune libre</option>
             </select>
+            <p class="lead" id="tribuneHint" hidden>Une tribune est signée par son auteur. Indique son nom dans le champ Auteur. Le texte sera présenté comme un avis.</p>
           </div>
           <div>
             <label for="auteur">Auteur</label>
@@ -818,6 +820,7 @@ articleForm.addEventListener(
 
 
     articleForm.reset();
+    reglerMentionTribune();
     localStorage.removeItem("lfi-admin-draft-v1");
     majBrouillon();
 
@@ -991,6 +994,8 @@ function modifierArticle(article) {
     .value =
       (article.categorie === "Économie ivoirienne" ? "Économie" : article.categorie) || "";
 
+  reglerMentionTribune();
+
 
   document
     .getElementById("auteur")
@@ -1024,6 +1029,22 @@ function modifierArticle(article) {
 }
 
 
+function reglerMentionTribune() {
+
+  var hint = document.getElementById("tribuneHint");
+  var select = document.getElementById("categorie");
+
+  if (!hint || !select) {
+    return;
+  }
+
+  hint.hidden = select.value !== "Tribune libre";
+
+}
+
+document.getElementById("categorie").addEventListener("change", reglerMentionTribune);
+
+
 /* Annuler modification */
 
 function annulerModification() {
@@ -1031,6 +1052,8 @@ function annulerModification() {
   articleEnModification = null;
 
   articleForm.reset();
+
+  reglerMentionTribune();
 
   formTitle.textContent =
     "Publier un article";

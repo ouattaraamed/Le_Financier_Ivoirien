@@ -10,6 +10,7 @@ window.LFI = {
     "Afrique & International",
     "Investissement",
     "Portraits & Interviews",
-    "Actualités"
+    "Actualités",
+    "Tribune libre"
   ]
 };
