@@ -32,14 +32,13 @@ async function ensureBucket(key) {
       public: false
     })
   });
-  if (response.ok || response.status === 409) {
-    return;
+  if (!response.ok) {
+    const text = await response.text();
+    if (/exists|duplicate|already/i.test(text)) {
+      return;
+    }
+    throw new Error("bucket " + response.status + " " + text.slice(0, 120));
   }
-  const text = await response.text();
-  if (/exists|duplicate|already/i.test(text)) {
-    return;
-  }
-  throw new Error("bucket " + response.status);
 }
 
 export default async function handler(req, res) {
@@ -98,16 +97,20 @@ export default async function handler(req, res) {
       }
     );
     if (!response.ok) {
-      console.error("contact", response.status);
+      const text = await response.text();
+      console.error("contact upload", response.status, text.slice(0, 180));
       return res.status(502).json({
-        error: "L’envoi n’a pas abouti. Réessayez dans un instant."
+        error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
+        step: "upload",
+        status: response.status
       });
     }
     return res.status(200).json({ ok: true });
   } catch (error) {
     console.error(error);
     return res.status(502).json({
-      error: "L’envoi n’a pas abouti. Réessayez dans un instant."
+      error: "L’envoi n’a pas abouti. Réessayez dans un instant.",
+      step: String(error && error.message || "erreur").slice(0, 160)
     });
   }
 }
