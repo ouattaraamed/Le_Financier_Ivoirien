@@ -34,7 +34,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261017e">
+  <link rel="stylesheet" href="css/site.css?v=20261017f">
 
 </head>
 
@@ -308,6 +308,66 @@
     }
 
     /* EXTRAIT */
+
+    function ecrireTexteLie(element, texte) {
+
+      const source = String(texte || "");
+      const motif = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+      let curseur = 0;
+      let trouve;
+
+      while ((trouve = motif.exec(source))) {
+
+        if (trouve.index > curseur) {
+          element.appendChild(document.createTextNode(source.slice(curseur, trouve.index)));
+        }
+
+        let url = trouve[0];
+        let suite = "";
+
+        while (url && /[),.;:!?»]+$/.test(url)) {
+          const dernier = url.slice(-1);
+          if (dernier === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
+            break;
+          }
+          suite = dernier + suite;
+          url = url.slice(0, -1);
+        }
+
+        let href = /^www\./i.test(url) ? "https://" + url : url;
+        let valide = false;
+
+        try {
+          const adresse = new URL(href);
+          valide = adresse.protocol === "http:" || adresse.protocol === "https:";
+          href = adresse.toString();
+        } catch (error) {
+          valide = false;
+        }
+
+        if (valide) {
+          const lien = document.createElement("a");
+          lien.href = href;
+          lien.target = "_blank";
+          lien.rel = "noopener";
+          lien.textContent = url;
+          element.appendChild(lien);
+          if (suite) {
+            element.appendChild(document.createTextNode(suite));
+          }
+        } else {
+          element.appendChild(document.createTextNode(trouve[0]));
+        }
+
+        curseur = trouve.index + trouve[0].length;
+
+      }
+
+      if (curseur < source.length) {
+        element.appendChild(document.createTextNode(source.slice(curseur)));
+      }
+
+    }
 
     function texteArticle(texte) {
 
@@ -940,7 +1000,7 @@
           return /^https?:\/\//i.test(ligne) && ligne !== article.image_url;
         });
 
-      content.textContent = corps;
+      ecrireTexteLie(content, corps);
 
       detail.appendChild(content);
 

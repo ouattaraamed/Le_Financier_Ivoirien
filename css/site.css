@@ -801,6 +801,17 @@ a.side-card {
   white-space: pre-wrap;
 }
 
+.detail-content a {
+  color: var(--green2);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.detail-content a:hover {
+  color: var(--gold);
+}
+
 .detail-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

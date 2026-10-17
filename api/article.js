@@ -27,6 +27,43 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+function detachTail(value) {
+  let url = value;
+  let tail = "";
+  while (url && /[),.;:!?»]+$/.test(url)) {
+    const last = url.slice(-1);
+    if (last === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
+      break;
+    }
+    tail = last + tail;
+    url = url.slice(0, -1);
+  }
+  return { url: url, tail: tail };
+}
+
+function renderText(value) {
+  const text = String(value || "");
+  const pattern = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+  let html = "";
+  let last = 0;
+  let match;
+  while ((match = pattern.exec(text))) {
+    html += escapeHtml(text.slice(last, match.index)).replace(/\n/g, "<br>");
+    const parts = detachTail(match[0]);
+    const href = safeUrl(/^www\./i.test(parts.url) ? "https://" + parts.url : parts.url, "");
+    if (!href) {
+      html += escapeHtml(match[0]);
+    } else {
+      html +=
+        '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' +
+        escapeHtml(parts.url) + "</a>" + escapeHtml(parts.tail);
+    }
+    last = match.index + match[0].length;
+  }
+  html += escapeHtml(text.slice(last)).replace(/\n/g, "<br>");
+  return html;
+}
+
 function safeUrl(value, fallback) {
   try {
     const url = new URL(value);
@@ -116,7 +153,7 @@ export default async function handler(req, res) {
     const auteurHTML = escapeHtml(auteur);
     const categorieHTML = escapeHtml(categorie);
     const imageHTML = escapeHtml(image);
-    const contenuHTML = escapeHtml(contenu).replace(/\n/g, "<br>");
+    const contenuHTML = renderText(contenu);
     const galleryHTML = extras.length
       ? `<div class="detail-gallery">${extras.map(function (url) {
           return `<img src="${escapeHtml(url)}" alt="">`;
@@ -167,7 +204,7 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261017e">
+  <link rel="stylesheet" href="/css/site.css?v=20261017f">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>

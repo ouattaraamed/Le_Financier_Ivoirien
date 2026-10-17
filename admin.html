@@ -287,6 +287,7 @@
     #preview { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
     #preview img { max-width: 100%; margin: 12px 0; }
     .preview-body { white-space: pre-wrap; line-height: 1.55; margin: 0; }
+    .preview-body a { color: var(--green2); font-weight: 700; text-decoration: underline; }
     #image_file { margin-top: 8px; }
     .image-link-row { display: flex; gap: 8px; align-items: center; }
     .image-link-row input { flex: 1; }
@@ -1270,6 +1271,52 @@ function urlImage(value) {
   return "";
 }
 
+function ecrireTexteLie(element, texte) {
+  const source = String(texte || "");
+  const motif = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+  let curseur = 0;
+  let trouve;
+  while ((trouve = motif.exec(source))) {
+    if (trouve.index > curseur) {
+      element.appendChild(document.createTextNode(source.slice(curseur, trouve.index)));
+    }
+    let url = trouve[0];
+    let suite = "";
+    while (url && /[),.;:!?»]+$/.test(url)) {
+      const dernier = url.slice(-1);
+      if (dernier === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
+        break;
+      }
+      suite = dernier + suite;
+      url = url.slice(0, -1);
+    }
+    let href = /^www\./i.test(url) ? "https://" + url : url;
+    let valide = false;
+    try {
+      const adresse = new URL(href);
+      valide = adresse.protocol === "http:" || adresse.protocol === "https:";
+      href = adresse.toString();
+    } catch (error) {
+      valide = false;
+    }
+    if (valide) {
+      const lien = document.createElement("a");
+      lien.href = href;
+      lien.target = "_blank";
+      lien.rel = "noopener";
+      lien.textContent = url;
+      element.appendChild(lien);
+      if (suite) element.appendChild(document.createTextNode(suite));
+    } else {
+      element.appendChild(document.createTextNode(trouve[0]));
+    }
+    curseur = trouve.index + trouve[0].length;
+  }
+  if (curseur < source.length) {
+    element.appendChild(document.createTextNode(source.slice(curseur)));
+  }
+}
+
 function texteArticle(value) {
   const brut = String(value || "");
   const coupe = brut.indexOf(MARQUE_IMAGES);
@@ -1423,7 +1470,9 @@ document.getElementById("previewButton").addEventListener("click", function () {
   document.getElementById("previewCategory").textContent = article.categorie || "Sans catégorie";
   document.getElementById("previewTitle").textContent = article.titre || "Sans titre";
   document.getElementById("previewMeta").textContent = article.auteur || "";
-  document.getElementById("previewBody").textContent = texteArticle(article.contenu || "");
+  const corps = document.getElementById("previewBody");
+  corps.textContent = "";
+  ecrireTexteLie(corps, texteArticle(article.contenu || ""));
   const image = document.getElementById("previewImage");
   const extras = (article.images || []).filter(function (url) {
     return url && url !== article.image_url;
