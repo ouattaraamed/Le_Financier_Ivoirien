@@ -409,6 +409,7 @@ main {
   max-width: 1250px;
   margin: auto;
   padding: 18px 4% 50px;
+  overflow-x: clip;
 }
 
 .hero-grid {
@@ -721,11 +722,13 @@ a.side-card {
 
 #article-detail {
   max-width: 900px;
+  width: 100%;
   margin: 30px auto;
   background: #fff;
   border-top: 5px solid var(--green);
   padding: 35px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow-wrap: anywhere;
 }
 
 .detail-back {
@@ -789,6 +792,8 @@ a.side-card {
 
 .detail-image {
   width: 100%;
+  max-width: 100%;
+  height: auto;
   max-height: 520px;
   object-fit: cover;
   margin-bottom: 25px;
@@ -799,6 +804,7 @@ a.side-card {
   line-height: 1.5;
   color: #263936;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .detail-content a {
@@ -806,6 +812,8 @@ a.side-card {
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 .detail-content a:hover {
@@ -814,7 +822,7 @@ a.side-card {
 
 .detail-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 12px;
   margin-top: 22px;
 }
@@ -1367,8 +1375,12 @@ footer .footer-links a:hover {
   }
 
   #article-detail {
-    margin: 15px 0;
-    padding: 22px;
+    margin: 0;
+    padding: 18px 16px 28px;
+  }
+
+  .detail-gallery {
+    grid-template-columns: 1fr;
   }
 
   .legal {
