@@ -583,12 +583,17 @@
         }
       }
 
-      if (porteuses.length === 1) {
-        phrases.push("La séance est portée par " + porteuses[0].nom + ".");
-      } else if (porteuses.length > 1) {
-        phrases.push("La séance est portée par " + porteuses.map(function (item) {
+      const mouvementComposite = composite ? variation(composite.change) : null;
+
+      if (porteuses.length) {
+        const noms = porteuses.map(function (item) {
           return item.nom;
-        }).join(", ") + ".");
+        }).join(", ");
+        if (mouvementComposite !== null && mouvementComposite < 0) {
+          phrases.push("Parmi les hausses du jour : " + noms + ".");
+        } else {
+          phrases.push("La séance est portée par " + noms + ".");
+        }
       }
 
       return phrases.join(" ");
