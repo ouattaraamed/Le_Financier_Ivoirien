@@ -34,7 +34,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261017g">
+  <link rel="stylesheet" href="css/site.css?v=20261018c">
 
 </head>
 
@@ -57,49 +57,35 @@
 
   <main id="mainContent">
 
-    <!-- UNE -->
+    <section class="doors" id="doors">
+      <p class="doors-kicker">Le Financier Ivoirien</p>
+      <p class="doors-intro">Trois entrées. Choisis la tienne : placer, diriger, ou étudier.</p>
+      <div class="door-switch" role="tablist" aria-label="Trois entrées">
+        <button type="button" class="is-on" role="tab" id="tab-place" aria-selected="true" aria-controls="door-place" data-door="place">Je place</button>
+        <button type="button" role="tab" id="tab-dirige" aria-selected="false" aria-controls="door-dirige" data-door="dirige">Je dirige</button>
+        <button type="button" role="tab" id="tab-etudie" aria-selected="false" aria-controls="door-etudie" data-door="etudie">J’étudie</button>
+      </div>
 
-    <section class="hero-grid">
+      <div class="door-panel is-on" id="door-place" role="tabpanel" aria-labelledby="tab-place">
+        <p class="door-sentence" id="placeSentence">Les cours de la BRVM arrivent.</p>
+        <p class="door-note" id="placeNote"></p>
+        <div class="door-list" id="placeList"></div>
+        <p class="door-more"><a href="/brvm">Voir le marché</a></p>
+      </div>
 
-      <article class="hero is-loading" id="heroArticle">
+      <div class="door-panel" id="door-dirige" role="tabpanel" aria-labelledby="tab-dirige" hidden>
+        <p class="doors-kicker">Ce que dit la BCEAO</p>
+        <h2 id="dirigeTitle">Le dernier communiqué arrive.</h2>
+        <p class="door-lead" id="dirigeLead"></p>
+        <div class="door-list" id="dirigeList"></div>
+        <p class="door-more"><a href="/banques">Banques et entreprises</a></p>
+      </div>
 
-        <div class="hero-content">
-
-          <span class="tag" id="heroCategory"></span>
-
-          <h2 id="heroTitle"></h2>
-
-          <div class="meta" id="heroMeta"></div>
-
-        </div>
-
-      </article>
-
-      <!-- À LA UNE -->
-
-      <aside class="side">
-
-        <div class="section-title">
-
-          <h3>
-            À LA UNE
-          </h3>
-
-          <small id="sideCount">
-            —
-          </small>
-
-        </div>
-
-        <div id="sideArticles" aria-busy="true">
-          <div class="side-skel"></div>
-          <div class="side-skel"></div>
-          <div class="side-skel"></div>
-          <div class="side-skel"></div>
-        </div>
-
-      </aside>
-
+      <div class="door-panel" id="door-etudie" role="tabpanel" aria-labelledby="tab-etudie" hidden>
+        <p class="door-sentence" id="etudieSentence">Les annonces arrivent.</p>
+        <div class="door-list" id="etudieList"></div>
+        <p class="door-more"><a href="/etudiants">Toutes les annonces</a> · <a href="/tribune">Tribunes</a></p>
+      </div>
     </section>
 
     <!-- DERNIERS ARTICLES -->
@@ -518,6 +504,8 @@
 
     function afficherAccueil() {
 
+      remplirPortes();
+
       afficherHero();
 
       afficherUne();
@@ -534,12 +522,179 @@
 
     /* ARTICLE PRINCIPAL */
 
+    function variation(raw) {
+
+      const texte = String(raw || "").replace(/\s/g, "").replace("%", "").replace(",", ".");
+      const valeur = Number(texte);
+
+      return Number.isFinite(valeur) ? valeur : null;
+
+    }
+
+    function etiquetteVariation(raw) {
+
+      const valeur = variation(raw);
+      let montre = String(raw || "").replace("%", "").trim();
+
+      if (valeur === null || !montre) {
+        return "";
+      }
+
+      if (valeur > 0 && montre.charAt(0) !== "+") {
+        montre = "+" + montre;
+      }
+
+      return montre + "%";
+
+    }
+
+    function phraseMarche(data) {
+
+      const indices = data.indices || [];
+      const composite = indices.find(function (item) {
+        return /composite/i.test(item.name || "");
+      });
+      const actions = (data.actions || []).map(function (item) {
+        return {
+          nom: item.symbol || item.name || "",
+          variation: variation(item.change)
+        };
+      }).filter(function (item) {
+        return item.nom && item.variation !== null;
+      }).sort(function (a, b) {
+        return b.variation - a.variation;
+      });
+      const porteuses = actions.filter(function (item) {
+        return item.variation > 0;
+      }).slice(0, 3);
+      const phrases = [];
+
+      if (composite) {
+        const mouvement = variation(composite.change);
+        const etiquette = etiquetteVariation(composite.change);
+        if (mouvement > 0 && etiquette) {
+          phrases.push("Le BRVM Composite avance de " + etiquette.replace("+", "") + ".");
+        } else if (mouvement < 0 && etiquette) {
+          phrases.push("Le BRVM Composite recule de " + etiquette.replace("-", "") + ".");
+        } else if (mouvement === 0) {
+          phrases.push("Le BRVM Composite est stable.");
+        } else if (composite.last) {
+          phrases.push("Le BRVM Composite est à " + composite.last + ".");
+        }
+      }
+
+      if (porteuses.length === 1) {
+        phrases.push("La séance est portée par " + porteuses[0].nom + ".");
+      } else if (porteuses.length > 1) {
+        phrases.push("La séance est portée par " + porteuses.map(function (item) {
+          return item.nom;
+        }).join(", ") + ".");
+      }
+
+      return phrases.join(" ");
+
+    }
+
+    function carteArticle(article) {
+
+      const lien = document.createElement("a");
+      const titre = document.createElement("strong");
+      const meta = document.createElement("span");
+
+      lien.href = lienArticle(article.id);
+      titre.textContent = article.titre || "Sans titre";
+      meta.textContent = (article.categorie || "Actualités") + " · " + (article.auteur || "Le Financier Ivoirien");
+      lien.appendChild(titre);
+      lien.appendChild(meta);
+
+      return lien;
+
+    }
+
+    function remplirListe(id, selection, vide) {
+
+      const liste = document.getElementById(id);
+
+      if (!liste) {
+        return;
+      }
+
+      liste.innerHTML = "";
+
+      if (!selection.length) {
+        liste.textContent = vide;
+        return;
+      }
+
+      selection.forEach(function (article) {
+        liste.appendChild(carteArticle(article));
+      });
+
+    }
+
+    function remplirPortes() {
+
+      const marche = articles.filter(function (article) {
+        return article.categorie === "Marchés & Bourse";
+      }).slice(0, 3);
+      const bceao = articles.find(function (article) {
+        return article.auteur === "BCEAO" || /bceao/i.test(article.titre || "");
+      });
+      const dirige = articles.filter(function (article) {
+        return (article.categorie === "Banques & Finance" || article.categorie === "Entreprises") &&
+          (!bceao || article.id !== bceao.id);
+      }).slice(0, 3);
+      const tribune = articles.find(function (article) {
+        return article.categorie === "Tribune libre";
+      });
+      const titre = document.getElementById("dirigeTitle");
+      const extrait = document.getElementById("dirigeLead");
+
+      remplirListe("placeList", marche, "Le fil des marchés s’ouvrira avec le prochain article.");
+      remplirListe("dirigeList", dirige, "");
+
+      if (titre && extrait) {
+        if (!bceao) {
+          titre.textContent = "Aucun communiqué récent de la BCEAO.";
+          extrait.textContent = "Les derniers textes sur les banques et les entreprises sont listés ci-dessous.";
+        } else {
+          const corps = texteArticle(bceao.contenu || "").replace(/\s+/g, " ").trim();
+          titre.textContent = bceao.titre || "Communiqué";
+          extrait.textContent = corps.length > 240
+            ? corps.slice(0, 240).replace(/\s+\S*$/, "") + "…"
+            : corps;
+          titre.onclick = null;
+          let lien = document.getElementById("dirigeOpen");
+          if (!lien) {
+            lien = document.createElement("a");
+            lien.id = "dirigeOpen";
+            lien.className = "door-open";
+            titre.parentNode.insertBefore(lien, extrait);
+          }
+          lien.href = lienArticle(bceao.id);
+          lien.textContent = "Lire le communiqué";
+        }
+      }
+
+      const etudes = document.getElementById("etudieList");
+      if (etudes && tribune && !etudes.querySelector("[data-tribune]")) {
+        const carte = carteArticle(tribune);
+        carte.setAttribute("data-tribune", "1");
+        etudes.insertBefore(carte, etudes.firstChild);
+      }
+
+    }
+
     function afficherHero() {
 
       const hero =
         document.getElementById(
           "heroArticle"
         );
+
+      if (!hero) {
+        return;
+      }
 
       hero.classList.remove("is-loading");
 
@@ -621,6 +776,10 @@
         document.getElementById(
           "sideArticles"
         );
+
+      if (!container) {
+        return;
+      }
 
       const selection =
         articles.slice(1, 5);
@@ -1080,9 +1239,126 @@
 
     }
 
+    function ouvrirPortes() {
+
+      document.querySelectorAll("[data-door]").forEach(function (bouton) {
+
+        bouton.addEventListener("click", function () {
+
+          const nom = bouton.getAttribute("data-door");
+
+          document.querySelectorAll("[data-door]").forEach(function (autre) {
+            const actif = autre === bouton;
+            autre.classList.toggle("is-on", actif);
+            autre.setAttribute("aria-selected", actif ? "true" : "false");
+          });
+
+          document.querySelectorAll(".door-panel").forEach(function (panneau) {
+            const visible = panneau.id === "door-" + nom;
+            panneau.hidden = !visible;
+            panneau.classList.toggle("is-on", visible);
+            if (visible) {
+              panneau.style.animation = "none";
+              void panneau.offsetWidth;
+              panneau.style.animation = "";
+            }
+          });
+
+        });
+
+      });
+
+      fetch("/api/brvm")
+        .then(function (reponse) {
+          if (!reponse.ok) {
+            throw new Error("brvm");
+          }
+          return reponse.json();
+        })
+        .then(function (data) {
+          const phrase = document.getElementById("placeSentence");
+          const note = document.getElementById("placeNote");
+          const texte = phraseMarche(data);
+          if (phrase) {
+            phrase.textContent = texte || "Les cours du jour sont sur la page Marchés.";
+          }
+          if (note) {
+            note.textContent = data.updatedAt
+              ? "Cours repris de brvm.org, " + data.updatedAt + "."
+              : "Cours repris de brvm.org.";
+          }
+        })
+        .catch(function () {
+          const phrase = document.getElementById("placeSentence");
+          if (phrase) {
+            phrase.textContent = "Les cours BRVM sont momentanément indisponibles.";
+          }
+        });
+
+      fetch("/api/opportunites")
+        .then(function (reponse) {
+          if (!reponse.ok) {
+            throw new Error("offres");
+          }
+          return reponse.json();
+        })
+        .then(function (data) {
+          const annonces = (data.opportunites || []).filter(function (item) {
+            return item && item.titre;
+          });
+          const stages = annonces.filter(function (item) {
+            return item.type === "Stage";
+          });
+          const phrase = document.getElementById("etudieSentence");
+          const liste = document.getElementById("etudieList");
+          if (phrase) {
+            if (stages.length === 1) {
+              phrase.textContent = "Un stage en finance, gestion ou économie est ouvert en ce moment.";
+            } else if (stages.length > 1) {
+              phrase.textContent = stages.length + " stages en finance, gestion ou économie sont ouverts en ce moment.";
+            } else if (annonces.length) {
+              phrase.textContent = annonces.length + " annonces en finance, gestion ou économie sont ouvertes en ce moment.";
+            } else {
+              phrase.textContent = "Aucune annonce ouverte pour le moment.";
+            }
+          }
+          if (!liste) {
+            return;
+          }
+          const tribune = liste.querySelector("[data-tribune]");
+          liste.innerHTML = "";
+          if (tribune) {
+            liste.appendChild(tribune);
+          }
+          (stages.length ? stages : annonces).slice(0, 3).forEach(function (item) {
+            const lien = document.createElement("a");
+            const titre = document.createElement("strong");
+            const meta = document.createElement("span");
+            lien.href = item.lien || "/etudiants";
+            if (item.lien) {
+              lien.target = "_blank";
+              lien.rel = "noopener";
+            }
+            titre.textContent = item.titre;
+            meta.textContent = [item.type, item.organisme, item.lieu].filter(Boolean).join(" · ");
+            lien.appendChild(titre);
+            lien.appendChild(meta);
+            liste.appendChild(lien);
+          });
+        })
+        .catch(function () {
+          const phrase = document.getElementById("etudieSentence");
+          if (phrase) {
+            phrase.textContent = "Les annonces sont momentanément indisponibles.";
+          }
+        });
+
+    }
+
     /* LANCEMENT */
 
     function lancerSite() {
+      ouvrirPortes();
       afficherDate();
       const enCache = lireCacheArticles();
       if (enCache.length) {
