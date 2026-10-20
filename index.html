@@ -37,7 +37,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261020bw">
+  <link rel="stylesheet" href="css/site.css?v=20261020hero">
 
 </head>
 
@@ -64,7 +64,9 @@
 
     <section class="hero-grid">
 
-      <article class="hero is-loading" id="heroArticle">
+      <article class="hero is-loading" id="heroArticle" aria-live="polite">
+
+        <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
 
         <div class="hero-content">
 
@@ -75,6 +77,8 @@
           <div class="meta" id="heroMeta"></div>
 
         </div>
+
+        <div class="hero-dots" id="heroDots" hidden></div>
 
       </article>
 
@@ -535,85 +539,165 @@
 
     }
 
-    /* ARTICLE PRINCIPAL */
+    /* ARTICLE PRINCIPAL — carrousel */
+
+    const HERO_MAX = 5;
+    const HERO_MS = 5500;
+    let heroIndex = 0;
+    let heroTimer = null;
+
+    function heroSlides() {
+      return articles.slice(0, Math.min(HERO_MAX, articles.length));
+    }
+
+    function stopHeroRotation() {
+      if (heroTimer) {
+        clearInterval(heroTimer);
+        heroTimer = null;
+      }
+    }
+
+    function startHeroRotation() {
+      stopHeroRotation();
+      const slides = heroSlides();
+      if (slides.length < 2) {
+        return;
+      }
+      heroTimer = setInterval(function () {
+        peindreHeroSlide((heroIndex + 1) % slides.length, true);
+      }, HERO_MS);
+    }
+
+    function syncHeroDots() {
+      const dots = document.getElementById("heroDots");
+      if (!dots) {
+        return;
+      }
+      dots.querySelectorAll("button").forEach(function (btn, i) {
+        const on = i === heroIndex;
+        btn.classList.toggle("is-active", on);
+        btn.setAttribute("aria-current", on ? "true" : "false");
+      });
+    }
+
+    function buildHeroDots(count) {
+      const dots = document.getElementById("heroDots");
+      if (!dots) {
+        return;
+      }
+      dots.innerHTML = "";
+      if (count < 2) {
+        dots.hidden = true;
+        return;
+      }
+      dots.hidden = false;
+      for (let i = 0; i < count; i += 1) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.setAttribute("aria-label", "Actualité " + (i + 1));
+        btn.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          peindreHeroSlide(i, true);
+          startHeroRotation();
+        });
+        dots.appendChild(btn);
+      }
+      syncHeroDots();
+    }
+
+    function peindreHeroSlide(index, animate) {
+      const hero = document.getElementById("heroArticle");
+      const media = document.getElementById("heroMedia");
+      const slides = heroSlides();
+      const article = slides[index];
+
+      if (!hero || !article) {
+        return;
+      }
+
+      heroIndex = index;
+
+      const apply = function () {
+        document.getElementById("heroTitle").textContent =
+          article.titre || "Sans titre";
+        document.getElementById("heroCategory").textContent =
+          article.categorie || "Actualités";
+        document.getElementById("heroMeta").textContent =
+          `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
+
+        if (article.image_url) {
+          hero.classList.add("has-image");
+          appliquerImage(media || hero, article.image_url);
+        } else {
+          hero.classList.remove("has-image");
+          if (media) {
+            media.style.backgroundImage = "";
+          }
+          hero.style.backgroundImage = "";
+        }
+
+        let open = hero.querySelector(".hero-open");
+        if (!open) {
+          open = document.createElement("a");
+          open.className = "hero-open";
+          hero.appendChild(open);
+        }
+        open.href = lienArticle(article.id);
+        open.setAttribute("aria-label", article.titre || "Lire l'article");
+
+        syncHeroDots();
+        afficherUne();
+      };
+
+      if (!animate) {
+        hero.classList.remove("is-switching");
+        apply();
+        return;
+      }
+
+      hero.classList.add("is-switching");
+      window.setTimeout(function () {
+        apply();
+        hero.classList.remove("is-switching");
+      }, 280);
+    }
 
     function afficherHero() {
-
-      const hero =
-        document.getElementById(
-          "heroArticle"
-        );
-
+      const hero = document.getElementById("heroArticle");
+      stopHeroRotation();
       hero.classList.remove("is-loading");
 
-      const article =
-        articles[0];
+      const slides = heroSlides();
 
-      if (!article) {
-
-        document.getElementById(
-          "heroTitle"
-        ).textContent =
+      if (!slides.length) {
+        document.getElementById("heroTitle").textContent =
           "Bienvenue sur Le Financier Ivoirien";
-
-        document.getElementById(
-          "heroMeta"
-        ).textContent =
+        document.getElementById("heroMeta").textContent =
           "Publiez votre premier article depuis l’administration.";
-
+        const dots = document.getElementById("heroDots");
+        if (dots) {
+          dots.hidden = true;
+          dots.innerHTML = "";
+        }
         return;
-
       }
 
-      document.getElementById(
-        "heroTitle"
-      ).textContent =
-        article.titre || "Sans titre";
+      buildHeroDots(slides.length);
+      peindreHeroSlide(0, false);
 
-      document.getElementById(
-        "heroCategory"
-      ).textContent =
-        article.categorie || "Actualités";
-
-      document.getElementById(
-        "heroMeta"
-      ).textContent =
-        `${formatDate(article.created_at)} • ${article.auteur || "Le Financier Ivoirien"}`;
-
-      if (article.image_url) {
-
-        hero.classList.add("has-image");
-
-        appliquerImage(
-          hero,
-          article.image_url
-        );
-
+      if (slides.length > 1) {
+        startHeroRotation();
+        hero.onmouseenter = stopHeroRotation;
+        hero.onmouseleave = startHeroRotation;
+        hero.onfocusin = stopHeroRotation;
+        hero.onfocusout = startHeroRotation;
+      } else {
+        hero.onmouseenter = null;
+        hero.onmouseleave = null;
+        hero.onfocusin = null;
+        hero.onfocusout = null;
       }
-
-      let open =
-        hero.querySelector(".hero-open");
-
-      if (!open) {
-
-        open =
-          document.createElement("a");
-
-        open.className =
-          "hero-open";
-
-        hero.appendChild(open);
-
-      }
-
-      open.href =
-        lienArticle(article.id);
-
-      open.setAttribute(
-        "aria-label",
-        article.titre || "Lire l'article"
-      );
-
     }
 
     /* À LA UNE */
@@ -625,8 +709,15 @@
           "sideArticles"
         );
 
-      const selection =
-        articles.slice(1, 5);
+      const slides = heroSlides();
+      const current = slides[heroIndex];
+      let selection = slides.filter(function (article) {
+        return !current || article.id !== current.id;
+      });
+
+      if (!selection.length) {
+        selection = articles.slice(1, 5);
+      }
 
       document.getElementById(
         "sideCount"
