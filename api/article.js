@@ -200,9 +200,10 @@ export default async function handler(req, res) {
   <link rel="canonical" href="${escapeHtml(articleUrl)}">
   <link rel="alternate" type="application/rss+xml" title="Le Financier Ivoirien" href="/rss.xml">
   <script type="application/ld+json">${jsonLd}</script>
-  <link rel="icon" href="/favicon-32.png?v=20261020" type="image/png" sizes="32x32">
-  <link rel="icon" href="/favicon.svg?v=20261020" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261020" sizes="180x180">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
