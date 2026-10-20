@@ -908,6 +908,47 @@ a.side-card {
   display: block;
 }
 
+.detail-docs {
+  margin: 28px 0 0;
+  padding: 18px 0 0;
+  border-top: 2px solid #111;
+}
+
+.detail-docs h2 {
+  margin: 0 0 12px;
+  font: 700 18px/1.2 var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.detail-docs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.detail-docs a {
+  display: block;
+  padding: 12px 14px;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.detail-docs a:hover {
+  opacity: 0.88;
+}
+
+.detail-docs span {
+  color: #6b6b6b;
+  font-weight: 500;
+  font-size: 13px;
+}
+
 footer {
   background: #111;
   color: #fff;

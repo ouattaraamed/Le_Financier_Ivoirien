@@ -15,7 +15,7 @@
 
   function excerpt(html, length) {
     var text = String(html || "")
-      .replace(/@@lfi-images@@[\s\S]*$/, "")
+      .replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "")
       .replace(/<[^>]+>/g, " ")
       .replace(/\s+/g, " ")
       .trim();

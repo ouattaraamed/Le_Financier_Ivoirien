@@ -936,7 +936,7 @@
 
     function extrait(text, length = 150) {
 
-      text = String(text || "").replace(/@@lfi-images@@[\s\S]*$/, "").trim();
+      text = String(text || "").replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "").trim();
 
       if (!text) return "";
 

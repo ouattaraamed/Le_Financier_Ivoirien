@@ -292,10 +292,53 @@
     #preview img { max-width: 100%; margin: 12px 0; }
     .preview-body { white-space: pre-wrap; line-height: 1.55; margin: 0; }
     .preview-body a { color: var(--green2); font-weight: 700; text-decoration: underline; }
-    #image_file { margin-top: 8px; }
+    #image_file, #document_file { margin-top: 8px; }
     .image-link-row { display: flex; gap: 8px; align-items: center; }
     .image-link-row input { flex: 1; }
     .image-link-row button { margin-top: 0; white-space: nowrap; }
+    #documentList {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    #documentList .doc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    #documentList .doc-row strong {
+      display: block;
+      font-size: 14px;
+    }
+    #documentList .doc-row span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    #documentList button {
+      margin-top: 0;
+      width: auto;
+      flex-shrink: 0;
+    }
+    #previewDocs {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    #previewDocs a {
+      display: block;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #111;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+    }
     #imageGallery, #previewGallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -441,6 +484,12 @@
         </div>
         <p class="lead" id="imageStatus"></p>
 
+        <label for="document_file">Documents</label>
+        <p class="lead">Joignez des fichiers téléchargeables (PDF, Word, Excel, TXT, RTF). 2,5 Mo maximum, cinq documents au plus.</p>
+        <input id="document_file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,application/rtf" multiple>
+        <div id="documentList"></div>
+        <p class="lead" id="documentStatus"></p>
+
         <label for="contenu">Contenu de l'article</label>
         <textarea id="contenu" placeholder="Écrivez votre article ici..." required></textarea>
 
@@ -459,6 +508,7 @@
         <p class="lead" id="previewMeta"></p>
         <img id="previewImage" alt="" hidden>
         <div id="previewGallery"></div>
+        <div id="previewDocs"></div>
         <p class="preview-body" id="previewBody"></p>
       </article>
     </section>
@@ -765,7 +815,7 @@ articleForm.addEventListener(
       ajouterImage(lienSaisi);
       document.getElementById("image_url").value = "";
     }
-    const paquet = emballerImages(
+    const paquet = emballerContenu(
       document.getElementById("contenu").value
     );
 
@@ -1260,8 +1310,10 @@ function majBrouillon() {
 }
 
 const MARQUE_IMAGES = "@@lfi-images@@";
+const MARQUE_DOCS = "@@lfi-docs@@";
 let gallery = [];
 let imageCouverture = "";
+let documents = [];
 
 function urlImage(value) {
   try {
@@ -1273,6 +1325,13 @@ function urlImage(value) {
     return "";
   }
   return "";
+}
+
+function tailleFichier(octets) {
+  const n = Number(octets) || 0;
+  if (n < 1024) return n + " o";
+  if (n < 1024 * 1024) return Math.round(n / 1024) + " Ko";
+  return (n / (1024 * 1024)).toFixed(1).replace(".", ",") + " Mo";
 }
 
 function ecrireTexteLie(element, texte) {
@@ -1323,24 +1382,113 @@ function ecrireTexteLie(element, texte) {
 
 function texteArticle(value) {
   const brut = String(value || "");
-  const coupe = brut.indexOf(MARQUE_IMAGES);
+  const coupe = brut.search(/@@lfi-(?:images|docs)@@/);
   return coupe < 0 ? brut.trim() : brut.slice(0, coupe).trim();
 }
 
 function separerImages(value) {
   const brut = String(value || "");
-  const coupe = brut.indexOf(MARQUE_IMAGES);
+  let bloc = brut;
+  const docsAt = bloc.indexOf(MARQUE_DOCS);
+  if (docsAt >= 0) {
+    bloc = bloc.slice(0, docsAt);
+  }
+  const coupe = bloc.indexOf(MARQUE_IMAGES);
   if (coupe < 0) {
     return [];
   }
   const urls = [];
-  brut.slice(coupe + MARQUE_IMAGES.length).split(/\n+/).forEach(function (ligne) {
+  bloc.slice(coupe + MARQUE_IMAGES.length).split(/\n+/).forEach(function (ligne) {
     const url = urlImage(ligne);
     if (url && urls.indexOf(url) < 0 && urls.length < 8) {
       urls.push(url);
     }
   });
   return urls;
+}
+
+function separerDocuments(value) {
+  const brut = String(value || "");
+  const coupe = brut.indexOf(MARQUE_DOCS);
+  if (coupe < 0) {
+    return [];
+  }
+  const liste = [];
+  brut.slice(coupe + MARQUE_DOCS.length).split(/\n+/).forEach(function (ligne) {
+    const raw = String(ligne || "").trim();
+    if (!raw || raw.indexOf("{") !== 0 || liste.length >= 5) {
+      return;
+    }
+    try {
+      const item = JSON.parse(raw);
+      const url = urlImage(item.url);
+      const name = String(item.name || "Document").trim().slice(0, 120) || "Document";
+      if (!url) {
+        return;
+      }
+      if (liste.some(function (doc) { return doc.url === url; })) {
+        return;
+      }
+      liste.push({
+        name: name,
+        url: url,
+        type: String(item.type || "application/octet-stream"),
+        size: Number(item.size) || 0
+      });
+    } catch (error) {
+      /* ignore */
+    }
+  });
+  return liste;
+}
+
+function peindreDocuments() {
+  const box = document.getElementById("documentList");
+  if (!box) {
+    return;
+  }
+  box.innerHTML = documents.map(function (doc, index) {
+    return (
+      '<div class="doc-row">' +
+        "<div><strong>" + echapper(doc.name) + "</strong>" +
+        "<span>" + echapper(tailleFichier(doc.size)) + "</span></div>" +
+        '<button type="button" data-remove-doc="' + index + '">Retirer</button>' +
+      "</div>"
+    );
+  }).join("");
+}
+
+function ajouterDocument(doc) {
+  const status = document.getElementById("documentStatus");
+  const url = urlImage(doc && doc.url);
+  if (!url) {
+    if (status) status.textContent = "Document invalide.";
+    return false;
+  }
+  if (documents.some(function (item) { return item.url === url; })) {
+    return true;
+  }
+  if (documents.length >= 5) {
+    if (status) status.textContent = "Cinq documents au maximum.";
+    return false;
+  }
+  documents.push({
+    name: String(doc.name || "Document").trim().slice(0, 120) || "Document",
+    url: url,
+    type: String(doc.type || "application/octet-stream"),
+    size: Number(doc.size) || 0
+  });
+  peindreDocuments();
+  return true;
+}
+
+function viderDocuments() {
+  documents = [];
+  const status = document.getElementById("documentStatus");
+  if (status) status.textContent = "";
+  peindreDocuments();
+  const apercu = document.getElementById("previewDocs");
+  if (apercu) apercu.innerHTML = "";
 }
 
 function peindreGalerie() {
@@ -1399,6 +1547,7 @@ function viderImages() {
   peindreGalerie();
   const apercu = document.getElementById("previewGallery");
   if (apercu) apercu.innerHTML = "";
+  viderDocuments();
 }
 
 function chargerImages(article) {
@@ -1411,18 +1560,34 @@ function chargerImages(article) {
   imageCouverture = couverture && gallery.indexOf(couverture) >= 0
     ? couverture
     : (gallery[0] || "");
+  documents = separerDocuments(article.contenu || "");
   document.getElementById("contenu").value = texteArticle(article.contenu || "");
   document.getElementById("image_url").value = "";
   peindreGalerie();
+  peindreDocuments();
 }
 
-function emballerImages(texte) {
+function emballerContenu(texte) {
   const corps = texteArticle(texte);
   const urls = gallery.map(urlImage).filter(Boolean).slice(0, 8);
   const couverture = urls.indexOf(imageCouverture) >= 0 ? imageCouverture : (urls[0] || "");
+  let contenu = corps;
+  if (urls.length) {
+    contenu += "\n\n" + MARQUE_IMAGES + "\n" + urls.join("\n");
+  }
+  if (documents.length) {
+    contenu += "\n\n" + MARQUE_DOCS + "\n" + documents.map(function (doc) {
+      return JSON.stringify({
+        name: doc.name,
+        url: doc.url,
+        type: doc.type,
+        size: doc.size
+      });
+    }).join("\n");
+  }
   return {
     image_url: couverture,
-    contenu: urls.length ? corps + "\n\n" + MARQUE_IMAGES + "\n" + urls.join("\n") : corps
+    contenu: contenu
   };
 }
 
@@ -1433,6 +1598,7 @@ function lireFormulaire() {
     auteur: document.getElementById("auteur").value,
     image_url: imageCouverture,
     images: gallery.slice(),
+    documents: documents.slice(),
     contenu: document.getElementById("contenu").value
   };
 }
@@ -1464,7 +1630,11 @@ document.getElementById("restoreDraftButton").addEventListener("click", function
   if (gallery.indexOf(imageCouverture) < 0) {
     imageCouverture = gallery[0] || "";
   }
+  documents = Array.isArray(draft.documents)
+    ? draft.documents.filter(function (doc) { return urlImage(doc && doc.url); }).slice(0, 5)
+    : separerDocuments(draft.contenu || "");
   peindreGalerie();
+  peindreDocuments();
   montrerPanneau("publish");
 });
 
@@ -1492,6 +1662,14 @@ document.getElementById("previewButton").addEventListener("click", function () {
   }
   galerie.innerHTML = extras.map(function (url) {
     return '<figure><img src="' + echapper(url) + '" alt=""></figure>';
+  }).join("");
+  const docsBox = document.getElementById("previewDocs");
+  docsBox.innerHTML = (article.documents || []).map(function (doc) {
+    return (
+      '<a href="' + echapper(doc.url) + '" target="_blank" rel="noopener">' +
+        "Télécharger — " + echapper(doc.name) +
+      "</a>"
+    );
   }).join("");
   preview.hidden = false;
   preview.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1570,7 +1748,7 @@ document.getElementById("image_file").addEventListener("change", async function 
           Authorization: "Bearer " + token,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ data: payload })
+        body: JSON.stringify({ data: payload, kind: "image" })
       });
       const body = await response.json().catch(function () { return {}; });
       if (!response.ok || !body.url) {
@@ -1588,6 +1766,74 @@ document.getElementById("image_file").addEventListener("change", async function 
     status.textContent = ajoutees > 1
       ? ajoutees + " images déposées. Choisissez la couverture."
       : "Image déposée. Elle sert de couverture tant que vous n’en choisissez pas une autre.";
+  }
+});
+
+document.getElementById("documentList").addEventListener("click", function (event) {
+  const button = event.target.closest("button[data-remove-doc]");
+  if (!button) {
+    return;
+  }
+  const index = Number(button.getAttribute("data-remove-doc"));
+  documents.splice(index, 1);
+  peindreDocuments();
+});
+
+document.getElementById("document_file").addEventListener("change", async function () {
+  const files = Array.prototype.slice.call(this.files || []);
+  this.value = "";
+  const status = document.getElementById("documentStatus");
+  if (!files.length) {
+    return;
+  }
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    status.textContent = "Connectez-vous pour déposer un document.";
+    return;
+  }
+  let ajoutes = 0;
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+    if (documents.length >= 5) {
+      status.textContent = "Cinq documents au maximum.";
+      break;
+    }
+    if (file.size > 2500000) {
+      status.textContent = file.name + " dépasse 2,5 Mo.";
+      continue;
+    }
+    status.textContent = "Dépôt du document " + (i + 1) + " sur " + files.length + "…";
+    try {
+      const payload = await lireFichier(file);
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: payload,
+          kind: "document",
+          name: file.name
+        })
+      });
+      const body = await response.json().catch(function () { return {}; });
+      if (!response.ok || !body.url) {
+        status.textContent = body.error || "Le dépôt n’a pas abouti.";
+        continue;
+      }
+      if (ajouterDocument(body)) {
+        ajoutes += 1;
+      }
+    } catch (error) {
+      status.textContent = "Le dépôt n’a pas abouti.";
+    }
+  }
+  if (ajoutes) {
+    status.textContent = ajoutes > 1
+      ? ajoutes + " documents déposés."
+      : "Document déposé. Il sera téléchargeable sous l’article.";
   }
 });
 

@@ -101,7 +101,7 @@ async function rss(res) {
     const when = isoDate(article.created_at);
     const pub = when ? new Date(when).toUTCString() : "";
     const description = String(article.contenu || "")
-      .replace(/@@lfi-images@@[\s\S]*$/, "")
+      .replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "")
       .replace(/<[^>]*>/g, " ")
       .replace(/\s+/g, " ")
       .trim()

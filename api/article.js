@@ -76,21 +76,67 @@ function safeUrl(value, fallback) {
   return fallback;
 }
 
-function splitArticle(value) {
-  const raw = String(value || "");
-  const marker = "@@lfi-images@@";
-  const at = raw.indexOf(marker);
-  if (at < 0) {
-    return { text: raw, images: [] };
-  }
-  const images = [];
-  raw.slice(at + marker.length).split(/\n+/).forEach(function (line) {
-    const url = safeUrl(line.trim(), "");
-    if (url && images.indexOf(url) < 0 && images.length < 8) {
-      images.push(url);
+function parseDocuments(block) {
+  const docs = [];
+  String(block || "").split(/\n+/).forEach(function (line) {
+    const raw = String(line || "").trim();
+    if (!raw || raw.indexOf("{") !== 0 || docs.length >= 5) {
+      return;
+    }
+    try {
+      const item = JSON.parse(raw);
+      const url = safeUrl(String(item.url || "").trim(), "");
+      const name = String(item.name || "Document").trim().slice(0, 120) || "Document";
+      if (!url || docs.some(function (doc) { return doc.url === url; })) {
+        return;
+      }
+      docs.push({
+        name: name,
+        url: url,
+        type: String(item.type || "application/octet-stream"),
+        size: Number(item.size) || 0
+      });
+    } catch (error) {
+      /* ignore */
     }
   });
-  return { text: raw.slice(0, at).replace(/\s+$/, ""), images: images };
+  return docs;
+}
+
+function splitArticle(value) {
+  const raw = String(value || "");
+  const imageMarker = "@@lfi-images@@";
+  const docMarker = "@@lfi-docs@@";
+  let working = raw;
+  let docs = [];
+  const docAt = working.indexOf(docMarker);
+  if (docAt >= 0) {
+    docs = parseDocuments(working.slice(docAt + docMarker.length));
+    working = working.slice(0, docAt);
+  }
+  const images = [];
+  const imageAt = working.indexOf(imageMarker);
+  if (imageAt >= 0) {
+    working.slice(imageAt + imageMarker.length).split(/\n+/).forEach(function (line) {
+      const url = safeUrl(line.trim(), "");
+      if (url && images.indexOf(url) < 0 && images.length < 8) {
+        images.push(url);
+      }
+    });
+    working = working.slice(0, imageAt);
+  }
+  return {
+    text: working.replace(/\s+$/, ""),
+    images: images,
+    docs: docs
+  };
+}
+
+function formatSize(bytes) {
+  const n = Number(bytes) || 0;
+  if (n < 1024) return n + " o";
+  if (n < 1024 * 1024) return Math.round(n / 1024) + " Ko";
+  return (n / (1024 * 1024)).toFixed(1).replace(".", ",") + " Mo";
 }
 
 export default async function handler(req, res) {
@@ -159,6 +205,12 @@ export default async function handler(req, res) {
           return `<img src="${escapeHtml(url)}" alt="">`;
         }).join("")}</div>`
       : "";
+    const docsHTML = (parts.docs || []).length
+      ? `<aside class="detail-docs"><h2>Documents</h2><ul>${parts.docs.map(function (doc) {
+          const size = doc.size ? ` <span>(${escapeHtml(formatSize(doc.size))})</span>` : "";
+          return `<li><a href="${escapeHtml(doc.url)}" target="_blank" rel="noopener" download="${escapeHtml(doc.name)}">Télécharger — ${escapeHtml(doc.name)}</a>${size}</li>`;
+        }).join("")}</ul></aside>`
+      : "";
     const dateLabel = frenchDate(article.created_at);
     const dateHTML = escapeHtml(dateLabel);
     const tribuneNote = categorie === "Tribune libre"
@@ -209,7 +261,7 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261020nowrap">
+  <link rel="stylesheet" href="/css/site.css?v=20261020docs">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
@@ -229,6 +281,7 @@ export default async function handler(req, res) {
       <img class="detail-image" src="${imageHTML}" alt="${titreHTML}">
       <div class="detail-content">${contenuHTML}</div>
       ${galleryHTML}
+      ${docsHTML}
     </article>
   </main>
   <script>

@@ -3,6 +3,33 @@ const SUPABASE_URL =
 const PUBLISHABLE = "sb_publishable_gneCI14E-yANxMZOeBotww_K2snSohZ";
 const BUCKET = "article-images";
 
+const IMAGE_TYPES = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp"
+};
+
+const DOC_TYPES = {
+  "application/pdf": "pdf",
+  "application/msword": "doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+  "application/vnd.ms-excel": "xls",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+  "text/plain": "txt",
+  "application/rtf": "rtf",
+  "text/rtf": "rtf"
+};
+
+const EXT_TYPES = {
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  txt: "text/plain",
+  rtf: "application/rtf"
+};
+
 function serviceKey() {
   return String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
 }
@@ -13,6 +40,19 @@ function serviceHeaders(key) {
     Authorization: "Bearer " + key,
     "Content-Type": "application/json"
   };
+}
+
+function safeFileName(value) {
+  return String(value || "document")
+    .replace(/[^\w.\- ()àâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ]+/gi, "_")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 120) || "document";
+}
+
+function extOf(name) {
+  const match = String(name || "").toLowerCase().match(/\.([a-z0-9]+)$/);
+  return match ? match[1] : "";
 }
 
 async function reader(req) {
@@ -57,7 +97,7 @@ export default async function handler(req, res) {
 
   const key = serviceKey();
   if (!key) {
-    return res.status(503).json({ error: "Dépôt d’image indisponible." });
+    return res.status(503).json({ error: "Dépôt de fichier indisponible." });
   }
   if (!(await reader(req))) {
     return res.status(401).json({ error: "Connexion requise." });
@@ -73,21 +113,54 @@ export default async function handler(req, res) {
   }
   body = body || {};
 
+  const kind = String(body.kind || "image").toLowerCase() === "document"
+    ? "document"
+    : "image";
   const match = String(body.data || "").match(
-    /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=\s]+)$/
+    /^data:([a-z0-9.+/-]+);base64,([A-Za-z0-9+/=\s]+)$/i
   );
   if (!match) {
-    return res.status(400).json({ error: "Choisissez une image JPEG, PNG ou WebP." });
+    return res.status(400).json({
+      error: kind === "document"
+        ? "Choisissez un document PDF, Word, Excel ou texte."
+        : "Choisissez une image JPEG, PNG ou WebP."
+    });
   }
 
-  const type = match[1];
+  let type = String(match[1] || "").toLowerCase();
+  const originalName = safeFileName(body.name || "");
+  const namedExt = extOf(originalName);
+
+  if (kind === "image") {
+    if (!IMAGE_TYPES[type]) {
+      return res.status(400).json({ error: "Choisissez une image JPEG, PNG ou WebP." });
+    }
+  } else {
+    if (!DOC_TYPES[type] && type === "application/octet-stream" && EXT_TYPES[namedExt]) {
+      type = EXT_TYPES[namedExt];
+    }
+    if (!DOC_TYPES[type]) {
+      return res.status(400).json({
+        error: "Formats acceptés : PDF, Word, Excel, TXT, RTF."
+      });
+    }
+  }
+
   const bytes = Buffer.from(match[2].replace(/\s/g, ""), "base64");
-  if (!bytes.length || bytes.length > 1400000) {
-    return res.status(400).json({ error: "L’image doit faire moins de 1,4 Mo." });
+  const maxBytes = kind === "document" ? 2500000 : 1400000;
+  if (!bytes.length || bytes.length > maxBytes) {
+    return res.status(400).json({
+      error: kind === "document"
+        ? "Le document doit faire moins de 2,5 Mo."
+        : "L’image doit faire moins de 1,4 Mo."
+    });
   }
 
-  const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
-  const name = Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
+  const ext = kind === "image" ? IMAGE_TYPES[type] : DOC_TYPES[type];
+  const stamp = Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+  const name = kind === "document"
+    ? "docs/" + stamp + "." + ext
+    : stamp + "." + ext;
 
   try {
     await ensureBucket(key);
@@ -106,13 +179,29 @@ export default async function handler(req, res) {
     );
     if (!response.ok) {
       console.error("upload", response.status);
-      return res.status(502).json({ error: "Le dépôt de l’image n’a pas abouti." });
+      return res.status(502).json({
+        error: kind === "document"
+          ? "Le dépôt du document n’a pas abouti."
+          : "Le dépôt de l’image n’a pas abouti."
+      });
     }
-    return res.status(200).json({
-      url: SUPABASE_URL + "/storage/v1/object/public/" + BUCKET + "/" + name
-    });
+    const url = SUPABASE_URL + "/storage/v1/object/public/" + BUCKET + "/" + name;
+    if (kind === "document") {
+      const label = originalName || ("document." + ext);
+      return res.status(200).json({
+        url: url,
+        name: label,
+        type: type,
+        size: bytes.length
+      });
+    }
+    return res.status(200).json({ url: url });
   } catch (error) {
     console.error("upload");
-    return res.status(502).json({ error: "Le dépôt de l’image n’a pas abouti." });
+    return res.status(502).json({
+      error: kind === "document"
+        ? "Le dépôt du document n’a pas abouti."
+        : "Le dépôt de l’image n’a pas abouti."
+    });
   }
 }

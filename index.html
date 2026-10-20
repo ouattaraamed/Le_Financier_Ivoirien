@@ -38,7 +38,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261020nowrap">
+  <link rel="stylesheet" href="css/site.css?v=20261020docs">
 
 </head>
 
@@ -380,10 +380,41 @@
     function texteArticle(texte) {
 
       const brut = String(texte || "");
-      const coupe = brut.indexOf("@@lfi-images@@");
+      const coupe = brut.search(/@@lfi-(?:images|docs)@@/);
 
       return coupe < 0 ? brut.trim() : brut.slice(0, coupe).trim();
 
+    }
+
+    function documentsArticle(texte) {
+      const brut = String(texte || "");
+      const marque = "@@lfi-docs@@";
+      const coupe = brut.indexOf(marque);
+      if (coupe < 0) {
+        return [];
+      }
+      const liste = [];
+      brut.slice(coupe + marque.length).split(/\n+/).forEach(function (ligne) {
+        const raw = String(ligne || "").trim();
+        if (!raw || raw.indexOf("{") !== 0 || liste.length >= 5) {
+          return;
+        }
+        try {
+          const item = JSON.parse(raw);
+          const url = String(item.url || "").trim();
+          if (!/^https?:\/\//i.test(url)) {
+            return;
+          }
+          liste.push({
+            name: String(item.name || "Document").trim().slice(0, 120) || "Document",
+            url: url,
+            size: Number(item.size) || 0
+          });
+        } catch (error) {
+          /* ignore */
+        }
+      });
+      return liste;
     }
 
     function extrait(texte, longueur = 170) {
@@ -1087,13 +1118,16 @@
         "detail-content";
 
       const parties = String(article.contenu || "");
-      const coupe = parties.indexOf("@@lfi-images@@");
-      const corps = coupe < 0 ? parties : parties.slice(0, coupe).trim();
-      const autres = (coupe < 0 ? [] : parties.slice(coupe + "@@lfi-images@@".length).split(/\n+/))
+      const docsMarque = parties.indexOf("@@lfi-docs@@");
+      const sansDocs = docsMarque < 0 ? parties : parties.slice(0, docsMarque);
+      const coupe = sansDocs.indexOf("@@lfi-images@@");
+      const corps = coupe < 0 ? sansDocs : sansDocs.slice(0, coupe).trim();
+      const autres = (coupe < 0 ? [] : sansDocs.slice(coupe + "@@lfi-images@@".length).split(/\n+/))
         .map(function (ligne) { return ligne.trim(); })
         .filter(function (ligne) {
           return /^https?:\/\//i.test(ligne) && ligne !== article.image_url;
         });
+      const pieces = documentsArticle(parties);
 
       ecrireTexteLie(content, corps);
 
@@ -1109,6 +1143,25 @@
           galerie.appendChild(photo);
         });
         detail.appendChild(galerie);
+      }
+
+      if (pieces.length) {
+        const docs = document.createElement("aside");
+        docs.className = "detail-docs";
+        docs.innerHTML = "<h2>Documents</h2>";
+        const list = document.createElement("ul");
+        pieces.forEach(function (doc) {
+          const item = document.createElement("li");
+          const lien = document.createElement("a");
+          lien.href = doc.url;
+          lien.target = "_blank";
+          lien.rel = "noopener";
+          lien.textContent = "Télécharger — " + doc.name;
+          item.appendChild(lien);
+          list.appendChild(item);
+        });
+        docs.appendChild(list);
+        detail.appendChild(docs);
       }
 
       window.scrollTo(
