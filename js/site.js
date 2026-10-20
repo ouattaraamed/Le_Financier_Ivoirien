@@ -50,7 +50,7 @@
           '<span></span><span></span><span></span>' +
         "</button>" +
         '<a class="brand" href="/" id="homeLink">' +
-          '<img class="logo" src="' + root + 'logo.png" alt="Le Financier Ivoirien">' +
+          '<img class="logo" src="' + root + 'logo.png?v=20261020" alt="Le Financier Ivoirien">' +
           '<h1 class="visually-hidden">Le Financier Ivoirien</h1>' +
         "</a>" +
         '<button class="search-button search-button-mobile" type="button" aria-label="Rechercher">⌕</button>' +

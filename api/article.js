@@ -200,10 +200,11 @@ export default async function handler(req, res) {
   <link rel="canonical" href="${escapeHtml(articleUrl)}">
   <link rel="alternate" type="application/rss+xml" title="Le Financier Ivoirien" href="/rss.xml">
   <script type="application/ld+json">${jsonLd}</script>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" href="/favicon-32.png?v=20261020" type="image/png" sizes="32x32">
+  <link rel="icon" href="/favicon.svg?v=20261020" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261020" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -211,7 +212,7 @@ export default async function handler(req, res) {
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261018a"></script>
+  <script src="/js/site.js?v=20261020a"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
