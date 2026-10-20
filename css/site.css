@@ -1,16 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap");
 
 :root {
-  --green: #052e29;
-  --green2: #0a5c4f;
-  --gold: #c9a227;
-  --ink: #12201e;
-  --muted: #5e6e6a;
+  --black: #000000;
+  --graphite: #1a1a1a;
+  --ink: #111111;
+  --muted: #6b6b6b;
   --paper: #ffffff;
   --white: #ffffff;
+  --surface: #f4f4f4;
   --red: #c42b31;
-  --border: #ddd6c8;
-  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --up: #0d7a4f;
+  --down: #c42b31;
+  --border: #e5e5e5;
+  /* Alias marque A (noir / blanc) — remplacent vert / or */
+  --green: #000000;
+  --green2: #1a1a1a;
+  --gold: #111111;
+  --font-display: "Space Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --text-micro: 10px;
   --text-caption: 12px;
   --text-sm: 14px;
@@ -64,11 +71,11 @@ select {
 }
 
 .top a {
-  color: #e8efed;
+  color: #e5e5e5;
 }
 
 .top a:hover {
-  color: var(--gold);
+  color: #fff;
 }
 
 body > header.header,
@@ -176,14 +183,15 @@ nav.nav a,
 
 body > nav.nav a:hover,
 nav.nav a:hover {
-  color: var(--gold);
+  color: #fff;
+  opacity: 0.85;
 }
 
 body > nav.nav a.active,
 nav.nav a.active {
   background: transparent;
   color: #fff;
-  border-bottom-color: var(--gold);
+  border-bottom-color: #fff;
 }
 
 .visually-hidden {
@@ -201,33 +209,33 @@ nav.nav a.active {
 .brand h1 {
   display: block;
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: clamp(28px, 4.2vw, 46px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--green);
+  color: #fff;
   line-height: 1.05;
 }
 
 .kicker {
   display: block;
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 11px;
   font-style: normal;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: #fff;
 }
 
 .brand .tagline {
   display: block;
   margin: 2px 0 0;
   font-family: var(--font-sans);
-  font-style: italic;
+  font-style: normal;
   font-size: 15px;
-  color: #4a5f5b;
+  color: #a3a3a3;
 }
 
 .nav {
@@ -249,13 +257,14 @@ nav.nav a.active {
 }
 
 .nav a:hover {
-  color: var(--gold);
+  color: #fff;
+  opacity: 0.85;
 }
 
 .nav a.active {
   background: transparent;
   color: #fff;
-  border-bottom-color: var(--gold);
+  border-bottom-color: #fff;
 }
 
 .search-button {
@@ -284,7 +293,7 @@ nav.nav a.active {
   width: 100%;
   max-width: 700px;
   padding: 13px 15px;
-  border: 1px solid #ccd5d1;
+  border: 1px solid #e5e5e5;
   border-radius: 5px;
   font-size: 15px;
 }
@@ -311,7 +320,7 @@ nav.nav a.active {
 .search-results span {
   display: block;
   margin-top: 3px;
-  color: #b76e79;
+  color: #6b6b6b;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -351,7 +360,7 @@ nav.nav a.active {
   color: var(--green);
   border: 1px solid var(--border);
   padding: 8px 12px;
-  font: 700 13px/1 Inter, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font: 700 13px/1 var(--font-display), Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
 
@@ -369,12 +378,12 @@ nav.nav a.active {
 .opp-card {
   background: #fff;
   border: 1px solid var(--border);
-  border-top: 3px solid #b76e79;
+  border-top: 3px solid #6b6b6b;
   padding: 16px;
 }
 
 .opp-kicker {
-  color: #b76e79;
+  color: #6b6b6b;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -422,7 +431,7 @@ main {
   min-height: 470px;
   border-radius: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, #0b6657, #061f1c);
+  background: linear-gradient(135deg, #1a1a1a, #000000);
   position: relative;
   color: #fff;
   padding: 36px;
@@ -441,8 +450,8 @@ main {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 70% 25%, rgba(233, 184, 63, 0.35), transparent 28%),
-    linear-gradient(120deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.78));
+    radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.12), transparent 28%),
+    linear-gradient(120deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.82));
 }
 
 .hero-open {
@@ -460,8 +469,8 @@ main {
 
 .tag {
   display: inline-block;
-  background: var(--gold);
-  color: #1a1608;
+  background: #000;
+  color: #fff;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -554,7 +563,7 @@ main {
 }
 
 .side-cat {
-  color: #b76e79;
+  color: #6b6b6b;
 }
 
 .side-date {
@@ -625,7 +634,7 @@ a.side-card {
 
 .article-category {
   display: inline-block;
-  color: #b76e79;
+  color: #6b6b6b;
   font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
@@ -802,7 +811,7 @@ a.side-card {
 .detail-content {
   font-size: var(--text-lg);
   line-height: 1.5;
-  color: #263936;
+  color: #333333;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -878,7 +887,8 @@ footer .footer-sep {
 }
 
 footer .footer-links a:hover {
-  color: var(--gold);
+  color: #fff;
+  opacity: 0.8;
 }
 
 @media (max-width: 700px) {
@@ -965,7 +975,7 @@ footer .footer-links a:hover {
 
 .portrait-feature-photo {
   min-height: 440px;
-  background: linear-gradient(135deg, #0a5c4f, #c9a227);
+  background: linear-gradient(135deg, #000000, #333333);
   background-size: cover;
   background-position: center top;
 }
@@ -1111,7 +1121,7 @@ footer .footer-links a:hover {
 .legal p,
 .legal li {
   line-height: 1.7;
-  color: #263936;
+  color: #333333;
 }
 
 .legal form {
@@ -1443,8 +1453,17 @@ th {
 .parquet-stage h1,
 .parquet-books h2,
 .parquet-floor h3,
-.parquet-wire h3 {
-  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+.parquet-wire h3,
+.hero-copy h1,
+.hero-copy h2,
+.section-title,
+.une-copy h2,
+.card h3,
+.detail-title,
+.page-hero h1 {
+  font-family: var(--font-display) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 main.parquet {
@@ -1480,7 +1499,7 @@ main.parquet {
 .parquet-stage-copy p:last-child {
   max-width: 460px;
   margin: 0;
-  color: #c5d5d0;
+  color: #a3a3a3;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -1603,8 +1622,8 @@ main.parquet {
   overflow: hidden;
   background: #000;
   color: var(--gold);
-  border-top: 1px solid rgba(201, 162, 39, 0.35);
-  border-bottom: 1px solid rgba(201, 162, 39, 0.35);
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
 }
 
 .parquet-tape-track {
@@ -1658,8 +1677,8 @@ main.parquet {
 }
 
 .quote-tabs button.is-active {
-  color: #1257c5;
-  border-bottom-color: #1257c5;
+  color: #111111;
+  border-bottom-color: #111111;
 }
 
 .quote-tools {
@@ -1686,7 +1705,7 @@ main.parquet {
 .quote-pills button.is-active {
   background: #e8f1ff;
   border-color: #8eb4ef;
-  color: #1257c5;
+  color: #111111;
   font-weight: 600;
 }
 
@@ -1726,12 +1745,12 @@ main.parquet {
 }
 
 .quote-chart-head .up {
-  color: #26a69a;
+  color: var(--up);
   font-weight: 700;
 }
 
 .quote-chart-head .down {
-  color: #ef5350;
+  color: var(--down);
   font-weight: 700;
 }
 
@@ -1811,7 +1830,7 @@ main.parquet {
 
 .quote-board .name strong {
   display: block;
-  color: #163a72;
+  color: #111111;
   font-weight: 700;
 }
 
@@ -1823,12 +1842,12 @@ main.parquet {
 }
 
 .quote-board .up {
-  color: #0b8a3e;
+  color: var(--up);
   font-weight: 700;
 }
 
 .quote-board .down {
-  color: #d12626;
+  color: var(--down);
   font-weight: 700;
 }
 
@@ -1847,7 +1866,7 @@ main.parquet {
 }
 
 .quote-source a {
-  color: #1257c5;
+  color: #111111;
 }
 
 @media (max-width: 800px) {
@@ -2009,13 +2028,13 @@ main.parquet {
 .fx-filters button.is-active {
   background: #e8f1ff;
   border-color: #8eb4ef;
-  color: #1257c5;
+  color: #111111;
   font-weight: 700;
 }
 
 .fx-next {
   margin: 0 0 10px;
-  color: #163a72;
+  color: #111111;
   font-size: 14px;
   font-weight: 600;
 }
@@ -2031,7 +2050,7 @@ main.parquet {
 
 .fx-ccy {
   font-weight: 700;
-  color: #163a72;
+  color: #111111;
 }
 
 .fx-title {
@@ -2120,7 +2139,7 @@ main.parquet {
 .parquet-wire .wire-thumb {
   width: 120px;
   height: 78px;
-  background: linear-gradient(135deg, #0a5c4f, #c9a227) center / cover no-repeat;
+  background: linear-gradient(135deg, #111111, #3a3a3a) center / cover no-repeat;
 }
 
 .parquet-wire:hover h3 {
@@ -2230,7 +2249,7 @@ main.parquet {
 
 .bceao-feed article p {
   margin: 0 0 8px;
-  color: #3d4d49;
+  color: #4a4a4a;
   font-size: 14px;
   line-height: 1.5;
 }
