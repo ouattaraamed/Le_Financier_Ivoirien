@@ -822,6 +822,7 @@ a.side-card {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .detail-title {
@@ -1447,8 +1448,18 @@ footer .footer-links a:hover {
   }
 
   .tag {
-    font-size: 11px;
-    padding: 5px 10px;
+    font-size: 10px;
+    padding: 5px 9px;
+    white-space: nowrap;
+  }
+
+  .article-category,
+  .side-cat,
+  .detail-category {
+    font-size: 10px;
+    padding: 4px 8px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
   }
 
   .section-title h3 {
