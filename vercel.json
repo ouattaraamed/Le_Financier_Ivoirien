@@ -1,5 +1,19 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.lefinancierivoirien.com"
+        }
+      ],
+      "destination": "https://lefinancierivoirien.com/:path*",
+      "permanent": true
+    }
+  ],
   "crons": [
     {
       "path": "/api/bceao",
