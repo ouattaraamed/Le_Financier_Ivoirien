@@ -357,7 +357,13 @@
       menuBtn.setAttribute("aria-label", "Ouvrir le menu");
     };
 
+    function placeMenu() {
+      var header = document.querySelector("header.header");
+      if (header) nav.style.top = header.offsetHeight + "px";
+    }
+
     function toggleMenu() {
+      placeMenu();
       var open = nav.classList.toggle("is-open");
       document.body.classList.toggle("nav-open", open);
       menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
