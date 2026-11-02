@@ -1170,19 +1170,22 @@ footer .footer-links a:hover {
 }
 
 @media (max-width: 700px) {
+  footer {
+    padding: 8px 6px;
+  }
+
   footer .footer-row {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     width: 100%;
-    row-gap: 2px;
+    max-width: 100%;
+    justify-content: center;
   }
 
-  footer .footer-links a {
-    white-space: normal;
-    padding: 1px 8px;
-  }
-
+  footer .footer-links a,
   footer .footer-sep {
-    display: none;
+    font-size: 11px;
+    white-space: nowrap;
+    padding: 0 3px;
   }
 }
 

@@ -144,9 +144,10 @@
       "footer .footer-sep{color:#fff;font-size:13px;padding:0 2px}" +
       "footer .footer-links a:hover{color:#c4a34d!important}" +
       "@media(max-width:700px){" +
-      "footer .footer-row{flex-wrap:wrap;width:100%;row-gap:2px}" +
-      "footer .footer-links a{white-space:normal!important;padding:1px 8px!important}" +
-      "footer .footer-sep{display:none}" +
+      "footer{padding:8px 6px!important}" +
+      "footer .footer-row{flex-wrap:nowrap;width:100%;max-width:100%;justify-content:center}" +
+      "footer .footer-links a,footer .footer-sep{font-size:11px!important;white-space:nowrap!important;padding:0 3px!important}" +
+      "footer .footer-sep{display:inline}" +
       "}";
     document.head.appendChild(footerStyle);
   }
