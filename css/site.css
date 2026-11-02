@@ -81,7 +81,7 @@ select {
 body > header.header,
 header.header {
   background: #000;
-  padding: 2px 4% 0;
+  padding: 6px 4% 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,7 +118,7 @@ img.logo,
 header.header img.logo {
   display: block;
   width: auto;
-  height: 34px;
+  height: 48px;
   max-width: min(420px, 80vw);
   object-fit: contain;
   background: #000;
@@ -134,7 +134,7 @@ nav.nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 48px;
+  padding: 2px 64px;
   overflow: visible;
   width: 100%;
   position: relative;
@@ -148,7 +148,7 @@ nav.nav {
   flex: 1;
   width: 100%;
   min-width: 0;
-  gap: 0;
+  gap: 2px;
 }
 
 .nav-row {
@@ -185,8 +185,8 @@ nav.nav {
 body > nav.nav a,
 nav.nav a,
 .nav-links a {
-  padding: 2px 10px;
-  font-size: 13px;
+  padding: 6px 14px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -257,13 +257,13 @@ nav.nav a.active {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 48px;
+  padding: 2px 64px;
   overflow: visible;
 }
 
 .nav a {
-  padding: 2px 10px;
-  font-size: 13px;
+  padding: 6px 14px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -286,9 +286,9 @@ nav.nav a.active {
   border: 0;
   background: transparent;
   color: white;
-  font-size: 18px;
+  font-size: 22px;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 10px 14px;
   flex-shrink: 0;
 }
 
@@ -1124,7 +1124,7 @@ a.side-card {
 footer {
   background: #111;
   color: #fff;
-  padding: 22px 16px;
+  padding: 8px 12px;
   text-align: center;
   overflow-x: clip;
 }
@@ -1133,7 +1133,7 @@ footer .footer-links {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   margin: 0 auto;
   width: 100%;
   max-width: 100%;
@@ -1152,9 +1152,9 @@ footer .footer-links a {
   color: #fff;
   font-size: 13px;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.2;
   margin: 0;
-  padding: 0 10px;
+  padding: 0 8px;
   white-space: nowrap;
 }
 
@@ -1173,12 +1173,12 @@ footer .footer-links a:hover {
   footer .footer-row {
     flex-wrap: wrap;
     width: 100%;
-    row-gap: 8px;
+    row-gap: 2px;
   }
 
   footer .footer-links a {
     white-space: normal;
-    padding: 4px 8px;
+    padding: 1px 8px;
   }
 
   footer .footer-sep {
@@ -1658,7 +1658,7 @@ footer .footer-links a:hover {
   }
 
   footer {
-    padding: 18px 16px;
+    padding: 8px 12px;
   }
 
   footer .footer-links a,
