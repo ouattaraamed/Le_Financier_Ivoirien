@@ -516,6 +516,15 @@ main {
   margin: auto;
   padding: 18px 4% 50px;
   overflow-x: clip;
+  min-height: calc(100vh - 180px);
+  min-height: calc(100dvh - 180px);
+}
+
+@media (min-width: 1221px) {
+  main {
+    min-height: calc(100vh - 260px);
+    min-height: calc(100dvh - 260px);
+  }
 }
 
 .hero-grid {
@@ -1124,6 +1133,7 @@ a.side-card {
 footer {
   background: #111;
   color: #fff;
+  margin: 0;
   padding: 8px 12px;
   text-align: center;
   overflow-x: clip;

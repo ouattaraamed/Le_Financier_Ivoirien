@@ -264,11 +264,11 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261020docs">
+  <link rel="stylesheet" href="/css/site.css?v=20261102nav">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261020a"></script>
+  <script src="/js/site.js?v=20261102nav"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>
@@ -302,34 +302,14 @@ export default async function handler(req, res) {
     });
   </script>
   <footer>
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">Le Financier Ivoirien</div>
-        <p>L’information financière qui compte.</p>
-      </div>
-      <div>
-        <h4>Liens utiles</h4>
-        <a href="/">Accueil</a>
-        <a href="/a-propos">À propos</a>
-        <a href="/contact">Contact</a>
-        <a href="/mentions-legales">Mentions légales</a>
-      </div>
-      <div>
-        <h4>Catégories</h4>
-        <a href="/brvm">Marchés & Bourse</a>
-        <a href="/banques">Banques & Finance</a>
-        <a href="/entreprises">Entreprises</a>
-        <a href="/economie">Économie</a>
-        <a href="/afrique">Afrique & International</a>
-        <a href="/investissement">Investissement</a>
-      </div>
-      <div>
-        <h4>Le média</h4>
-        <a href="/contact">Contact rédaction</a>
-      </div>
-    </div>
-    <div class="copy">© 2026 Le Financier Ivoirien. Tous droits réservés.</div>
-  </footer>
+  <nav class="footer-links" aria-label="Pied de page">
+    <div class="footer-row"><a href="/">Accueil</a><span class="footer-sep" aria-hidden="true">|</span><a href="/a-propos">À propos</a><span class="footer-sep" aria-hidden="true">|</span><a href="/contact">Contact</a></div>
+    <div class="footer-row"><a href="/mentions-legales">Mentions légales</a><span class="footer-sep" aria-hidden="true">|</span><a href="/brvm">Marchés &amp; Bourse</a><span class="footer-sep" aria-hidden="true">|</span><a href="/banques">Banques &amp; Finance</a></div>
+    <div class="footer-row"><a href="/entreprises">Entreprises</a><span class="footer-sep" aria-hidden="true">|</span><a href="/economie">Économie</a><span class="footer-sep" aria-hidden="true">|</span><a href="/afrique">Afrique &amp; International</a></div>
+    <div class="footer-row"><a href="/investissement">Investissement</a><span class="footer-sep" aria-hidden="true">|</span><a href="/actualites">Actualités</a><span class="footer-sep" aria-hidden="true">|</span><a href="/tribune">Tribune libre</a></div>
+    <div class="footer-row"><a href="/etudiants">Étudiants</a><span class="footer-sep" aria-hidden="true">|</span><a href="/portraits">Portraits &amp; Interviews</a></div>
+  </nav>
+</footer>
 </body>
 </html>`;
 

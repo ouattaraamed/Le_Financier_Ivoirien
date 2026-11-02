@@ -17,7 +17,7 @@
   <link rel="icon" href="/icon-192.png?v=20261027" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261027" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="css/site.css?v=20261102footm">
+  <link rel="stylesheet" href="css/site.css?v=20261102nav">
 
   <style>
 
@@ -489,39 +489,6 @@
       max-width: 900px;
     }
 
-    /* FOOTER */
-
-    footer {
-      background: #071d1b;
-      color: #dce7e4;
-      padding: 40px 4% 20px;
-    }
-
-    .footer-grid {
-      max-width: 1250px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 30px;
-    }
-
-    .footer-brand {
-      color: white;
-      font: 700 27px "Source Sans 3", Helvetica Neue, Helvetica, Arial, sans-serif;
-    }
-
-    footer h4 {
-      color: var(--gold);
-      margin-top: 0;
-    }
-
-    footer a {
-      display: block;
-      color: #bdcbc8;
-      margin: 9px 0;
-      font-size: 13px;
-    }
-
     .copyright {
       max-width: 1250px;
       margin: 30px auto 0;
@@ -665,14 +632,14 @@
     }
 
   </style>
-  <link rel="stylesheet" href="css/site.css?v=20261102footm">
+  <link rel="stylesheet" href="css/site.css?v=20261102nav">
 
 </head>
 
 
 <body>
   <div id="site-chrome"></div>
-  <script src="js/site.js?v=20261102footm"></script>
+  <script src="js/site.js?v=20261102nav"></script>
 
 
   <main>
@@ -775,112 +742,14 @@
   <!-- FOOTER -->
 
   <footer>
-
-    <div class="footer-grid">
-
-
-      <div>
-
-        <div class="footer-brand">
-          Le Financier Ivoirien
-        </div>
-
-        <p>
-          L'information financière qui compte.
-        </p>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Navigation
-        </h4>
-
-        <a href="/">
-          Accueil
-        </a>
-
-        <a href="/brvm">
-          BRVM & Marchés
-        </a>
-
-        <a href="/banques">
-          Banques & Finance
-        </a>
-
-        <a href="/entreprises">
-          Entreprises
-        </a>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Entreprises
-        </h4>
-
-        <a href="/entreprises">
-          Industrie
-        </a>
-
-        <a href="/entreprises">
-          Commerce
-        </a>
-
-        <a href="/entreprises">
-          Technologie
-        </a>
-
-        <a href="/entreprises">
-          Infrastructures
-        </a>
-
-      </div>
-
-
-      <div>
-
-        <h4>
-          Suivez-nous
-        </h4>
-
-        <a href="/a-propos">À propos</a>
-        <a href="/contact">Contact</a>
-        <a href="/mentions-legales">Mentions légales</a>
-        <a href="#">
-          LinkedIn
-        </a>
-
-        <a href="#">
-          Facebook
-        </a>
-
-        <a href="#">
-          X
-        </a>
-
-        <a href="#">
-          WhatsApp
-        </a>
-
-      </div>
-
-
-    </div>
-
-
-    <div class="copyright">
-
-      © 2026 Le Financier Ivoirien.
-      Tous droits réservés.
-
-    </div>
-
-  </footer>
+  <nav class="footer-links" aria-label="Pied de page">
+    <div class="footer-row"><a href="/">Accueil</a><span class="footer-sep" aria-hidden="true">|</span><a href="/a-propos">À propos</a><span class="footer-sep" aria-hidden="true">|</span><a href="/contact">Contact</a></div>
+    <div class="footer-row"><a href="/mentions-legales">Mentions légales</a><span class="footer-sep" aria-hidden="true">|</span><a href="/brvm">Marchés &amp; Bourse</a><span class="footer-sep" aria-hidden="true">|</span><a href="/banques">Banques &amp; Finance</a></div>
+    <div class="footer-row"><a href="/entreprises">Entreprises</a><span class="footer-sep" aria-hidden="true">|</span><a href="/economie">Économie</a><span class="footer-sep" aria-hidden="true">|</span><a href="/afrique">Afrique &amp; International</a></div>
+    <div class="footer-row"><a href="/investissement">Investissement</a><span class="footer-sep" aria-hidden="true">|</span><a href="/actualites">Actualités</a><span class="footer-sep" aria-hidden="true">|</span><a href="/tribune">Tribune libre</a></div>
+    <div class="footer-row"><a href="/etudiants">Étudiants</a><span class="footer-sep" aria-hidden="true">|</span><a href="/portraits">Portraits &amp; Interviews</a></div>
+  </nav>
+</footer>
 
 
   <script src="js/config.js?v=20261017b"></script>
