@@ -264,11 +264,11 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261102menu">
+  <link rel="stylesheet" href="/css/site.css?v=20261102black">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261102menu"></script>
+  <script src="/js/site.js?v=20261102black"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>

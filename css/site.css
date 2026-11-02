@@ -1259,7 +1259,7 @@ footer .footer-links a:hover {
   grid-template-columns: 1.15fr 1fr;
   min-height: 440px;
   overflow: hidden;
-  background: #041c19;
+  background: #000;
   color: #fff;
   cursor: pointer;
 }
