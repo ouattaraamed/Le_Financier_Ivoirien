@@ -141,8 +141,24 @@ export default async function handler(req, res) {
         };
       })
       .filter(function (row) {
-        return row && Number.isFinite(row.close);
+        return row && [row.open, row.high, row.low, row.close].every(Number.isFinite);
+      })
+      .sort(function (a, b) {
+        return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
       });
+
+    const closeOnly = candles.every(function (bar) {
+      return bar.open === bar.high && bar.high === bar.low && bar.low === bar.close;
+    });
+    if (closeOnly) {
+      for (let i = 1; i < candles.length; i += 1) {
+        const open = candles[i - 1].close;
+        const close = candles[i].close;
+        candles[i].open = open;
+        candles[i].high = Math.max(open, close);
+        candles[i].low = Math.min(open, close);
+      }
+    }
 
     if (!candles.length) {
       return res.status(404).json({ error: "Pas de séances sur cette période." });
