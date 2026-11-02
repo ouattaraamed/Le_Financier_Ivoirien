@@ -268,7 +268,7 @@ function cfaoOffersFromXml(xml) {
         date_limite: "",
         lieu: lieu,
         lien: link,
-        resume: type + " · " + detail + " · " + lieu + ". Annonce CFAO. La candidature se fait sur le site d’origine.",
+        resume: type + " · " + detail + " · " + lieu + ". Annonce CFAO.",
         created_at: "",
         source: "CFAO",
         automatique: true
@@ -294,7 +294,7 @@ function listedOffer(item) {
     date_limite: item.date_limite || "",
     lieu: lieu,
     lien: lien,
-    resume: type + " · " + organisme + " · " + lieu + ". Annonce " + item.source + ". La candidature se fait sur le site d’origine.",
+    resume: type + " · " + organisme + " · " + lieu + ". Annonce " + item.source + ".",
     created_at: "",
     source: item.source,
     automatique: true
