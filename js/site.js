@@ -34,11 +34,16 @@
     return page === item.id;
   }
 
+  function linkHtml(item) {
+    var cls = "nav-link" + (isActive(item) ? " active" : "");
+    return '<a href="' + item.href + '" class="' + cls + '">' + item.label + "</a>";
+  }
+
   function navHtml() {
-    return links
-      .map(function (item) {
-        var cls = "nav-link" + (isActive(item) ? " active" : "");
-        return '<a href="' + item.href + '" class="' + cls + '">' + item.label + "</a>";
+    var rows = [links.slice(0, 6), links.slice(6)];
+    return rows
+      .map(function (row) {
+        return '<div class="nav-row">' + row.map(linkHtml).join("") + "</div>";
       })
       .join("");
   }

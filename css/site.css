@@ -133,7 +133,8 @@ nav.nav {
   color: #fff;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: center;
+  padding: 6px 64px;
   overflow: visible;
   width: 100%;
   position: relative;
@@ -141,9 +142,21 @@ nav.nav {
 
 .nav-links {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   flex: 1;
+  width: 100%;
   min-width: 0;
+  gap: 2px;
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
 }
 
 .menu-button {
@@ -172,12 +185,12 @@ nav.nav {
 body > nav.nav a,
 nav.nav a,
 .nav-links a {
-  padding: 14px 8px;
-  font-size: var(--text-caption);
+  padding: 10px 16px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   white-space: nowrap;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   color: #fff;
 }
 
@@ -243,17 +256,18 @@ nav.nav a.active {
   color: #fff;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: center;
+  padding: 6px 64px;
   overflow: visible;
 }
 
 .nav a {
-  padding: 14px 8px;
-  font-size: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   white-space: nowrap;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
 }
 
 .nav a:hover {
@@ -276,6 +290,14 @@ nav.nav a.active {
   cursor: pointer;
   padding: 10px 14px;
   flex-shrink: 0;
+}
+
+nav.nav .search-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
 }
 
 .search-box {
@@ -1329,6 +1351,12 @@ footer .footer-links a:hover {
 
   nav.nav .search-button {
     display: none;
+    position: static;
+    transform: none;
+  }
+
+  .nav-row {
+    display: contents;
   }
 
   body > nav.nav,
