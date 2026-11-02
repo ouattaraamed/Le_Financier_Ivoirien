@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261102logo">
+  <link rel="stylesheet" href="css/site.css?v=20261102offre">
 </head>
 <body>
   <div id="site-chrome"></div>
@@ -30,7 +30,7 @@
       <p class="student-lead">
         Stages, premiers emplois, concours et appels à candidatures en finance,
         gestion et économie. Les annonces de CFAO et d’Educarriere
-        sont reprises automatiquement, chez plusieurs employeurs. Chaque carte renvoie vers l’offre d’origine.
+        sont reprises automatiquement, chez plusieurs employeurs. Le texte complet s’ouvre ici.
       </p>
       <div class="opp-filters" role="group" aria-label="Filtrer les annonces">
         <button type="button" class="is-on" data-type="Tous">Tous</button>
@@ -50,6 +50,7 @@
       var count = document.getElementById("oppCount");
       var items = [];
       var filtre = "Tous";
+      var textes = {};
 
       function escapeHtml(value) {
         return String(value || "")
@@ -88,7 +89,7 @@
           list.innerHTML = "<p>Aucune annonce dans cette sélection pour le moment.</p>";
           return;
         }
-        list.innerHTML = visibles.map(function (item) {
+        list.innerHTML = visibles.map(function (item, index) {
           var meta = [item.organisme, item.domaine, item.lieu].filter(Boolean);
           if (item.source && item.source !== item.organisme) meta.unshift(item.source);
           meta = meta.join(" · ");
@@ -99,10 +100,72 @@
               "<h3>" + escapeHtml(item.titre) + "</h3>" +
               "<p class=\"opp-meta\">" + escapeHtml(meta) + (limite ? " · " + escapeHtml(limite) : "") + "</p>" +
               "<p>" + escapeHtml(item.resume) + "</p>" +
-              '<a class="opp-link" href="' + escapeHtml(item.lien) + '" target="_blank" rel="noopener">Voir l’annonce</a>' +
+              '<button type="button" class="opp-read" data-index="' + index + '" aria-expanded="false">Lire l’offre</button>' +
+              '<div class="opp-full" hidden></div>' +
             "</article>"
           );
         }).join("");
+      }
+
+      function paragraphes(texte) {
+        return String(texte || "")
+          .split(/\n{2,}/)
+          .map(function (part) { return part.trim(); })
+          .filter(Boolean)
+          .map(function (part) { return "<p>" + escapeHtml(part) + "</p>"; })
+          .join("");
+      }
+
+      function remplir(panel, item, texte) {
+        panel.innerHTML =
+          paragraphes(texte) +
+          '<a class="opp-link" href="' + escapeHtml(item.lien) + '" target="_blank" rel="noopener">Postuler chez l’employeur</a>';
+      }
+
+      list.addEventListener("click", function (event) {
+        var button = event.target.closest(".opp-read");
+        if (!button) return;
+        var card = button.closest(".opp-card");
+        var panel = card.querySelector(".opp-full");
+        var item = visiblesCourantes()[Number(button.dataset.index)];
+        if (!item || !panel) return;
+        var ouvert = button.getAttribute("aria-expanded") === "true";
+        if (ouvert) {
+          panel.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "Lire l’offre";
+          return;
+        }
+        button.setAttribute("aria-expanded", "true");
+        button.textContent = "Masquer l’offre";
+        panel.hidden = false;
+        if (panel.dataset.ready === "1") return;
+        panel.innerHTML = "<p>Chargement du texte…</p>";
+        var cle = item.lien;
+        if (textes[cle]) {
+          remplir(panel, item, textes[cle]);
+          panel.dataset.ready = "1";
+          return;
+        }
+        fetch("/api/opportunites?detail=" + encodeURIComponent(item.lien))
+          .then(function (response) {
+            if (!response.ok) throw new Error("detail");
+            return response.json();
+          })
+          .then(function (data) {
+            textes[cle] = data.description || item.resume;
+            remplir(panel, item, textes[cle]);
+            panel.dataset.ready = "1";
+          })
+          .catch(function () {
+            panel.innerHTML = "<p>Le texte complet est indisponible pour le moment.</p>";
+          });
+      });
+
+      function visiblesCourantes() {
+        return items.filter(ouverte).filter(function (item) {
+          return filtre === "Tous" || item.type === filtre;
+        });
       }
 
       document.querySelectorAll(".opp-filters button").forEach(function (button) {

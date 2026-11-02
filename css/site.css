@@ -482,11 +482,33 @@ body.is-searching .search-box {
   line-height: 1.5;
 }
 
-.opp-link {
+.opp-link,
+button.opp-read {
   display: inline-block;
   margin-top: 12px;
-  color: var(--green);
-  font-weight: 700;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font: 700 15px/1.3 var(--font-sans);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.opp-full {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.opp-full p {
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.opp-full .opp-link {
+  margin-top: 4px;
 }
 
 main {

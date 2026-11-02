@@ -406,6 +406,132 @@ async function automaticOffers() {
   return items;
 }
 
+const DETAIL_HOSTS = {
+  "emploi.educarriere.ci": true,
+  "www.emploi.ci": true,
+  "emploi.ci": true,
+  "cfaocareers.talent-soft.com": true
+};
+
+function htmlToText(value) {
+  return String(value || "")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&#(\d+);/g, function (_, code) {
+      return String.fromCharCode(Number(code));
+    })
+    .replace(/&#x([0-9a-f]+);/gi, function (_, code) {
+      return String.fromCharCode(parseInt(code, 16));
+    })
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function htmlBlock(html, start, ends) {
+  const at = html.indexOf(start);
+  if (at < 0) {
+    return "";
+  }
+  const from = html.slice(at);
+  const openEnd = from.indexOf(">");
+  const slice = openEnd >= 0 ? from.slice(openEnd + 1) : from;
+  let cut = slice.length;
+  ends.forEach(function (end) {
+    const found = slice.indexOf(end);
+    if (found > 0 && found < cut) {
+      cut = found;
+    }
+  });
+  return slice.slice(0, cut);
+}
+
+function offerDescription(host, html) {
+  let raw = "";
+  if (host === "emploi.educarriere.ci") {
+    raw = htmlBlock(html, 'class="offer-description-wrap"', [
+      'class="candidature-box"',
+      'class="offer-keywords-cloud"'
+    ]);
+  } else if (host === "cfaocareers.talent-soft.com") {
+    raw = htmlBlock(html, 'id="contenu-ficheoffre"', [
+      "ts-offer-page__cta is-bottom"
+    ]);
+  } else {
+    raw = htmlBlock(html, 'class="field-name-body"', [
+      'class="comment"',
+      'id="comments"'
+    ]);
+    if (!raw) {
+      raw = htmlBlock(html, 'class="job-description"', ['class="job-apply"']);
+    }
+  }
+  return htmlToText(raw)
+    .replace(/^Détails de l'offre\s*/i, "")
+    .slice(0, 7000)
+    .trim();
+}
+
+async function fetchOfferPage(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, 9000);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "text/html",
+        "Accept-Language": "fr-FR,fr;q=0.9",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+      },
+      signal: controller.signal,
+      redirect: "follow"
+    });
+    if (!response.ok) {
+      return "";
+    }
+    const host = new URL(response.url).hostname;
+    if (!DETAIL_HOSTS[host]) {
+      return "";
+    }
+    return await response.text();
+  } catch (error) {
+    return "";
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function detailOffer(req, res) {
+  const lien = safeLink(req.query.detail);
+  let host = "";
+  try {
+    host = lien ? new URL(lien).hostname : "";
+  } catch (error) {
+    host = "";
+  }
+  if (!lien || !DETAIL_HOSTS[host]) {
+    return res.status(400).json({ error: "Annonce introuvable." });
+  }
+  const html = await fetchOfferPage(lien);
+  const description = offerDescription(host, html);
+  if (description.length < 40) {
+    return res.status(404).json({ error: "Le texte de cette annonce est indisponible." });
+  }
+  res.setHeader("Cache-Control", "public, max-age=3600");
+  return res.status(200).json({ description: description });
+}
+
 function sortOffers(items) {
   return items.sort(function (a, b) {
     if (a.type === "Stage" && b.type !== "Stage") return -1;
@@ -421,6 +547,10 @@ function sortOffers(items) {
 
 export default async function handler(req, res) {
   const key = serviceKey();
+
+  if (req.method === "GET" && req.query.detail) {
+    return detailOffer(req, res);
+  }
 
   if (req.method === "GET") {
     let manual = [];
