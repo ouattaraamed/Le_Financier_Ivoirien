@@ -178,20 +178,42 @@
     return "/article?id=" + encodeURIComponent(id);
   }
 
+  function searchIsMobile() {
+    return window.matchMedia("(max-width: 1220px)").matches;
+  }
+
   function ensureSearch() {
     var box = document.getElementById("searchBox");
     if (!box) {
       box = document.createElement("div");
       box.className = "search-box";
       box.id = "searchBox";
-      box.innerHTML =
-        '<input id="searchInput" type="search" placeholder="Rechercher un article..." aria-label="Rechercher un article">';
       var nav = document.getElementById("siteNav");
-      if (nav && nav.nextSibling) {
-        nav.parentNode.insertBefore(box, nav.nextSibling);
+      if (nav) {
+        nav.appendChild(box);
       } else {
         document.body.insertBefore(box, document.body.firstChild);
       }
+    }
+    var input = document.getElementById("searchInput");
+    if (!box.querySelector(".band-search-row")) {
+      if (!input) {
+        input = document.createElement("input");
+        input.id = "searchInput";
+        input.type = "search";
+      }
+      input.placeholder = "Rechercher";
+      input.setAttribute("aria-label", "Rechercher");
+      var row = document.createElement("div");
+      row.className = "band-search-row";
+      var close = document.createElement("button");
+      close.type = "button";
+      close.className = "band-search-close";
+      close.setAttribute("aria-label", "Fermer la recherche");
+      close.textContent = "×";
+      row.appendChild(input);
+      row.appendChild(close);
+      box.insertBefore(row, box.firstChild);
     }
     if (!document.getElementById("searchResults")) {
       var results = document.createElement("div");
@@ -200,6 +222,33 @@
       box.appendChild(results);
     }
     return box;
+  }
+
+  function placeSearch(box) {
+    var header = document.querySelector("header.header");
+    var nav = document.getElementById("siteNav");
+    var parent = searchIsMobile() ? header : nav;
+    if (parent && box.parentNode !== parent) {
+      parent.appendChild(box);
+    }
+  }
+
+  var closeMenu = function () {};
+
+  function setSearchOpen(open) {
+    var box = ensureSearch();
+    placeSearch(box);
+    document.body.classList.toggle("is-searching", open);
+    box.classList.toggle("show", open);
+    if (open) {
+      if (typeof closeMenu === "function") {
+        closeMenu();
+      }
+      var input = document.getElementById("searchInput");
+      if (input) {
+        input.focus();
+      }
+    }
   }
 
   function renderHits(articles, term) {
@@ -265,11 +314,21 @@
 
     searchButtons.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        box.classList.toggle("show");
-        if (box.classList.contains("show")) {
-          input.focus();
-        }
+        setSearchOpen(!document.body.classList.contains("is-searching"));
       });
+    });
+
+    var closeBtn = box.querySelector(".band-search-close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        setSearchOpen(false);
+      });
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && document.body.classList.contains("is-searching")) {
+        setSearchOpen(false);
+      }
     });
 
     if (input) {
@@ -293,7 +352,7 @@
 
     var initial = new URLSearchParams(location.search).get("q");
     if (initial && input) {
-      box.classList.add("show");
+      setSearchOpen(true);
       input.value = initial;
       run(initial);
     }
@@ -308,12 +367,12 @@
   var nav = document.getElementById("siteNav");
   var menuBtn = document.getElementById("menuButton");
   if (nav && menuBtn) {
-    function closeMenu() {
+    closeMenu = function () {
       nav.classList.remove("is-open");
       document.body.classList.remove("nav-open");
       menuBtn.setAttribute("aria-expanded", "false");
       menuBtn.setAttribute("aria-label", "Ouvrir le menu");
-    }
+    };
 
     function toggleMenu() {
       var open = nav.classList.toggle("is-open");

@@ -302,27 +302,85 @@ nav.nav .search-button {
 
 .search-box {
   display: none;
-  background: white;
-  padding: 15px 4%;
-  border-bottom: 1px solid var(--border);
+  position: relative;
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  border: 0;
 }
 
-.search-box.show {
-  display: block;
+.band-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .search-box input {
   width: 100%;
-  max-width: 700px;
-  padding: 13px 15px;
-  border: 1px solid #e5e5e5;
-  border-radius: 5px;
-  font-size: 15px;
+  max-width: none;
+  margin: 0;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 2px;
+  background: #2a2a2a;
+  color: #fff;
+  color-scheme: dark;
+  font-size: 16px;
+}
+
+.search-box input::placeholder {
+  color: #9a9a9a;
+}
+
+.search-box input:focus {
+  outline: 1px solid #5a5a5a;
+}
+
+.band-search-close {
+  flex: none;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+body.is-searching > header.header,
+body.is-searching header.header {
+  display: none;
+}
+
+body.is-searching .nav-links,
+body.is-searching nav.nav .search-button {
+  display: none;
+}
+
+body.is-searching nav.nav {
+  padding: 12px 20px;
+}
+
+body.is-searching .search-box {
+  display: block;
 }
 
 .search-results {
-  max-width: 700px;
-  margin-top: 10px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+  max-width: none;
+  margin: 0;
+  padding: 6px 16px 10px;
+  background: #fff;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
+}
+
+.search-results:empty {
+  display: none;
 }
 
 .search-results a {
@@ -1509,6 +1567,23 @@ footer .footer-links a:hover {
 
   body.nav-open .menu-button span:nth-child(3) {
     transform: translateY(-7px) rotate(-45deg);
+  }
+
+  body.is-searching > header.header,
+  body.is-searching header.header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+  }
+
+  body.is-searching header.header .brand,
+  body.is-searching header.header .menu-button,
+  body.is-searching header.header .search-button {
+    display: none;
+  }
+
+  body.is-searching nav.nav {
+    display: none;
   }
 }
 
