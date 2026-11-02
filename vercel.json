@@ -23,6 +23,28 @@
       ],
       "destination": "https://lefinancierivoirien.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "le-financier-ivoirien\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://lefinancierivoirien.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "le-financier-ivoirien\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://lefinancierivoirien.com/:path*",
+      "permanent": true
     }
   ],
   "crons": [
