@@ -68,7 +68,10 @@ function safeUrl(value, fallback) {
   try {
     const url = new URL(value);
     if (url.protocol === "http:" || url.protocol === "https:") {
-      return url.toString();
+      return url.toString().replace(
+        "https://le-financier-ivoirien.vercel.app/",
+        "https://lefinancierivoirien.com/"
+      );
     }
   } catch (error) {
     /* ignore */

@@ -127,6 +127,20 @@ function articleBody(item) {
   return parts.join("\n").trim();
 }
 
+const BCEAO_IMAGE = "https://lefinancierivoirien.com/bceao-logo.png";
+const OLD_BCEAO_IMAGE = "https://le-financier-ivoirien.vercel.app/bceao-logo.png";
+
+async function repairImages(headers) {
+  await fetch(
+    SUPABASE_URL + "/rest/v1/Articles?image_url=eq." + encodeURIComponent(OLD_BCEAO_IMAGE),
+    {
+      method: "PATCH",
+      headers: Object.assign({ Prefer: "return=minimal" }, headers),
+      body: JSON.stringify({ image_url: BCEAO_IMAGE })
+    }
+  );
+}
+
 async function publishNew(items) {
   const key = String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
   if (!key) {
@@ -138,6 +152,12 @@ async function publishNew(items) {
     Authorization: "Bearer " + key,
     "Content-Type": "application/json"
   };
+
+  try {
+    await repairImages(headers);
+  } catch (error) {
+    console.error(error);
+  }
 
   const existingResponse = await fetch(
     SUPABASE_URL +
@@ -166,7 +186,7 @@ async function publishNew(items) {
         titre: item.title,
         categorie: "Banques & Finance",
         auteur: "BCEAO",
-        image_url: "https://lefinancierivoirien.com/bceao-logo.png",
+        image_url: BCEAO_IMAGE,
         contenu: articleBody(item)
       })
     });
