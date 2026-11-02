@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261102mobile">
+  <link rel="stylesheet" href="css/site.css?v=20261102follow">
 
 </head>
 
@@ -73,6 +73,8 @@
 
     <section class="hero-grid">
 
+      <div class="hero-col">
+
       <article class="hero is-loading" id="heroArticle" aria-live="polite">
 
         <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
@@ -90,6 +92,10 @@
         <div class="hero-dots" id="heroDots" hidden></div>
 
       </article>
+
+      <div class="hero-follow" id="heroFollow" hidden></div>
+
+      </div>
 
       <!-- À LA UNE -->
 
@@ -569,6 +575,8 @@
 
       afficherUne();
 
+      afficherSousHero();
+
       afficherArticles();
 
     }
@@ -854,6 +862,59 @@
 
     }
 
+    /* SOUS LA GRANDE CARTE — ordinateur seulement */
+
+    const ecranOrdinateur = window.matchMedia("(min-width: 851px)");
+
+    function articlesSousHero() {
+      const deja = {};
+      heroSlides().forEach(function (article) {
+        if (article && article.id) {
+          deja[article.id] = true;
+        }
+      });
+      return articles.filter(function (article) {
+        return article && article.id && !deja[article.id];
+      }).slice(0, 2);
+    }
+
+    function afficherSousHero() {
+      const box = document.getElementById("heroFollow");
+      if (!box) {
+        return;
+      }
+      const selection = ecranOrdinateur.matches ? articlesSousHero() : [];
+      box.innerHTML = "";
+      box.hidden = !selection.length;
+      selection.forEach(function (article) {
+        const card = document.createElement("a");
+        card.className = "follow-card";
+        card.href = lienArticle(article.id);
+
+        const media = document.createElement("div");
+        media.className = "follow-media";
+        if (article.image_url) {
+          appliquerImage(media, article.image_url);
+        }
+
+        const copy = document.createElement("div");
+        copy.className = "follow-copy";
+
+        const category = document.createElement("span");
+        category.className = "side-cat";
+        category.textContent = article.categorie || "Actualités";
+
+        const title = document.createElement("h3");
+        title.textContent = article.titre || "Sans titre";
+
+        copy.appendChild(category);
+        copy.appendChild(title);
+        card.appendChild(media);
+        card.appendChild(copy);
+        box.appendChild(card);
+      });
+    }
+
     /* ARTICLES */
 
     function afficherArticles(
@@ -887,13 +948,24 @@
 
       }
 
+      let visible = liste;
+      if (ecranOrdinateur.matches && document.getElementById("heroFollow") && !document.getElementById("heroFollow").hidden) {
+        const deja = {};
+        articlesSousHero().forEach(function (article) {
+          deja[article.id] = true;
+        });
+        visible = liste.filter(function (article) {
+          return !article || !deja[article.id];
+        });
+      }
+
       count.textContent =
-        `${liste.length} article${liste.length > 1 ? "s" : ""}`;
+        `${visible.length} article${visible.length > 1 ? "s" : ""}`;
 
       grid.setAttribute("aria-busy", "false");
       grid.innerHTML = "";
 
-      if (!liste.length) {
+      if (!visible.length) {
 
         grid.innerHTML =
           `<div class="empty">
@@ -904,7 +976,7 @@
 
       }
 
-      liste.forEach(article => {
+      visible.forEach(article => {
 
         const card =
           document.createElement("a");
@@ -1240,6 +1312,19 @@
 
     function lancerSite() {
       afficherDate();
+      ecranOrdinateur.addEventListener("change", function () {
+        if (!articles.length) {
+          return;
+        }
+        afficherSousHero();
+        afficherArticles(
+          categorieActuelle === "all"
+            ? articles
+            : articles.filter(function (article) {
+              return (article.categorie || "").toLowerCase() === categorieActuelle.toLowerCase();
+            })
+        );
+      });
       const enCache = lireCacheArticles();
       if (enCache.length) {
         peindreAccueil(enCache);
