@@ -2066,14 +2066,6 @@ main.parquet {
   font-weight: 600;
 }
 
-.quote-tools input {
-  width: min(280px, 100%);
-  padding: 8px 12px;
-  border: 1px solid #d7dde3;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
 .quote-chart-wrap {
   margin: 8px 4% 18px;
   background: #131722;
