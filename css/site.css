@@ -348,11 +348,6 @@ nav.nav .search-button {
   padding: 0 4px;
 }
 
-body.is-searching > header.header,
-body.is-searching header.header {
-  display: none;
-}
-
 body.is-searching .nav-links,
 body.is-searching nav.nav .search-button {
   display: none;
@@ -1571,15 +1566,21 @@ footer .footer-links a:hover {
 
   body.is-searching > header.header,
   body.is-searching header.header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
     align-items: center;
-    padding: 8px 12px;
+    padding: 8px 10px 10px;
   }
 
-  body.is-searching header.header .brand,
   body.is-searching header.header .menu-button,
   body.is-searching header.header .search-button {
-    display: none;
+    visibility: hidden;
+  }
+
+  body.is-searching header.header .search-box {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 8px;
   }
 
   body.is-searching nav.nav {
