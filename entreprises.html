@@ -937,7 +937,9 @@
       if (article.image_url) {
 
         image.style.backgroundImage =
-          `url("${article.image_url}")`;
+          `url("${String(article.image_url).replace("https://le-financier-ivoirien.vercel.app/", "https://lefinancierivoirien.com/")}"), linear-gradient(135deg, #333, #111)`;
+        image.style.backgroundSize = "cover";
+        image.style.backgroundPosition = "center";
 
       }
 
@@ -997,7 +999,9 @@
       if (article.image_url) {
 
         image.style.backgroundImage =
-          `url("${article.image_url}")`;
+          `url("${String(article.image_url).replace("https://le-financier-ivoirien.vercel.app/", "https://lefinancierivoirien.com/")}"), linear-gradient(135deg, #333, #111)`;
+        image.style.backgroundSize = "cover";
+        image.style.backgroundPosition = "center";
 
       }
 
