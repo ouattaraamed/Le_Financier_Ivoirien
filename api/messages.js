@@ -168,7 +168,7 @@ function pageOf(raw) {
     if (!/^\d{1,8}$/.test(id)) return null;
     return { path: "/article?id=" + id, post: id };
   }
-  if (path.startsWith("/admin") || path.startsWith("/api")) return null;
+  if (path.startsWith("/admin") || path.startsWith("/soudougouabdoulamed") || path.startsWith("/api")) return null;
   if (path !== "/" && !/^\/[a-z0-9-]{1,40}$/.test(path)) return null;
   return { path: path, post: "" };
 }

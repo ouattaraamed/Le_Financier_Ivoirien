@@ -407,7 +407,7 @@
   }
 
   var trackPath = location.pathname || "/";
-  if (trackPath.indexOf("/admin") !== 0 && trackPath.indexOf("/api") !== 0) {
+  if (trackPath.indexOf("/admin") !== 0 && trackPath.indexOf("/soudougouabdoulamed") !== 0 && trackPath.indexOf("/api") !== 0) {
     if (trackPath === "/article" || trackPath.slice(-8) === "/article") {
       trackPath += location.search || "";
     }
