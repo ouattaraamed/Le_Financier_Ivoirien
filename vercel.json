@@ -55,6 +55,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/trafic",
+      "destination": "/api/messages?vue=trafic"
+    },
+    {
       "source": "/article",
       "destination": "/api/article"
     },
