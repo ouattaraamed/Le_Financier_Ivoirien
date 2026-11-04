@@ -177,9 +177,50 @@
 
     .admin-tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 0;
       border-bottom: 1px solid var(--line);
       margin-bottom: 18px;
+    }
+
+    .trafic-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0 22px;
+    }
+
+    .trafic-stats div {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px;
+    }
+
+    .trafic-stats strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .trafic-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .trafic-row a {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .trafic-block { margin-top: 22px; }
+    .trafic-block h3 { margin: 0 0 8px; }
+
+    @media (max-width: 700px) {
+      .trafic-stats { grid-template-columns: 1fr; }
     }
 
     .admin-tabs button {
@@ -441,6 +482,7 @@
       <button type="button" data-panel="subscribers">Lettre <span class="count" id="subscribersCount"></span></button>
       <button type="button" data-panel="students">Étudiants <span class="count" id="studentsCount"></span></button>
       <button type="button" data-panel="articles">Articles <span class="count" id="articlesCount"></span></button>
+      <button type="button" data-panel="trafic">Trafic <span class="count" id="traficCount"></span></button>
     </nav>
 
     <section class="box panel is-on" id="publish">
@@ -580,6 +622,27 @@
       <div id="oppAdminList" class="loading">Chargement des annonces...</div>
     </section>
 
+    <section class="box panel" id="trafic">
+      <div class="section-title">
+        <h2>Trafic</h2>
+        <button type="button" class="secondary" id="refreshTrafic">Actualiser</button>
+      </div>
+      <p class="lead">Pages vues depuis la mise en place du compteur. Le passé n’est pas reconstitué. Chaque article a son propre total.</p>
+      <div id="traficStats" class="trafic-stats"></div>
+      <div class="trafic-block">
+        <h3>Par article</h3>
+        <div id="traficPosts">Chargement…</div>
+      </div>
+      <div class="trafic-block">
+        <h3>Par page</h3>
+        <div id="traficPages"></div>
+      </div>
+      <div class="trafic-block">
+        <h3>Par jour</h3>
+        <div id="traficDays"></div>
+      </div>
+    </section>
+
     <section class="box panel" id="articles">
       <div class="section-title">
         <h2>Articles publiés</h2>
@@ -635,6 +698,9 @@ document.querySelectorAll(".admin-tabs button").forEach(function (button) {
     montrerPanneau(button.dataset.panel);
     if (button.dataset.panel === "students") {
       chargerOpportunites();
+    }
+    if (button.dataset.panel === "trafic") {
+      chargerTrafic();
     }
   });
 });
@@ -704,6 +770,7 @@ async function verifierConnexion() {
     chargerMessages();
     chargerAbonnes();
     chargerOpportunites();
+    chargerTrafic();
 
   } else {
 
@@ -1297,6 +1364,68 @@ async function chargerMessages() {
   if (compte) {
     compte.textContent = "(" + messages.length + ")";
   }
+}
+
+function nombre(value) {
+  return Number(value || 0).toLocaleString("fr-FR");
+}
+
+function ligneTrafic(label, views, href) {
+  const name = href
+    ? '<a href="' + href + '" target="_blank" rel="noopener">' + echapper(label) + "</a>"
+    : echapper(label);
+  return '<div class="trafic-row"><span>' + name + "</span><strong>" + nombre(views) + "</strong></div>";
+}
+
+async function chargerTrafic() {
+  const posts = document.getElementById("traficPosts");
+  const pages = document.getElementById("traficPages");
+  const days = document.getElementById("traficDays");
+  const stats = document.getElementById("traficStats");
+  if (!posts) return;
+  const { data } = await supabaseClient.auth.getSession();
+  const token = data.session && data.session.access_token;
+  if (!token) {
+    posts.textContent = "Connexion requise.";
+    return;
+  }
+  posts.textContent = "Chargement…";
+  const response = await fetch("/api/trafic", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const body = await response.json().catch(function () { return {}; });
+  if (!response.ok) {
+    posts.textContent = body.error || "Lecture impossible.";
+    return;
+  }
+  stats.innerHTML =
+    "<div><span>7 jours</span><strong>" + nombre(body.week) + "</strong></div>" +
+    "<div><span>30 jours</span><strong>" + nombre(body.month) + "</strong></div>" +
+    "<div><span>Total</span><strong>" + nombre(body.total) + "</strong></div>";
+  const compte = document.getElementById("traficCount");
+  if (compte) compte.textContent = body.week ? "(" + nombre(body.week) + ")" : "";
+  posts.innerHTML = (body.posts || []).length
+    ? body.posts.map(function (item) {
+        return ligneTrafic(item.titre, item.views, "/article?id=" + encodeURIComponent(item.id));
+      }).join("")
+    : "Aucun article vu pour le moment.";
+  pages.innerHTML = (body.pages || []).length
+    ? body.pages.map(function (item) {
+        return ligneTrafic(item.label, item.views, item.path);
+      }).join("")
+    : "Aucune page vue pour le moment.";
+  days.innerHTML = (body.days || []).length
+    ? body.days.map(function (item) {
+        const date = new Date(item.date + "T12:00:00");
+        const label = date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+        return ligneTrafic(label, item.views);
+      }).join("")
+    : "Aucune journée enregistrée.";
+}
+
+const refreshTrafic = document.getElementById("refreshTrafic");
+if (refreshTrafic) {
+  refreshTrafic.addEventListener("click", chargerTrafic);
 }
 
 const DRAFT_KEY = "lfi-admin-draft-v1";

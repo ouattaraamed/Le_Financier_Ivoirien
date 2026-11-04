@@ -268,7 +268,7 @@ export default async function handler(req, res) {
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
-  <script src="/js/site.js?v=20261102black"></script>
+  <script src="/js/site.js?v=20261104trafic"></script>
   <main>
     <article id="article-detail">
       <a class="detail-back" href="/">← Retour aux actualités</a>

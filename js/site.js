@@ -405,4 +405,22 @@
   } else {
     fillDates();
   }
+
+  var trackPath = location.pathname || "/";
+  if (trackPath.indexOf("/admin") !== 0 && trackPath.indexOf("/api") !== 0) {
+    if (trackPath === "/article" || trackPath.slice(-8) === "/article") {
+      trackPath += location.search || "";
+    }
+    var trackBody = JSON.stringify({ path: trackPath });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/trafic", new Blob([trackBody], { type: "application/json" }));
+    } else {
+      fetch("/api/trafic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: trackBody,
+        keepalive: true
+      }).catch(function () {});
+    }
+  }
 })();
