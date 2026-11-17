@@ -1062,6 +1062,15 @@ a.side-card {
   overflow-wrap: anywhere;
 }
 
+.detail-content strong,
+.detail-content b {
+  font-weight: 700;
+}
+
+.detail-content em {
+  font-style: italic;
+}
+
 .detail-content a {
   color: var(--green2);
   font-weight: 600;

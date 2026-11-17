@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261102black">
+  <link rel="stylesheet" href="css/site.css?v=20261117gras">
 
 </head>
 
@@ -248,7 +248,7 @@
 
     /* EXTRAIT */
 
-    function ecrireTexteLie(element, texte) {
+    function ecrireLiens(element, texte) {
 
       const source = String(texte || "");
       const motif = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
@@ -264,7 +264,7 @@
         let url = trouve[0];
         let suite = "";
 
-        while (url && /[),.;:!?»]+$/.test(url)) {
+        while (url && /[),.;:!?»*]+$/.test(url)) {
           const dernier = url.slice(-1);
           if (dernier === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
             break;
@@ -304,6 +304,33 @@
 
       if (curseur < source.length) {
         element.appendChild(document.createTextNode(source.slice(curseur)));
+      }
+
+    }
+
+    function ecrireTexteLie(element, texte) {
+
+      const source = String(texte || "")
+        .replace(/<\s*(strong|b)\s*>/gi, "**")
+        .replace(/<\s*\/\s*(strong|b)\s*>/gi, "**")
+        .replace(/<\s*(em|i)\s*>/gi, "*")
+        .replace(/<\s*\/\s*(em|i)\s*>/gi, "*");
+      const motif = /\*\*((?:(?!\*\*)[\s\S])+?)\*\*|\*(\S(?:[^*\n]*?\S)?)\*/g;
+      let curseur = 0;
+      let trouve;
+
+      while ((trouve = motif.exec(source))) {
+        if (trouve.index > curseur) {
+          ecrireLiens(element, source.slice(curseur, trouve.index));
+        }
+        const marque = document.createElement(trouve[1] !== undefined ? "strong" : "em");
+        ecrireLiens(marque, trouve[1] !== undefined ? trouve[1] : trouve[2]);
+        element.appendChild(marque);
+        curseur = motif.lastIndex;
+      }
+
+      if (curseur < source.length) {
+        ecrireLiens(element, source.slice(curseur));
       }
 
     }
@@ -350,7 +377,10 @@
 
     function extrait(texte, longueur = 170) {
 
-      texte = texteArticle(texte);
+      texte = texteArticle(texte)
+        .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
+        .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+        .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1");
 
       if (!texte) {
         return "";

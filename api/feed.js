@@ -102,7 +102,10 @@ async function rss(res) {
     const pub = when ? new Date(when).toUTCString() : "";
     const description = String(article.contenu || "")
       .replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "")
+      .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
       .replace(/<[^>]*>/g, " ")
+      .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+      .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1")
       .replace(/\s+/g, " ")
       .trim()
       .slice(0, 280);

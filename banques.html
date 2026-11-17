@@ -806,7 +806,12 @@
 
     function extrait(text, length = 150) {
 
-      text = String(text || "").replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "").trim();
+      text = String(text || "")
+        .replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "")
+        .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
+        .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+        .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1")
+        .trim();
 
       if (!text) return "";
 

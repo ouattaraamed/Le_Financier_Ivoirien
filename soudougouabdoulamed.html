@@ -140,6 +140,37 @@
       resize: vertical;
     }
 
+    .contenu-editor {
+      min-height: 220px;
+      padding: 12px 13px;
+      border: 1px solid #d5ddd9;
+      background: #fff;
+      color: var(--ink);
+      font: 15px/1.55 "Source Sans 3", Helvetica Neue, Helvetica, Arial, sans-serif;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .contenu-editor:focus {
+      outline: 2px solid var(--green2);
+      outline-offset: 1px;
+      border-color: var(--green2);
+    }
+
+    .contenu-editor strong,
+    .contenu-editor b {
+      font-weight: 700;
+    }
+
+    .contenu-editor em {
+      font-style: italic;
+    }
+
+    .contenu-editor:empty:before {
+      content: attr(data-placeholder);
+      color: #8a8a8a;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -331,8 +362,22 @@
 
     #preview { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
     #preview img { max-width: 100%; margin: 12px 0; }
+    .editor-tools {
+      display: flex;
+      gap: 8px;
+      margin: 0 0 8px;
+    }
+
+    .editor-tools button {
+      width: auto;
+      margin-top: 0;
+      padding: 8px 12px;
+    }
+
     .preview-body { white-space: pre-wrap; line-height: 1.55; margin: 0; }
     .preview-body a { color: var(--green2); font-weight: 700; text-decoration: underline; }
+    .preview-body strong { font-weight: 700; }
+    .preview-body em { font-style: italic; }
     #image_file, #document_file { margin-top: 8px; }
     .image-link-row { display: flex; gap: 8px; align-items: center; }
     .image-link-row input { flex: 1; }
@@ -533,7 +578,13 @@
         <p class="lead" id="documentStatus"></p>
 
         <label for="contenu">Contenu de l'article</label>
-        <textarea id="contenu" placeholder="Écrivez votre article ici..." required></textarea>
+        <div class="editor-tools" role="toolbar" aria-label="Mise en forme">
+          <button type="button" id="boldButton"><b>Gras</b></button>
+          <button type="button" id="italicButton"><i>Italique</i></button>
+        </div>
+        <p class="lead">Sélectionnez un passage, puis Gras ou Italique. Le mot s’affiche en gras ici, dans l’aperçu et sur l’article publié.</p>
+        <div id="contenuEditor" class="contenu-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Écrivez votre article ici..."></div>
+        <textarea id="contenu" hidden></textarea>
 
         <div class="form-actions">
           <button type="submit" id="submitButton">Publier l'article</button>
@@ -882,9 +933,12 @@ articleForm.addEventListener(
       ajouterImage(lienSaisi);
       document.getElementById("image_url").value = "";
     }
-    const paquet = emballerContenu(
-      document.getElementById("contenu").value
-    );
+    const corpsSaisi = contenuActuel();
+    if (!corpsSaisi.trim()) {
+      message(articleMessage, "Écrivez le contenu de l'article.");
+      return;
+    }
+    const paquet = emballerContenu(corpsSaisi);
 
     const article = {
 
@@ -1079,10 +1133,11 @@ async function chargerArticles() {
     const contenu =
       texteArticle(article.contenu || "");
 
+    const lisible = sansMarques(contenu);
     preview.textContent =
-      contenu.length > 300
-        ? contenu.substring(0, 300) + "..."
-        : contenu;
+      lisible.length > 300
+        ? lisible.substring(0, 300) + "..."
+        : lisible;
 
 
     const actions =
@@ -1463,7 +1518,7 @@ function tailleFichier(octets) {
   return (n / (1024 * 1024)).toFixed(1).replace(".", ",") + " Mo";
 }
 
-function ecrireTexteLie(element, texte) {
+function ecrireLiens(element, texte) {
   const source = String(texte || "");
   const motif = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
   let curseur = 0;
@@ -1474,7 +1529,7 @@ function ecrireTexteLie(element, texte) {
     }
     let url = trouve[0];
     let suite = "";
-    while (url && /[),.;:!?»]+$/.test(url)) {
+    while (url && /[),.;:!?»*]+$/.test(url)) {
       const dernier = url.slice(-1);
       if (dernier === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
         break;
@@ -1508,6 +1563,253 @@ function ecrireTexteLie(element, texte) {
     element.appendChild(document.createTextNode(source.slice(curseur)));
   }
 }
+
+function ecrireTexteLie(element, texte) {
+  const source = String(texte || "")
+    .replace(/<\s*(strong|b)\s*>/gi, "**")
+    .replace(/<\s*\/\s*(strong|b)\s*>/gi, "**")
+    .replace(/<\s*(em|i)\s*>/gi, "*")
+    .replace(/<\s*\/\s*(em|i)\s*>/gi, "*");
+  const motif = /\*\*((?:(?!\*\*)[\s\S])+?)\*\*|\*(\S(?:[^*\n]*?\S)?)\*/g;
+  let curseur = 0;
+  let trouve;
+  while ((trouve = motif.exec(source))) {
+    if (trouve.index > curseur) {
+      ecrireLiens(element, source.slice(curseur, trouve.index));
+    }
+    const marque = document.createElement(trouve[1] !== undefined ? "strong" : "em");
+    ecrireLiens(marque, trouve[1] !== undefined ? trouve[1] : trouve[2]);
+    element.appendChild(marque);
+    curseur = motif.lastIndex;
+  }
+  if (curseur < source.length) {
+    ecrireLiens(element, source.slice(curseur));
+  }
+}
+
+function sansMarques(value) {
+  return String(value || "")
+    .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
+    .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+    .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1");
+}
+
+function serialiser(noeud) {
+  let out = "";
+  noeud.childNodes.forEach(function (enfant) {
+    if (enfant.nodeType === 3) {
+      out += enfant.textContent.replace(/\u00a0/g, " ");
+      return;
+    }
+    if (enfant.nodeType !== 1) return;
+    const nom = enfant.nodeName;
+    if (nom === "BR") {
+      out += "\n";
+      return;
+    }
+    const dedans = serialiser(enfant);
+    if (nom === "STRONG" || nom === "B") {
+      out += "**" + dedans + "**";
+      return;
+    }
+    if (nom === "EM" || nom === "I") {
+      out += "*" + dedans + "*";
+      return;
+    }
+    if (nom === "DIV" || nom === "P") {
+      if (out && !out.endsWith("\n")) out += "\n";
+      out += dedans;
+      if (dedans && !out.endsWith("\n")) out += "\n";
+      return;
+    }
+    out += dedans;
+  });
+  return out;
+}
+
+function poserContenu(texte) {
+  const editor = document.getElementById("contenuEditor");
+  const zone = document.getElementById("contenu");
+  const propre = String(texte || "");
+  if (zone) zone.value = propre;
+  if (!editor) return;
+  editor.innerHTML = "";
+  ecrireTexteLie(editor, propre);
+}
+
+function contenuActuel() {
+  const editor = document.getElementById("contenuEditor");
+  const zone = document.getElementById("contenu");
+  if (!editor) return zone ? zone.value : "";
+  const texte = serialiser(editor).replace(/^\n+|\n+$/g, "");
+  if (zone) zone.value = texte;
+  return texte;
+}
+
+function offsetCaret(root) {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return null;
+  const range = sel.getRangeAt(0);
+  if (!root.contains(range.endContainer)) return null;
+  const pre = range.cloneRange();
+  pre.selectNodeContents(root);
+  pre.setEnd(range.endContainer, range.endOffset);
+  return pre.toString().length;
+}
+
+function placerCaret(root, offset) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let reste = Math.max(0, offset);
+  let node = walker.nextNode();
+  let dernier = null;
+  while (node) {
+    dernier = node;
+    if (reste <= node.textContent.length) {
+      const range = document.createRange();
+      range.setStart(node, reste);
+      range.collapse(true);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      return;
+    }
+    reste -= node.textContent.length;
+    node = walker.nextNode();
+  }
+  if (!dernier) return;
+  const range = document.createRange();
+  range.setStart(dernier, dernier.textContent.length);
+  range.collapse(true);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function synchroniserEditeur(convertir) {
+  const editor = document.getElementById("contenuEditor");
+  if (!editor) return;
+  const visible = editor.innerText.replace(/\u00a0/g, " ");
+  if (convertir && /\*\*(?:(?!\*\*)[\s\S])+?\*\*/.test(visible)) {
+    const pos = offsetCaret(editor);
+    poserContenu(serialiser(editor));
+    if (pos != null) {
+      placerCaret(editor, visible.slice(0, pos).replace(/\*\*/g, "").length);
+    }
+  }
+  contenuActuel();
+}
+
+function appliquerStyle(commande) {
+  const editor = document.getElementById("contenuEditor");
+  if (!editor) return;
+  editor.focus();
+  document.execCommand(commande, false, null);
+  contenuActuel();
+}
+
+function brancherMarque(id, commande) {
+  const bouton = document.getElementById(id);
+  if (!bouton) return;
+  bouton.addEventListener("mousedown", function (event) {
+    event.preventDefault();
+  });
+  bouton.addEventListener("click", function () {
+    appliquerStyle(commande);
+  });
+}
+
+brancherMarque("boldButton", "bold");
+brancherMarque("italicButton", "italic");
+
+const contenuEditor = document.getElementById("contenuEditor");
+if (contenuEditor) {
+  contenuEditor.addEventListener("input", function () {
+    synchroniserEditeur(true);
+  });
+  contenuEditor.addEventListener("blur", function () {
+    synchroniserEditeur(true);
+  });
+  contenuEditor.addEventListener("paste", function (event) {
+    const html = event.clipboardData && event.clipboardData.getData("text/html");
+    const text = event.clipboardData && event.clipboardData.getData("text/plain");
+    if (!html || !/<(strong|b|em|i)\b|font-weight\s*:\s*(bold|[6-9]00)|font-style\s*:\s*italic/i.test(html)) {
+      if (text) {
+        event.preventDefault();
+        document.execCommand("insertText", false, text);
+        synchroniserEditeur(true);
+      }
+      return;
+    }
+    event.preventDefault();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const frag = document.createDocumentFragment();
+    function copier(source, dest) {
+      source.childNodes.forEach(function (n) {
+        if (n.nodeType === 3) {
+          dest.appendChild(document.createTextNode(n.textContent));
+          return;
+        }
+        if (n.nodeType !== 1) return;
+        const nom = n.nodeName;
+        if (nom === "BR") {
+          dest.appendChild(document.createElement("br"));
+          return;
+        }
+        if (nom === "STRONG" || nom === "B" || nom === "EM" || nom === "I") {
+          const el = document.createElement(nom === "B" || nom === "STRONG" ? "strong" : "em");
+          copier(n, el);
+          dest.appendChild(el);
+          return;
+        }
+        const style = n.getAttribute("style") || "";
+        if (nom === "P" || nom === "DIV" || nom === "LI" || /^H[1-6]$/.test(nom)) {
+          if (dest.childNodes.length) dest.appendChild(document.createElement("br"));
+          if (/font-weight\s*:\s*(bold|[6-9]00)/i.test(style)) {
+            const el = document.createElement("strong");
+            copier(n, el);
+            dest.appendChild(el);
+          } else if (/font-style\s*:\s*italic/i.test(style)) {
+            const el = document.createElement("em");
+            copier(n, el);
+            dest.appendChild(el);
+          } else {
+            copier(n, dest);
+          }
+          dest.appendChild(document.createElement("br"));
+          return;
+        }
+        if (/font-weight\s*:\s*(bold|[6-9]00)/i.test(style)) {
+          const el = document.createElement("strong");
+          copier(n, el);
+          dest.appendChild(el);
+          return;
+        }
+        if (/font-style\s*:\s*italic/i.test(style)) {
+          const el = document.createElement("em");
+          copier(n, el);
+          dest.appendChild(el);
+          return;
+        }
+        copier(n, dest);
+      });
+    }
+    copier(doc.body, frag);
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount && contenuEditor.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(frag);
+    } else {
+      contenuEditor.appendChild(frag);
+    }
+    synchroniserEditeur(true);
+  });
+}
+
+articleForm.addEventListener("reset", function () {
+  const editor = document.getElementById("contenuEditor");
+  if (editor) editor.innerHTML = "";
+});
 
 function texteArticle(value) {
   const brut = String(value || "");
@@ -1690,7 +1992,7 @@ function chargerImages(article) {
     ? couverture
     : (gallery[0] || "");
   documents = separerDocuments(article.contenu || "");
-  document.getElementById("contenu").value = texteArticle(article.contenu || "");
+  poserContenu(texteArticle(article.contenu || ""));
   document.getElementById("image_url").value = "";
   peindreGalerie();
   peindreDocuments();
@@ -1728,7 +2030,7 @@ function lireFormulaire() {
     image_url: imageCouverture,
     images: gallery.slice(),
     documents: documents.slice(),
-    contenu: document.getElementById("contenu").value
+    contenu: contenuActuel()
   };
 }
 
@@ -1747,7 +2049,7 @@ document.getElementById("restoreDraftButton").addEventListener("click", function
   document.getElementById("titre").value = draft.titre || "";
   document.getElementById("categorie").value = draft.categorie || "";
   document.getElementById("auteur").value = draft.auteur || "";
-  document.getElementById("contenu").value = texteArticle(draft.contenu || "");
+  poserContenu(texteArticle(draft.contenu || ""));
   document.getElementById("image_url").value = "";
   gallery = Array.isArray(draft.images)
     ? draft.images.map(urlImage).filter(Boolean).slice(0, 8)

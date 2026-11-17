@@ -16,7 +16,10 @@
   function excerpt(html, length) {
     var text = String(html || "")
       .replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "")
+      .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
       .replace(/<[^>]+>/g, " ")
+      .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+      .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1")
       .replace(/\s+/g, " ")
       .trim();
     if (!text) {

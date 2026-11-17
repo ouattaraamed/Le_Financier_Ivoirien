@@ -83,7 +83,7 @@
                 timeZone: "Africa/Abidjan"
               })
             : "";
-          var text = String(article.contenu || "").replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "").replace(/\s+/g, " ").trim().slice(0, 160);
+          var text = String(article.contenu || "").replace(/@@lfi-(?:images|docs)@@[\s\S]*$/, "").replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "").replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1").replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1").replace(/\s+/g, " ").trim().slice(0, 160);
           var photo = String(article.image_url || "").replace(
             "https://le-financier-ivoirien.vercel.app/",
             "https://lefinancierivoirien.com/"
