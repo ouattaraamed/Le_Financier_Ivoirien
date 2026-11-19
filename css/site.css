@@ -720,6 +720,11 @@ main {
 
 .side-copy {
   min-width: 0;
+  height: 92px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .thumb {
@@ -735,7 +740,11 @@ main {
   font-weight: 700;
   line-height: 1.25;
   color: #111;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @media (min-width: 851px) {
@@ -765,13 +774,18 @@ main {
     height: 72px;
   }
 
+  .side-copy {
+    height: 72px;
+  }
+
   .side-card h4 {
     font-size: 16px;
-    line-height: 1.3;
-    margin: 0 0 6px;
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
+    line-height: 1.25;
+    margin: 0 0 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .hero-follow:not([hidden]) {
@@ -809,6 +823,9 @@ main {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .side-cat {
@@ -1785,8 +1802,14 @@ footer .footer-links a:hover {
     height: 78px;
   }
 
+  .side-copy {
+    height: 78px;
+  }
+
   .side-card h4 {
-    font-size: 17px;
+    font-size: 15px;
+    line-height: 1.2;
+    margin: 0 0 4px;
     color: #111;
   }
 
