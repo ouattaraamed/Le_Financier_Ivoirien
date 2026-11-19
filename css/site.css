@@ -736,10 +736,6 @@ main {
   line-height: 1.25;
   color: #111;
   margin: 0 0 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 @media (min-width: 851px) {
