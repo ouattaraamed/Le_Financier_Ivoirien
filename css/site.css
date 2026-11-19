@@ -543,7 +543,7 @@ main {
 }
 
 .hero {
-  min-height: 560px;
+  min-height: 470px;
   border-radius: 0;
   overflow: hidden;
   background: #000;
@@ -749,8 +749,8 @@ main {
   }
 
   .hero {
-    min-height: 560px;
-    height: 560px;
+    min-height: 390px;
+    height: 390px;
   }
 
   .hero h2 {
@@ -1678,7 +1678,7 @@ footer .footer-links a:hover {
 
   .hero {
     height: auto;
-    min-height: 520px;
+    min-height: 68vw;
     padding: 0;
   }
 
@@ -1741,7 +1741,7 @@ footer .footer-links a:hover {
 
   .hero {
     height: auto;
-    min-height: 500px;
+    min-height: 72vw;
     padding: 0;
   }
 
