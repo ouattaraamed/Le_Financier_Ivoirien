@@ -2277,6 +2277,140 @@ main.parquet {
   margin: 36px 4% 0;
 }
 
+.market-desk {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  background: #111;
+  padding: 0 4%;
+}
+
+.market-desk a {
+  color: #fff;
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.market-desk a:hover {
+  background: #2a2a2a;
+}
+
+.market-kicker,
+.market-letter,
+.market-tv {
+  scroll-margin-top: 72px;
+}
+
+#espace-brvm,
+#calendrier,
+#etudes {
+  scroll-margin-top: 72px;
+}
+
+.market-kicker {
+  padding: 22px 4% 0;
+}
+
+.market-kicker p,
+.market-letter p:first-child,
+.market-tv header p {
+  margin: 0 0 4px;
+  color: #111;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.market-kicker h2,
+.market-letter h2,
+.market-tv h2 {
+  margin: 0;
+  color: #111;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.market-letter,
+.market-tv {
+  margin: 36px 4% 0;
+}
+
+.market-lead {
+  margin: 10px 0 0;
+  max-width: 460px;
+  color: #53635f;
+  line-height: 1.5;
+}
+
+.market-letter form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 520px;
+  margin-top: 16px;
+}
+
+.market-letter input[type="email"] {
+  flex: 1 1 220px;
+  padding: 12px 13px;
+  border: 1px solid #d5ddd9;
+  font: 15px/1.4 "Source Sans 3", Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.market-letter button,
+.market-tv-list button {
+  border: 0;
+  background: #111;
+  color: #fff;
+  padding: 12px 16px;
+  font: 700 14px/1 "Source Sans 3", Helvetica Neue, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.market-hp {
+  position: absolute;
+  left: -9999px;
+}
+
+.market-tv header {
+  margin-bottom: 16px;
+}
+
+.market-tv-empty {
+  max-width: 640px;
+  margin: 0;
+  padding: 22px;
+  border: 1px solid #e5e5e5;
+  color: #333;
+  line-height: 1.5;
+}
+
+.market-tv-player {
+  max-width: 860px;
+  background: #111;
+}
+
+.market-tv-player iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.market-tv-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.market-tv-list button.is-on {
+  background: #5c6764;
+}
+
 .parquet-floor header,
 .parquet-news header {
   display: flex;
