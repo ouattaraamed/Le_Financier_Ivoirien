@@ -707,31 +707,11 @@ main {
 .side-card {
   display: grid;
   grid-template-columns: 1fr 128px;
-  grid-template-areas:
-    "title thumb"
-    "dek thumb"
-    "meta thumb";
-  gap: 8px 16px;
-  align-items: start;
+  gap: 16px;
+  align-items: center;
   padding: 18px 0;
   border-bottom: 1px solid var(--border);
   cursor: pointer;
-}
-
-.side-card h4 {
-  grid-area: title;
-}
-
-.side-dek {
-  grid-area: dek;
-}
-
-.side-meta {
-  grid-area: meta;
-}
-
-.side-card .thumb {
-  grid-area: thumb;
 }
 
 .side-card:last-child {
@@ -739,7 +719,6 @@ main {
 }
 
 .side-copy {
-  display: contents;
   min-width: 0;
 }
 
@@ -756,17 +735,7 @@ main {
   font-weight: 700;
   line-height: 1.25;
   color: #111;
-  margin: 0 0 8px;
-}
-
-.side-dek {
   margin: 0 0 10px;
-  color: #333;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: 0;
-  text-transform: none;
 }
 
 @media (min-width: 851px) {
@@ -836,7 +805,6 @@ main {
 }
 
 .side-meta {
-  grid-area: meta;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1742,12 +1710,6 @@ footer .footer-links a:hover {
     grid-template-columns: 1fr;
   }
 
-  .article-card p {
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
-  }
-
   .article-card {
     background: transparent;
   }
@@ -1815,11 +1777,7 @@ footer .footer-links a:hover {
 
   .side-card {
     grid-template-columns: 1fr 108px;
-    grid-template-areas:
-      "title thumb"
-      "dek dek"
-      "meta meta";
-    gap: 8px 12px;
+    gap: 12px;
   }
 
   .thumb {
