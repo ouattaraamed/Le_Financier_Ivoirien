@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=20261119une5">
+  <link rel="stylesheet" href="css/site.css?v=20261119une8">
 
 </head>
 
@@ -392,6 +392,23 @@
 
       return texte.substring(0, longueur) + "...";
 
+    }
+
+    function chapo(texte) {
+      texte = texteArticle(texte)
+        .replace(/<\s*\/?\s*(strong|b|em|i)\s*>/gi, "")
+        .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
+        .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1");
+
+      var lignes = texte.split(/\n+/).map(function (ligne) {
+        return ligne.trim();
+      }).filter(Boolean);
+
+      var corps = lignes.filter(function (ligne) {
+        return (ligne.match(/\|/g) || []).length < 2;
+      });
+
+      return (corps[0] || "").trim();
     }
 
     /* IMAGE */
@@ -761,6 +778,15 @@
         title.textContent =
           article.titre || "Sans titre";
 
+        const dek =
+          document.createElement("p");
+
+        dek.className =
+          "side-dek";
+
+        dek.textContent =
+          chapo(article.contenu);
+
         const meta =
           document.createElement("div");
 
@@ -788,6 +814,9 @@
         meta.appendChild(category);
         meta.appendChild(date);
         content.appendChild(title);
+        if (dek.textContent) {
+          content.appendChild(dek);
+        }
         content.appendChild(meta);
 
         const thumb =
