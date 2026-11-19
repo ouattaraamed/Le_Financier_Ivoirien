@@ -543,15 +543,14 @@ main {
 }
 
 .hero {
-  min-height: 470px;
+  min-height: 560px;
   border-radius: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, #1a1a1a, #000000);
+  background: #000;
   position: relative;
   color: #fff;
-  padding: 36px;
-  display: flex;
-  align-items: flex-end;
+  padding: 0;
+  display: block;
   cursor: pointer;
 }
 
@@ -574,9 +573,7 @@ main {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.12), transparent 28%),
-    linear-gradient(120deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.82));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.35) 54%, #000 70%);
 }
 
 .hero-open {
@@ -586,11 +583,29 @@ main {
 }
 
 .hero-content {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 3;
-  max-width: 760px;
+  max-width: none;
+  padding: 0 28px 32px;
   pointer-events: none;
   transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.hero .tag {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 4;
+  margin: 0;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 10px 14px;
 }
 
 .hero.is-switching .hero-content,
@@ -604,8 +619,9 @@ main {
 
 .hero-dots {
   position: absolute;
-  right: 20px;
-  bottom: 20px;
+  top: 26px;
+  right: 18px;
+  bottom: auto;
   z-index: 4;
   display: flex;
   gap: 8px;
@@ -644,9 +660,9 @@ main {
 }
 
 .hero h2 {
-  font: 700 30px/1.15 var(--font-display);
-  letter-spacing: -0.02em;
-  margin: 12px 0 10px;
+  font: 700 40px/1.05 var(--font-display);
+  letter-spacing: -0.03em;
+  margin: 0 0 14px;
 }
 
 .hero p {
@@ -656,6 +672,12 @@ main {
 .meta {
   font-size: 14px;
   color: #d4d4d4;
+}
+
+.hero .meta {
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: 0.02em;
 }
 
 .side {
@@ -727,13 +749,13 @@ main {
   }
 
   .hero {
-    min-height: 390px;
-    height: 390px;
+    min-height: 560px;
+    height: 560px;
   }
 
   .hero h2 {
-    font-size: 26px;
-    line-height: 1.2;
+    font-size: 36px;
+    line-height: 1.05;
   }
 
   .side-card {
@@ -1656,12 +1678,22 @@ footer .footer-links a:hover {
 
   .hero {
     height: auto;
-    min-height: 68vw;
-    padding: 24px 16px 22px;
+    min-height: 520px;
+    padding: 0;
+  }
+
+  .hero-content {
+    padding: 0 18px 22px;
+  }
+
+  .hero .tag {
+    top: 14px;
+    left: 14px;
   }
 
   .hero h2 {
-    font-size: 20px;
+    font-size: 28px;
+    max-width: none;
   }
 
   .side {
@@ -1709,12 +1741,12 @@ footer .footer-links a:hover {
 
   .hero {
     height: auto;
-    min-height: 72vw;
-    padding: 22px 16px 18px;
+    min-height: 500px;
+    padding: 0;
   }
 
   .hero h2 {
-    font-size: 22px;
+    font-size: 26px;
   }
 
   .tag {
