@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261027" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="canonical" href="https://lefinancierivoirien.com/brvm">
-  <link rel="stylesheet" href="css/site.css?v=20261119marche">
+  <link rel="stylesheet" href="css/site.css?v=20261119desk2">
 </head>
 <body>
   <div id="site-chrome"></div>
@@ -34,18 +34,21 @@
       <div class="parquet-tape-track" id="parquetTape"></div>
     </div>
 
-    <nav class="market-desk" aria-label="Espaces de la page Marchés">
-      <a href="#espace-brvm">Espace BRVM</a>
-      <a href="#calendrier">Calendrier économique</a>
-      <a href="#etudes">Études et analyses</a>
-      <a href="#newsletter">Newsletter financière</a>
-      <a href="#tv">Le Financier TV</a>
+    <nav class="market-index" aria-label="Espaces de la page Marchés">
+      <a href="#espace-brvm"><span>01</span><strong>Espace BRVM</strong><small>Indices, actions, obligations</small></a>
+      <a href="#calendrier"><span>02</span><strong>Calendrier économique</strong><small>Annonces à l’heure d’Abidjan</small></a>
+      <a href="#etudes"><span>03</span><strong>Études et analyses</strong><small>Notes de la rédaction</small></a>
+      <a href="#newsletter"><span>04</span><strong>Newsletter financière</strong><small>La séance, dans votre boîte</small></a>
+      <a href="#tv"><span>05</span><strong>Le Financier TV</strong><small>Séances filmées</small></a>
     </nav>
 
     <section class="quote-board" id="espace-brvm">
-      <header class="market-kicker">
-        <p>Cours</p>
-        <h2>Espace BRVM</h2>
+      <header class="desk-head">
+        <div>
+          <span>01 — Séance</span>
+          <h2>Espace BRVM</h2>
+        </div>
+        <p>Les cours publiés par la Bourse régionale. Choisissez un titre pour ouvrir son graphique.</p>
       </header>
       <div class="quote-tabs" role="tablist">
         <button type="button" data-board="indices" class="is-active">Indices</button>
@@ -81,18 +84,21 @@
     </section>
 
     <section class="fx-calendar" id="calendrier">
-      <header>
+      <header class="desk-head">
         <div>
-          <p>Abidjan</p>
+          <span>02 — Agenda</span>
           <h2>Calendrier économique</h2>
         </div>
+        <p>Les annonces susceptibles de bouger les devises et les taux, affichées à l’heure d’Abidjan.</p>
+      </header>
+      <div class="fx-bar">
+        <p class="fx-next" id="fxNext">Chargement du calendrier…</p>
         <div class="fx-filters" id="fxFilters">
           <button type="button" data-filter="today" class="is-active">Aujourd'hui</button>
           <button type="button" data-filter="next">À venir</button>
           <button type="button" data-filter="high">Fort impact</button>
         </div>
-      </header>
-      <p class="fx-next" id="fxNext">Chargement du calendrier…</p>
+      </div>
       <div class="quote-scroll">
         <table id="fxTable">
           <tbody>
@@ -104,9 +110,12 @@
     </section>
 
     <section class="parquet-news" id="etudes">
-      <header>
-        <h2>Études et analyses</h2>
-        <span id="newsCount">—</span>
+      <header class="desk-head">
+        <div>
+          <span>03 — Recherche</span>
+          <h2>Études et analyses</h2>
+        </div>
+        <p>Les notes de la rédaction sur la séance, les titres et les mouvements de fond. <span id="newsCount"></span></p>
       </header>
       <div id="newsGrid">
         <p class="parquet-empty">Ouverture des études…</p>
@@ -114,26 +123,44 @@
     </section>
 
     <section class="market-letter" id="newsletter">
-      <div>
-        <p>Chaque séance</p>
+      <div class="market-letter-copy">
+        <span>04 — Lettre</span>
         <h2>Newsletter financière</h2>
-        <p class="market-lead">Les indices, les mouvements de la BRVM et les annonces du jour, envoyés à votre adresse.</p>
+        <p>La séance BRVM, les annonces du jour et une lecture de la rédaction. Un envoi, pas un défilé de publicités.</p>
       </div>
       <form id="marketLetter">
-        <label class="visually-hidden" for="marketLetterEmail">Adresse e-mail</label>
-        <input id="marketLetterEmail" type="email" required placeholder="Adresse e-mail" autocomplete="email">
+        <label for="marketLetterEmail">Adresse</label>
+        <div class="market-letter-row">
+          <input id="marketLetterEmail" type="email" required placeholder="nom@domaine.com" autocomplete="email">
+          <button type="submit">Recevoir la lettre</button>
+        </div>
         <input id="marketLetterCompany" class="market-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button type="submit">S’inscrire</button>
+        <p id="marketLetterStatus" hidden></p>
       </form>
-      <p id="marketLetterStatus" class="market-lead" hidden></p>
     </section>
 
     <section class="market-tv" id="tv">
-      <header>
-        <p>Émissions</p>
-        <h2>Le Financier TV</h2>
+      <header class="desk-head">
+        <div>
+          <span>05 — Antenne</span>
+          <h2>Le Financier TV</h2>
+        </div>
+        <p>Les points de marché filmés et les entretiens. Le lecteur reste sur la page.</p>
       </header>
-      <div id="tvStage"></div>
+      <div class="market-tv-set">
+        <div class="market-tv-screen" id="tvStage">
+          <div class="market-tv-slate">
+            <b>Le Financier</b>
+            <strong>TV</strong>
+            <em>Hors antenne</em>
+          </div>
+        </div>
+        <aside>
+          <p>Prochaine diffusion</p>
+          <h3>La séance filmée</h3>
+          <p>Quand une émission est prête, elle s’ouvre dans ce cadre, avec la liste des précédentes à côté.</p>
+        </aside>
+      </div>
     </section>
   </main>
 
@@ -616,9 +643,9 @@
             grid.innerHTML = '<p class="parquet-empty">Le fil s’ouvrira avec le prochain article Marchés & Bourse.</p>';
             return;
           }
-          articles.forEach(function (article) {
+          articles.forEach(function (article, index) {
             var card = document.createElement("a");
-            card.className = "parquet-wire";
+            card.className = "parquet-wire" + (index === 0 ? " is-lead" : "");
             card.href = "/article?id=" + encodeURIComponent(article.id);
             var copy = document.createElement("div");
             copy.className = "wire-copy";
@@ -851,11 +878,7 @@
 
       var emissions = [];
       var stage = document.getElementById("tvStage");
-      if (!stage) return;
-      if (!emissions.length) {
-        stage.innerHTML = '<p class="market-tv-empty">Aucune émission n’est publiée. Les séances filmées et les entretiens paraîtront ici.</p>';
-        return;
-      }
+      if (!stage || !emissions.length) return;
       var current = 0;
       function show(index) {
         current = index;
