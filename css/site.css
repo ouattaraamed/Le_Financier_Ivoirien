@@ -1687,8 +1687,11 @@ footer .footer-links a:hover {
   }
 
   .hero .tag {
-    top: 14px;
-    left: 14px;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 5px 8px;
   }
 
   .hero h2 {
