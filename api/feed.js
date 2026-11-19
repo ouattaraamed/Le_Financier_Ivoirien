@@ -1,5 +1,6 @@
 function xmlEscape(value) {
   return String(value || "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -116,7 +117,7 @@ async function rss(res) {
       "      <guid>" + xmlEscape(link) + "</guid>\n" +
       (pub ? "      <pubDate>" + pub + "</pubDate>\n" : "") +
       "      <description>" + xmlEscape(description) + "</description>\n" +
-      "      <author>" + xmlEscape(article.auteur || "Le Financier Ivoirien") + "</author>\n" +
+      "      <dc:creator>" + xmlEscape(article.auteur || "Le Financier Ivoirien") + "</dc:creator>\n" +
       "    </item>"
     );
   }).join("\n");
@@ -125,7 +126,7 @@ async function rss(res) {
   res.setHeader("Cache-Control", "public, max-age=300");
   return res.status(200).send(
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<rss version="2.0">\n' +
+    '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">\n' +
     "  <channel>\n" +
     "    <title>Le Financier Ivoirien</title>\n" +
     "    <link>" + SITE + "/</link>\n" +

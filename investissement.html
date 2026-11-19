@@ -17,7 +17,7 @@
   <link rel="icon" href="/icon-192.png?v=20261027" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261027" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="css/site.css?v=20261102black">
+  <link rel="stylesheet" href="css/site.css?v=20261119site">
 
   <style>
     :root {
@@ -539,14 +539,14 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="css/site.css?v=20261102black">
+  <link rel="stylesheet" href="css/site.css?v=20261119site">
 </head>
 
 <body>
   <div id="site-chrome"></div>
   <script src="js/site.js?v=20261104trafic"></script>
 
-  <main>
+  <main data-rubrique="investissement" data-label="Investissement">
 
     <section class="page-title">
       <span>Capital & projets</span>
@@ -588,165 +588,7 @@
 
 
   <script src="js/config.js?v=20261017b"></script>
-  <script>
-
-    const SUPABASE_URL = window.LFI.supabaseUrl;
-    const SUPABASE_KEY = window.LFI.supabaseKey;
-
-    const API_URL =
-      `${SUPABASE_URL}/rest/v1/Articles?select=id,titre,contenu,categorie,auteur,image_url,created_at&categorie=eq.${encodeURIComponent("Investissement")}&order=created_at.desc&limit=20`;
-
-    const headers = {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    };
-
-
-    function escapeHtml(text) {
-
-      if (!text) return "";
-
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-    }
-
-
-    function formatDate(date) {
-
-      if (!date) return "";
-
-      const parsed = new Date(date);
-      const month = parsed.toLocaleDateString("fr-FR", { month: "long" });
-
-      return parsed.getDate() + " " + month + ", " + parsed.getFullYear();
-
-    }
-
-
-    function creerCarte(article) {
-
-      const card = document.createElement("a");
-
-      card.className = "news-card";
-      card.href = "/article?id=" + encodeURIComponent(article.id);
-
-      const image = document.createElement("div");
-      image.className = "news-image";
-
-      if (article.image_url) {
-        image.style.backgroundImage = `url("${String(article.image_url).replace("https://le-financier-ivoirien.vercel.app/", "https://lefinancierivoirien.com/")}"), linear-gradient(135deg, #333, #111)`;
-        image.style.backgroundSize = "cover";
-        image.style.backgroundPosition = "center";
-      }
-
-      const body = document.createElement("div");
-      body.className = "news-body";
-
-      const title = document.createElement("h4");
-      title.textContent = article.titre || "Sans titre";
-
-      const date = document.createElement("div");
-      date.className = "news-date";
-      date.textContent = formatDate(article.created_at);
-
-      body.appendChild(title);
-      body.appendChild(date);
-      card.appendChild(image);
-      card.appendChild(body);
-
-      return card;
-
-    }
-
-
-    async function chargerArticles() {
-
-      const featured =
-        document.getElementById("featuredArea");
-
-      const grid =
-        document.getElementById("articlesGrid");
-
-      const latest =
-        document.getElementById("latestSection");
-
-
-      try {
-
-        const response =
-          await fetch(API_URL, {
-            headers
-          });
-
-
-        if (!response.ok) {
-          throw new Error("Erreur lors du chargement.");
-        }
-
-
-        const articles =
-          await response.json();
-
-
-        if (!articles.length) {
-
-          featured.innerHTML = `
-            <div class="empty">
-              Aucun article dans la catégorie « Investissement » pour le moment.
-            </div>
-          `;
-
-          latest.hidden = true;
-          return;
-        }
-
-
-        articles.slice(0, 4).forEach(article => {
-          featured.appendChild(creerCarte(article));
-        });
-
-
-        const suite = articles.slice(4);
-
-        document.getElementById("newsCount").textContent =
-          suite.length
-            ? suite.length + " article" + (suite.length > 1 ? "s" : "")
-            : "";
-
-        suite.forEach(article => {
-          grid.appendChild(creerCarte(article));
-        });
-
-        if (!suite.length) {
-          latest.hidden = true;
-        }
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        featured.innerHTML = `
-          <div class="empty">
-            Impossible de charger les articles pour le moment.
-          </div>
-        `;
-
-        latest.hidden = true;
-
-      }
-
-    }
-
-
-    chargerArticles();
-
-  </script>
+  <script src="js/rubrique.js?v=20261119site"></script>
 
 </body>
 
