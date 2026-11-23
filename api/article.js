@@ -27,27 +27,10 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function normalizeMarks(value) {
-  return String(value || "")
-    .replace(/<\s*(strong|b)\s*>/gi, "**")
-    .replace(/<\s*\/\s*(strong|b)\s*>/gi, "**")
-    .replace(/<\s*(em|i)\s*>/gi, "*")
-    .replace(/<\s*\/\s*(em|i)\s*>/gi, "*");
-}
-
-function plainExcerpt(value) {
-  return normalizeMarks(value)
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\*\*((?:(?!\*\*)[\s\S])+?)\*\*/g, "$1")
-    .replace(/\*(\S(?:[^*\n]*?\S)?)\*/g, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function detachTail(value) {
   let url = value;
   let tail = "";
-  while (url && /[),.;:!?»*]+$/.test(url)) {
+  while (url && /[),.;:!?»]+$/.test(url)) {
     const last = url.slice(-1);
     if (last === ")" && (url.split("(").length - 1) >= url.split(")").length - 1) {
       break;
@@ -58,18 +41,14 @@ function detachTail(value) {
   return { url: url, tail: tail };
 }
 
-function renderPlain(raw) {
-  return escapeHtml(raw).replace(/\n/g, "<br>");
-}
-
-function renderLinks(value) {
+function renderText(value) {
   const text = String(value || "");
   const pattern = /(?:https?:\/\/|www\.)[^\s<>"']+/gi;
   let html = "";
   let last = 0;
   let match;
   while ((match = pattern.exec(text))) {
-    html += renderPlain(text.slice(last, match.index));
+    html += escapeHtml(text.slice(last, match.index)).replace(/\n/g, "<br>");
     const parts = detachTail(match[0]);
     const href = safeUrl(/^www\./i.test(parts.url) ? "https://" + parts.url : parts.url, "");
     if (!href) {
@@ -81,24 +60,7 @@ function renderLinks(value) {
     }
     last = match.index + match[0].length;
   }
-  html += renderPlain(text.slice(last));
-  return html;
-}
-
-function renderText(value) {
-  const text = normalizeMarks(value);
-  const motif = /\*\*((?:(?!\*\*)[\s\S])+?)\*\*|\*(\S(?:[^*\n]*?\S)?)\*/g;
-  let html = "";
-  let last = 0;
-  let match;
-  while ((match = motif.exec(text))) {
-    html += renderLinks(text.slice(last, match.index));
-    const tag = match[1] !== undefined ? "strong" : "em";
-    const inner = match[1] !== undefined ? match[1] : match[2];
-    html += "<" + tag + ">" + renderLinks(inner) + "</" + tag + ">";
-    last = motif.lastIndex;
-  }
-  html += renderLinks(text.slice(last));
+  html += escapeHtml(text.slice(last)).replace(/\n/g, "<br>");
   return html;
 }
 
@@ -218,7 +180,11 @@ export default async function handler(req, res) {
 
     const titre = article.titre || "Le Financier Ivoirien";
     const parts = splitArticle(article.contenu || "");
-    const description = plainExcerpt(parts.text).substring(0, 200);
+    const description = parts.text
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .substring(0, 200);
 
     const image = safeUrl(article.image_url, fallbackImage);
     const auteur = article.auteur || "Le Financier Ivoirien";
@@ -298,7 +264,7 @@ export default async function handler(req, res) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/site.css?v=20261119site">
+  <link rel="stylesheet" href="/css/site.css?v=20261102black">
 </head>
 <body>
   <div id="site-chrome" data-root="/"></div>
