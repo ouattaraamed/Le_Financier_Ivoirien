@@ -1,6 +1,4 @@
 const LIST_URL = "https://www.bceao.int/fr/communique-presse";
-const SUPABASE_URL =
-  process.env.SUPABASE_URL || "https://xjwimhgdqcaqqadhhtnz.supabase.co";
 
 const HEADERS = {
   "User-Agent":
@@ -43,6 +41,8 @@ function relevant(text) {
     n
   );
 }
+
+export { parseList, fetchText };
 
 function parseList(html) {
   const items = [];
@@ -109,96 +109,6 @@ async function fetchText(url) {
   return response.text();
 }
 
-function articleBody(item) {
-  const parts = [
-    "La BCEAO a publié, le " + item.date + ", le communiqué officiel ci-dessous.",
-    ""
-  ];
-  item.paragraphs.forEach(function (paragraph) {
-    parts.push(paragraph, "");
-  });
-  if (!item.paragraphs.length) {
-    parts.push("Le texte complet est publié sur le site de la BCEAO.", "");
-  }
-  parts.push("Source officielle : " + item.url);
-  if (item.pdf) {
-    parts.push("Version PDF : " + item.pdf);
-  }
-  return parts.join("\n").trim();
-}
-
-const BCEAO_IMAGE = "https://lefinancierivoirien.com/bceao-logo.png";
-const OLD_BCEAO_IMAGE = "https://le-financier-ivoirien.vercel.app/bceao-logo.png";
-
-async function repairImages(headers) {
-  await fetch(
-    SUPABASE_URL + "/rest/v1/Articles?image_url=eq." + encodeURIComponent(OLD_BCEAO_IMAGE),
-    {
-      method: "PATCH",
-      headers: Object.assign({ Prefer: "return=minimal" }, headers),
-      body: JSON.stringify({ image_url: BCEAO_IMAGE })
-    }
-  );
-}
-
-async function publishNew(items) {
-  const key = String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").replace(/\s+/g, "");
-  if (!key) {
-    return 0;
-  }
-
-  const headers = {
-    apikey: key,
-    Authorization: "Bearer " + key,
-    "Content-Type": "application/json"
-  };
-
-  try {
-    await repairImages(headers);
-  } catch (error) {
-    console.error(error);
-  }
-
-  const existingResponse = await fetch(
-    SUPABASE_URL +
-      "/rest/v1/Articles?select=titre,contenu&auteur=eq.BCEAO&order=created_at.desc&limit=80",
-    { headers: headers }
-  );
-  const existing = existingResponse.ok ? await existingResponse.json() : [];
-  const known = new Set();
-  (Array.isArray(existing) ? existing : []).forEach(function (row) {
-    known.add(fold(row.titre || ""));
-    const source = String(row.contenu || "").match(/https:\/\/www\.bceao\.int\/\S+/g) || [];
-    source.forEach(function (url) {
-      known.add(url);
-    });
-  });
-
-  let created = 0;
-  for (const item of items) {
-    if (known.has(item.url) || known.has(fold(item.title))) {
-      continue;
-    }
-    const response = await fetch(SUPABASE_URL + "/rest/v1/Articles", {
-      method: "POST",
-      headers: Object.assign({ Prefer: "return=minimal" }, headers),
-      body: JSON.stringify({
-        titre: item.title,
-        categorie: "Banques & Finance",
-        auteur: "BCEAO",
-        image_url: BCEAO_IMAGE,
-        contenu: articleBody(item)
-      })
-    });
-    if (response.ok) {
-      created += 1;
-      known.add(item.url);
-      known.add(fold(item.title));
-    }
-  }
-  return created;
-}
-
 export default async function handler(req, res) {
   try {
     const html = await fetchText(LIST_URL);
@@ -225,18 +135,11 @@ export default async function handler(req, res) {
       return item.title && item.url;
     });
 
-    let published = 0;
-    try {
-      published = await publishNew(items);
-    } catch (error) {
-      console.error(error);
-    }
-
     res.setHeader("Cache-Control", "s-maxage=600, stale-while-revalidate=120");
     return res.status(200).json({
       source: LIST_URL,
       updatedAt: new Date().toISOString(),
-      published: published,
+      published: 0,
       items: items.map(function (item) {
         return {
           title: item.title,

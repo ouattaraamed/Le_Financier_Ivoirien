@@ -49,7 +49,7 @@
   ],
   "crons": [
     {
-      "path": "/api/bceao",
+      "path": "/api/veille",
       "schedule": "0 8 * * *"
     }
   ],

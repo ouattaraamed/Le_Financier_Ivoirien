@@ -482,6 +482,7 @@
       <button type="button" data-panel="subscribers">Lettre <span class="count" id="subscribersCount"></span></button>
       <button type="button" data-panel="students">Étudiants <span class="count" id="studentsCount"></span></button>
       <button type="button" data-panel="articles">Articles <span class="count" id="articlesCount"></span></button>
+      <button type="button" data-panel="veille">Veille <span class="count" id="veilleCount"></span></button>
       <button type="button" data-panel="trafic">Trafic <span class="count" id="traficCount"></span></button>
     </nav>
 
@@ -622,6 +623,16 @@
       <div id="oppAdminList" class="loading">Chargement des annonces...</div>
     </section>
 
+    <section class="box panel" id="veille">
+      <div class="section-title">
+        <h2>Veille</h2>
+        <button type="button" class="secondary" id="refreshVeille">Actualiser</button>
+      </div>
+      <p class="lead">Brouillons préparés à partir des cours BRVM et des communiqués BCEAO. Rien n’est publié tant que tu ne le décides pas.</p>
+      <div id="veilleMessage" class="message"></div>
+      <div id="veilleList" class="loading">Chargement des brouillons…</div>
+    </section>
+
     <section class="box panel" id="trafic">
       <div class="section-title">
         <h2>Trafic</h2>
@@ -702,6 +713,9 @@ document.querySelectorAll(".admin-tabs button").forEach(function (button) {
     if (button.dataset.panel === "trafic") {
       chargerTrafic();
     }
+    if (button.dataset.panel === "veille") {
+      chargerVeille();
+    }
   });
 });
 
@@ -737,6 +751,7 @@ const cancelEditButton =
 
 
 let articleEnModification = null;
+let brouillonARetirer = "";
 
 
 /* Messages */
@@ -771,6 +786,7 @@ async function verifierConnexion() {
     chargerAbonnes();
     chargerOpportunites();
     chargerTrafic();
+    chargerVeille();
 
   } else {
 
@@ -990,6 +1006,23 @@ articleForm.addEventListener(
     reglerMentionTribune();
     localStorage.removeItem("lfi-admin-draft-v1");
     majBrouillon();
+    if (brouillonARetirer) {
+      const retire = brouillonARetirer;
+      brouillonARetirer = "";
+      const session = await supabaseClient.auth.getSession();
+      const jeton = session.data.session ? session.data.session.access_token : "";
+      if (jeton) {
+        await fetch("/api/veille", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + jeton,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ action: "ecarter", id: retire })
+        });
+        chargerVeille();
+      }
+    }
 
     chargerArticles();
     chargerMessages();
@@ -2104,6 +2137,123 @@ async function chargerOpportunites() {
       }
       chargerOpportunites();
     });
+  });
+}
+
+/* Veille */
+
+async function appelVeille(action, id) {
+  const session = await supabaseClient.auth.getSession();
+  const jeton = session.data.session ? session.data.session.access_token : "";
+  if (!jeton) {
+    return null;
+  }
+  const options = {
+    method: action ? "POST" : "GET",
+    headers: { Authorization: "Bearer " + jeton }
+  };
+  if (action) {
+    options.headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify({ action: action, id: id || "" });
+  }
+  const response = await fetch("/api/veille", options);
+  if (!response.ok) {
+    return null;
+  }
+  return response.json();
+}
+
+function reprendreBrouillon(item) {
+  brouillonARetirer = item.id;
+  document.getElementById("titre").value = item.titre || "";
+  document.getElementById("categorie").value = item.categorie || "";
+  document.getElementById("auteur").value = item.auteur || "La rédaction";
+  document.getElementById("contenu").value = item.contenu || "";
+  if (item.image_url) {
+    document.getElementById("image_url").value = item.image_url;
+  }
+  montrerPanneau("publish");
+  document.getElementById("titre").focus();
+}
+
+async function chargerVeille() {
+  const liste = document.getElementById("veilleList");
+  const compte = document.getElementById("veilleCount");
+  if (!liste) {
+    return;
+  }
+  const data = await appelVeille();
+  if (!data) {
+    liste.textContent = "Les brouillons sont indisponibles.";
+    return;
+  }
+  const brouillons = data.brouillons || [];
+  if (compte) {
+    compte.textContent = brouillons.length ? "(" + brouillons.length + ")" : "";
+  }
+  if (!brouillons.length) {
+    liste.innerHTML = '<div class="empty">Aucun brouillon. Actualise pour interroger la BRVM et la BCEAO.</div>';
+    return;
+  }
+  liste.innerHTML = brouillons.map(function (item) {
+    return (
+      '<article class="article-card" data-veille="' + echapper(item.id) + '">' +
+        '<div class="badge">' + echapper(item.categorie || "") + "</div>" +
+        "<h3>" + echapper(item.titre || "") + "</h3>" +
+        '<p style="white-space:pre-wrap">' + echapper(item.contenu || "") + "</p>" +
+        '<div class="article-actions">' +
+          '<button type="button" data-veille-publier="' + echapper(item.id) + '">Publier</button>' +
+          '<button type="button" class="secondary" data-veille-corriger="' + echapper(item.id) + '">Corriger</button>' +
+          '<button type="button" class="danger" data-veille-ecarter="' + echapper(item.id) + '">Écarter</button>' +
+        "</div>" +
+      "</article>"
+    );
+  }).join("");
+
+  liste.querySelectorAll("[data-veille-publier]").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      button.disabled = true;
+      const suite = await appelVeille("publier", button.dataset.veillePublier);
+      if (!suite) {
+        message(document.getElementById("veilleMessage"), "Publication impossible.");
+        button.disabled = false;
+        return;
+      }
+      message(document.getElementById("veilleMessage"), "Brouillon publié.", true);
+      chargerArticles();
+      chargerVeille();
+    });
+  });
+  liste.querySelectorAll("[data-veille-ecarter]").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      await appelVeille("ecarter", button.dataset.veilleEcarter);
+      chargerVeille();
+    });
+  });
+  liste.querySelectorAll("[data-veille-corriger]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const item = brouillons.find(function (row) {
+        return row.id === button.dataset.veilleCorriger;
+      });
+      if (item) {
+        reprendreBrouillon(item);
+      }
+    });
+  });
+}
+
+const refreshVeille = document.getElementById("refreshVeille");
+if (refreshVeille) {
+  refreshVeille.addEventListener("click", async function () {
+    refreshVeille.disabled = true;
+    const data = await appelVeille("actualiser");
+    refreshVeille.disabled = false;
+    if (!data) {
+      message(document.getElementById("veilleMessage"), "Actualisation impossible.");
+      return;
+    }
+    message(document.getElementById("veilleMessage"), "Veille à jour.", true);
+    chargerVeille();
   });
 }
 

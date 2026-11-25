@@ -128,6 +128,8 @@ async function load(url) {
   return response.text();
 }
 
+export { parseIndices, parseActions, updatedAt, load, PAGES };
+
 export default async function handler(req, res) {
   try {
     const [actionsHtml, indicesHtml, bondsHtml] = await Promise.all([
